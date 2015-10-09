@@ -19,5 +19,5 @@ function init() {
         createjs.Tween.get(child2)
             .to({x:60}).to({x:0}, 50).to({x:60}, 50));
 
-    mc.gotoAndPlay("start");
+   // mc.gotoAndPlay("start");
 }
