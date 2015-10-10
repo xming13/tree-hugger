@@ -16,6 +16,7 @@ var TOP_5 = TOP_4 + SPACING + CIRCLE_DIAMETER;
 // Colors
 var COLOR_SKY = '#E4F8FF';
 var COLOR_GROUND = 'LightGreen';
+var COLOR_BORDER = '#F0F8FF';
 
 // Stage
 var stage;
@@ -25,7 +26,7 @@ var pop;
 var popCanPlay = false;
 
 // for debugging
-var DEBUG = true;
+var DEBUG = false;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -38,7 +39,7 @@ function init() {
 
     drawMenu();
     if (DEBUG) {
-        var gridLinesColor = '#F0F8FF';
+        var gridLinesColor = COLOR_BORDER;
         var gridLines = new createjs.Shape();
         gridLines.graphics.beginFill(gridLinesColor)
             .rect(0, 0, SPACING, CANVAS_HEIGHT)
@@ -57,6 +58,8 @@ function init() {
             .endFill().beginFill(gridLinesColor)
             .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
         stage.addChild(gridLines);
+
+
     }
 }
 
@@ -162,6 +165,17 @@ function loadAudio() {
 }
 
 function drawMenu() {
+    var borders = new createjs.Shape();
+    borders.graphics.beginFill(COLOR_BORDER)
+        .rect(0, 0, SPACING, CANVAS_HEIGHT)
+        .endFill().beginFill(COLOR_BORDER)
+        .rect(3 * (SPACING + CIRCLE_DIAMETER), 0, SPACING, CANVAS_HEIGHT)
+        .endFill().beginFill(COLOR_BORDER)
+        .rect(0, 0, CANVAS_WIDTH, SPACING)
+        .endFill().beginFill(COLOR_BORDER)
+        .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
+    stage.addChild(borders);
+
     var btnPlay = new createjs.Shape();
     btnPlay.graphics.beginFill('lightblue')
         .drawCircle(LEFT_1, TOP_2, CIRCLE_RADIUS);
@@ -182,6 +196,7 @@ function playAnim() {
     if (popCanPlay && pop) {
         pop.play();
     }
+
     // Clipping Mask
     var clipped_disk = new createjs.Shape();
     clipped_disk.graphics.beginFill('#000000')
@@ -215,27 +230,6 @@ function playAnim() {
     segmentSky.alpha = 0;
     segmentSky.fill = COLOR_SKY;
 
-    var tweenSegmentGround = createjs.Tween.get(segmentGround)
-        .to({angle: ANGLE_START}, 400, createjs.Ease.getPowIn(2))
-        .call(function () {
-            var tweenSegmentSky = createjs.Tween.get(segmentSky)
-                .to({alpha: 1})
-                .to({angle: -180}, 1200, createjs.Ease.getPowOut(2));
-            tweenSegmentSky.addEventListener('change', changeSegment);
-        });
-    tweenSegmentGround.addEventListener('change', changeSegment);
-
-    function changeSegment(e) {
-        var segment = e.target.target;
-        var angleFromCenter = 90 - segment.angle;
-        var startAngle = (90 - angleFromCenter) * Math.PI / 180;
-        var endAngle = (90 + angleFromCenter) * Math.PI / 180;
-
-        segment.graphics.clear();
-        segment.graphics.beginFill(segment.fill)
-            .arc(0, 0, CIRCLE_RADIUS, startAngle, endAngle);
-    }
-
     var flowerWrapper = new createjs.Container();
     flowerWrapper.y = -5;
 
@@ -250,96 +244,117 @@ function playAnim() {
     flower.fill = 'yellow';
     flowerWrapper.addChild(flower);
 
-    createjs.Tween.get(flowerStemCmd)
-        .wait(900)
-        .to({h: -30}, 300)
+    var tweenSegmentGround = createjs.Tween.get(segmentGround)
+        .wait(19500)
+        .to({angle: ANGLE_START}, 400, createjs.Ease.getPowIn(2))
         .call(function () {
-            var flowerLeaves = new createjs.Shape();
-            flowerLeaves.graphics.beginFill('green');
-            var flowerLeavesCmd = flowerLeaves.graphics
-                .drawEllipse(0, 18, 0, 6)
-                .command;
-            var flowerLeavesCmd2 = flowerLeaves.graphics
-                .drawEllipse(0, 17, 0, 6)
-                .command;
-            flowerWrapper.addChild(flowerLeaves);
+            var tweenSegmentSky = createjs.Tween.get(segmentSky)
+                .to({alpha: 1})
+                .to({angle: -180}, 1200, createjs.Ease.getPowOut(2));
+            tweenSegmentSky.addEventListener('change', changeSegment);
 
-            createjs.Tween.get(flowerLeavesCmd)
-                .to({w: -10}, 200, createjs.Ease.getBackOut(2));
-            createjs.Tween.get(flowerLeavesCmd2)
-                .to({w: 10}, 200, createjs.Ease.getBackOut(2));
-
-            var tweenFlower = createjs.Tween.get(flower)
-                .set({alpha: 1})
-                .to({radius: 8}, 200, createjs.Ease.getBackOut(2))
-                .set({label: 'flower'})
+            createjs.Tween.get(flowerStemCmd)
+                .to({h: -30}, 300)
                 .call(function () {
-                    var flowerEyes = new createjs.Shape();
-                    flowerEyes.graphics
-                        .beginFill('black')
-                        .drawCircle(-4, 0, 2)
-                        .endFill().beginFill('black')
-                        .drawCircle(4, 0, 2);
-                    flowerWrapper.addChild(flowerEyes);
+                    var flowerLeaves = new createjs.Shape();
+                    flowerLeaves.graphics.beginFill('green');
+                    var flowerLeavesCmd = flowerLeaves.graphics
+                        .drawEllipse(0, 18, 0, 6)
+                        .command;
+                    var flowerLeavesCmd2 = flowerLeaves.graphics
+                        .drawEllipse(0, 17, 0, 6)
+                        .command;
+                    flowerWrapper.addChild(flowerLeaves);
 
-                    var petalColor = 'hotpink';
-                    var petalRadius = 6;
-                    var petalDuration = 150;
+                    createjs.Tween.get(flowerLeavesCmd)
+                        .to({w: -10}, 200, createjs.Ease.getBackOut(2));
+                    createjs.Tween.get(flowerLeavesCmd2)
+                        .to({w: 10}, 200, createjs.Ease.getBackOut(2));
 
-                    var petal1 = new createjs.Shape();
-                    petal1.alpha = 0;
-                    petal1.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                    flowerWrapper.addChildAt(petal1, 1); // add at index 1 as flowerStem should be at index 0
-                    createjs.Tween.get(petal1)
+                    var tweenFlower = createjs.Tween.get(flower)
                         .set({alpha: 1})
-                        .to({x: 0, y: -11}, petalDuration, createjs.Ease.getBackOut(1));
+                        .to({radius: 8}, 200, createjs.Ease.getBackOut(2))
+                        .set({label: 'flower'})
+                        .call(function () {
+                            var flowerEyes = new createjs.Shape();
+                            flowerEyes.graphics
+                                .beginFill('black')
+                                .drawCircle(-4, 0, 2)
+                                .endFill().beginFill('black')
+                                .drawCircle(4, 0, 2);
+                            flowerWrapper.addChild(flowerEyes);
 
-                    var petal2 = new createjs.Shape();
-                    petal2.alpha = 0;
-                    petal2.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                    flowerWrapper.addChildAt(petal2, 1);
-                    createjs.Tween.get(petal2)
-                        .wait(.5 * petalDuration)
-                        .set({alpha: 1})
-                        .to({x: 8, y: -4}, petalDuration, createjs.Ease.getBackOut(1));
+                            var petalColor = 'hotpink';
+                            var petalRadius = 6;
+                            var petalDuration = 150;
 
-                    var petal3 = new createjs.Shape();
-                    petal3.alpha = 0;
-                    petal3.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                    flowerWrapper.addChildAt(petal3, 1);
-                    createjs.Tween.get(petal3)
-                        .wait(1.5 * petalDuration)
-                        .set({alpha: 1})
-                        .to({x: 6, y: 7}, petalDuration, createjs.Ease.getBackOut(1));
+                            var petal1 = new createjs.Shape();
+                            petal1.alpha = 0;
+                            petal1.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal1, 1); // add at index 1 as flowerStem should be at index 0
+                            createjs.Tween.get(petal1)
+                                .set({alpha: 1})
+                                .to({x: 0, y: -11}, petalDuration, createjs.Ease.getBackOut(1));
 
-                    var petal4 = new createjs.Shape();
-                    petal4.alplha = 0;
-                    petal4.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                    flowerWrapper.addChildAt(petal4, 1);
-                    createjs.Tween.get(petal4)
-                        .wait(2.5 * petalDuration)
-                        .set({alpha: 1})
-                        .to({x: -6, y: 7}, petalDuration, createjs.Ease.getBackOut(1));
+                            var petal2 = new createjs.Shape();
+                            petal2.alpha = 0;
+                            petal2.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal2, 1);
+                            createjs.Tween.get(petal2)
+                                .wait(.5 * petalDuration)
+                                .set({alpha: 1})
+                                .to({x: 8, y: -4}, petalDuration, createjs.Ease.getBackOut(1));
 
-                    var petal5 = new createjs.Shape();
-                    petal5.alpha = 0;
-                    petal5.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                    flowerWrapper.addChildAt(petal5, 1);
-                    createjs.Tween.get(petal5)
-                        .wait(3.5 * petalDuration)
-                        .set({alpha: 1})
-                        .to({x: -8, y: -4}, petalDuration, createjs.Ease.getBackOut(1))
-                        .wait(200)
-                        .call(container2Start);
+                            var petal3 = new createjs.Shape();
+                            petal3.alpha = 0;
+                            petal3.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal3, 1);
+                            createjs.Tween.get(petal3)
+                                .wait(1.5 * petalDuration)
+                                .set({alpha: 1})
+                                .to({x: 6, y: 7}, petalDuration, createjs.Ease.getBackOut(1));
+
+                            var petal4 = new createjs.Shape();
+                            petal4.alplha = 0;
+                            petal4.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal4, 1);
+                            createjs.Tween.get(petal4)
+                                .wait(2.5 * petalDuration)
+                                .set({alpha: 1})
+                                .to({x: -6, y: 7}, petalDuration, createjs.Ease.getBackOut(1));
+
+                            var petal5 = new createjs.Shape();
+                            petal5.alpha = 0;
+                            petal5.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal5, 1);
+                            createjs.Tween.get(petal5)
+                                .wait(3.5 * petalDuration)
+                                .set({alpha: 1})
+                                .to({x: -8, y: -4}, petalDuration, createjs.Ease.getBackOut(1))
+                                .wait(500)
+                                .call(container2Start);
+                        });
+
+                    tweenFlower.addEventListener('change', circleExpand);
+                    function circleExpand(e) {
+                        var obj = e.target.target;
+                        obj.graphics.clear();
+                        obj.graphics.beginFill(obj.fill).drawCircle(0, 0, obj.radius);
+                    }
                 });
-
-            tweenFlower.addEventListener('change', circleExpand);
-            function circleExpand(e) {
-                var obj = e.target.target;
-                obj.graphics.clear();
-                obj.graphics.beginFill(obj.fill).drawCircle(0, 0, obj.radius);
-            }
         });
+    tweenSegmentGround.addEventListener('change', changeSegment);
+
+    function changeSegment(e) {
+        var segment = e.target.target;
+        var angleFromCenter = 90 - segment.angle;
+        var startAngle = (90 - angleFromCenter) * Math.PI / 180;
+        var endAngle = (90 + angleFromCenter) * Math.PI / 180;
+
+        segment.graphics.clear();
+        segment.graphics.beginFill(segment.fill)
+            .arc(0, 0, CIRCLE_RADIUS, startAngle, endAngle);
+    }
 
     container1.addChild(segmentSky);
     container1.addChild(segmentGround);
@@ -388,7 +403,6 @@ function playAnim() {
             container2.addChildAt(_container, 0);
         }
 
-        var subContainerDuration = 500;
         var dist = 1.5 * CIRCLE_RADIUS;
 
         // DEVEL
@@ -468,21 +482,23 @@ function playAnim() {
         snowTreeWrapper.addChild(snowWrapper);
         subContainers[3].addChild(snowTreeWrapper);
 
-        createjs.Tween.get(subContainers[0]).wait(subContainerDuration)
+        var subContainerDuration = 700;
+        var subContainerInitialWait = 1000;
+        createjs.Tween.get(subContainers[0]).wait(subContainerDuration + subContainerInitialWait)
             .to({x: -dist, y: -dist}, subContainerDuration, createjs.Ease.cubicIn);
-        createjs.Tween.get(subContainers[1]).wait(1.5 * subContainerDuration)
+        createjs.Tween.get(subContainers[1]).wait(1.5 * subContainerDuration + subContainerInitialWait)
             .to({x: dist, y: -dist}, subContainerDuration, createjs.Ease.cubicIn);
-        createjs.Tween.get(subContainers[2]).wait(2 * subContainerDuration)
+        createjs.Tween.get(subContainers[2]).wait(2 * subContainerDuration + subContainerInitialWait)
             .to({x: -dist, y: dist}, subContainerDuration, createjs.Ease.cubicIn);
-        createjs.Tween.get(subContainers[3]).wait(2.5 * subContainerDuration)
+        createjs.Tween.get(subContainers[3]).wait(2.5 * subContainerDuration + subContainerInitialWait)
             .to({x: dist, y: dist}, subContainerDuration, createjs.Ease.cubicIn)
+            .wait(1000)
             .call(function () {
-                var delay = 500;
                 var duration = 300;
-                createjs.Tween.get(subContainers[0]).wait(delay).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
-                createjs.Tween.get(subContainers[1]).wait(delay).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
-                createjs.Tween.get(subContainers[2]).wait(delay).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
-                createjs.Tween.get(subContainers[3]).wait(delay).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut)
+                createjs.Tween.get(subContainers[0]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+                createjs.Tween.get(subContainers[1]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+                createjs.Tween.get(subContainers[2]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+                createjs.Tween.get(subContainers[3]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut)
                     .wait(200)
                     .call(function () {
                         snows.forEach(function (snow) {
