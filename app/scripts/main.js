@@ -52,12 +52,23 @@ function init() {
             .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
         stage.addChild(gridLines);
     }
-
-    playAnim();
 }
 
 function drawMenu() {
+    var btnPlay = new createjs.Shape();
+    btnPlay.graphics.beginFill('lightblue')
+        .drawCircle(LEFT_1, TOP_2, CIRCLE_RADIUS);
+    btnPlay.addEventListener('click', function() {
+        stage.removeChild(btnPlay);
+        stage.removeChild(btnBrowse);
+        playAnim();
+    });
+    stage.addChild(btnPlay);
 
+    var btnBrowse = new createjs.Shape();
+    btnBrowse.graphics.beginFill('pink')
+        .drawCircle(LEFT_3, TOP_2, CIRCLE_RADIUS);
+    stage.addChild(btnBrowse);
 }
 
 function playAnim() {
