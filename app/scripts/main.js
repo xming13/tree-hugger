@@ -12,12 +12,30 @@ function init() {
     // Stage
     var stage = new createjs.Stage('canvas');
 
+    // Clipping Mask
+    var clipped_disk = new createjs.Shape();
+    clipped_disk.graphics.beginFill('#000000')
+//        .drawCircle(CIRCLE_RADIUS, CIRCLE_RADIUS, CIRCLE_RADIUS)
+//        .drawCircle(CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS, CIRCLE_RADIUS, CIRCLE_RADIUS)
+//        .drawCircle(2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, CIRCLE_RADIUS, CIRCLE_RADIUS)
+//        .endFill()
+//        .beginFill('#00ff00')
+//        .drawCircle(CIRCLE_RADIUS, CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS, CIRCLE_RADIUS)
+        .drawCircle(CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS, CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS, CIRCLE_RADIUS)
+//        .drawCircle(2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS, CIRCLE_RADIUS)
+//        .endFill()
+//        .beginFill('#00ff00')
+//        .drawCircle(CIRCLE_RADIUS, 2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, CIRCLE_RADIUS)
+//        .drawCircle(CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS, 2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, CIRCLE_RADIUS)
+//        .drawCircle(2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, 2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, CIRCLE_RADIUS)
+    ;
+
     // Ticker
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", stage);
 
     // Timeline
-    var timeline = new createjs.Timeline([], {}, {paused:true});
+    var timeline = new createjs.Timeline([], {}, {paused: true});
 
     // Card 1: flower
     var container1 = new createjs.Container();
@@ -32,6 +50,11 @@ function init() {
     tweenSegmentGround.addEventListener('change', changeSegment);
     timeline.addLabel("ground", 0);
     timeline.addTween(tweenSegmentGround);
+
+//    var g = new createjs.Graphics();
+//    g.rect(-CIRCLE_RADIUS, -CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+//    clipped_disk.clip = g;
+//    container1.addChild(clipped_disk);
 
     var segmentSky = new createjs.Shape();
     segmentSky.angle = ANGLE_START;
@@ -53,6 +76,7 @@ function init() {
 
         segment.graphics.clear();
         segment.graphics.beginFill(segment.fill)
+//            .rect(-CIRCLE_RADIUS, -CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
             .arc(0, 0, CIRCLE_RADIUS, startAngle, endAngle);
     }
 
@@ -215,11 +239,66 @@ function init() {
         .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
     container3.addChild(segmentSky3);
 
-    var cat = new createjs.Shape();
-    
+    var catWrapper = new createjs.Container();
+    var catHead = new createjs.Shape();
+    catHead.graphics.beginFill('#fff').drawEllipse(-15, 5, 30, 25);
+    catWrapper.addChild(catHead);
+
+    var catEyes = new createjs.Shape();
+    catEyes.graphics.beginFill('black')
+        .drawCircle(-10, 14, 2)
+        .drawCircle(2, 14, 2);
+    catWrapper.addChild(catEyes);
+
+    var catEars = new createjs.Shape();
+    catEars.graphics
+        .beginFill('#fff')
+        .moveTo(-15, 14)
+        .lineTo(-10, 0)
+        .lineTo(-1, 7)
+        .closePath()
+        .moveTo(15, 14)
+        .lineTo(10, 0)
+        .lineTo(1, 7)
+        .closePath();
+    catWrapper.addChild(catEars);
+
+    var beeWrapper = new createjs.Container();
+    var bee = new createjs.Shape();
+    bee.graphics
+        .beginFill('yellow')
+        .drawEllipse(-45, -20, 16, 12);
+
+    beeWrapper.addChild(bee);
+
+    container3.addChild(catWrapper);
+    container3.addChild(beeWrapper);
+
     function container3Start() {
         createjs.Tween.get(container2).wait(200).to({x: -1 * CIRCLE_RADIUS}, 500, createjs.Ease.circOut);
-        createjs.Tween.get(container3).wait(500).to({x: CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS}, 500, createjs.Ease.circOut);
+        createjs.Tween.get(container3).wait(500).to({x: CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS}, 500, createjs.Ease.circOut)
+            .call(function () {
+                var beeDuration = 300;
+                createjs.Tween.get(bee)
+                    .to({x: 70}, beeDuration * 6, createjs.Ease.none);
+                createjs.Tween.get(bee)
+                    .to({y: -5}, beeDuration, createjs.Ease.sineOut)
+                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+                    .to({y: 5}, beeDuration, createjs.Ease.sineOut)
+                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+                    .to({y: -5}, beeDuration, createjs.Ease.sineOut)
+                    .to({y: 0}, beeDuration, createjs.Ease.sineIn);
+
+                createjs.Tween.get(catEyes)
+                    .to({x: 7}, beeDuration * 6, createjs.Ease.none);
+                createjs.Tween.get(catEyes)
+                    .to({y: -1}, beeDuration, createjs.Ease.sineOut)
+                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+                    .to({y: 1}, beeDuration, createjs.Ease.sineOut)
+                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+                    .to({y: -1}, beeDuration, createjs.Ease.sineOut)
+                    .to({y: 0}, beeDuration, createjs.Ease.sineIn);
+            });
     }
 
 //    var circle2 = new createjs.Shape();
