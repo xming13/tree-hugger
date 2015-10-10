@@ -1,4 +1,30 @@
-body{
+@font-face {
+    font-family: 'Happy Monkey';
+    src: url("../fonts/HappyMonkey-Regular.ttf");
+}
+
+body {
     margin: 0;
     text-align: center;
+}
+
+#lyrics {
+    position: relative;
+    padding: 10px 0;
+    min-height: 40px;
+    font-family: 'Happy Monkey', cursive;
+    background-color: #EBDBFF;
+}
+
+#lyrics div {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    transition: all .5s;
 }
