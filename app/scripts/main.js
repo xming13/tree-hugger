@@ -174,8 +174,12 @@ function init() {
         .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
     container2.addChild(segmentSky);
 
+//    DEVEL
+//    container2.x = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
+//    container2Start();
+
     function container2Start() {
-//        createjs.Tween.get(flowerWrapper).to({x: 2 * CIRCLE_DIAMETER + SPACING}, 500, createjs.Ease.circOut);
+        console.log('container2Start');
         createjs.Tween.get(container1).to({x: -1 * CIRCLE_RADIUS}, 500, createjs.Ease.circOut);
         createjs.Tween.get(container2).to({x: CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS}, 500, createjs.Ease.circOut);
 
@@ -200,6 +204,84 @@ function init() {
 
         var subContainerDuration = 500;
         var dist = 1.5 * CIRCLE_RADIUS;
+
+        // DEVEL
+//        subContainers[0].x = -dist;
+//        subContainers[0].y = -dist;
+//        subContainers[1].x = dist;
+//        subContainers[1].y = -dist;
+//        subContainers[2].x = -dist;
+//        subContainers[2].y = dist;
+//        subContainers[3].x = dist;
+//        subContainers[3].y = dist;
+
+        // winter
+        var snowTreeWrapper = new createjs.Container();
+        var snowTree = new createjs.Shape();
+        snowTree.graphics
+            .beginFill('white')
+            .lineTo(-12, -5)
+            .lineTo(0, -20)
+            .lineTo(12, -5)
+            .endFill().beginFill('white')
+            .lineTo(-14, 5)
+            .lineTo(0, -10)
+            .lineTo(14, 5)
+            .endFill().beginFill('white')
+            .lineTo(-16, 15)
+            .lineTo(0, 0)
+            .lineTo(16, 15)
+            .endFill().beginFill('white')
+            .lineTo(-18, 25)
+            .lineTo(0, 10)
+            .lineTo(18, 25);
+        snowTreeWrapper.addChild(snowTree);
+
+        var snows = [];
+        var snowWrapper = new createjs.Container();
+        var snowSize = 3;
+
+        for (var i = 0; i < 9; i++) {
+            var snow = new createjs.Shape();
+            snow.alpha = 0;
+            snow.graphics
+                .beginFill('white')
+                .drawCircle(0, 0, snowSize);
+            snows.push(snow);
+            snowWrapper.addChild(snow);
+        }
+
+        function tweenSnow(snow) {
+            var _random = Math.random();
+            var _x = 0;
+            if (_random <= 0.45) {
+                _x = getRandomInt(-25, -10);
+            }
+            else if (_random <= 0.9) {
+                _x = getRandomInt(10, 25);
+            }
+            else {
+                _x = getRandomInt(-9, 9);
+            }
+
+            createjs.Tween
+                .get(snow, {override: true})
+                .to({alpha: 0}, 100)
+                .wait(getRandomInt(0, 2000))
+                .to({alpha: getRandomArbitrary(0.5, 0.9), x: _x, y: getRandomInt(-55, -50)}, 0)
+                .to({y: 24}, getRandomInt(2500, 3000), createjs.Ease.linear)
+                .call(function () {
+                    tweenSnow(snow);
+                });
+        }
+
+        snows.forEach(function (snow) {
+            tweenSnow(snow);
+        });
+
+        snowTreeWrapper.addChild(snowWrapper);
+        subContainers[3].addChild(snowTreeWrapper);
+
         createjs.Tween.get(subContainers[0]).wait(subContainerDuration)
             .to({x: -dist, y: -dist}, subContainerDuration, createjs.Ease.cubicIn);
         createjs.Tween.get(subContainers[1]).wait(1.5 * subContainerDuration)
@@ -225,14 +307,10 @@ function init() {
     container3.x = 3 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS;
     container3.y = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
 
-    var segmentGround3 = new createjs.Shape();
-    segmentGround3.graphics.beginFill(COLOR_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    var segmentGround3 = segmentGround.clone();
     container3.addChild(segmentGround3);
 
-    var segmentSky3 = new createjs.Shape();
-    segmentSky3.graphics.beginFill(COLOR_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    var segmentSky3 = segmentSky.clone();
     container3.addChild(segmentSky3);
 
     var catWrapper = new createjs.Container();
@@ -307,14 +385,10 @@ function init() {
     container4.x = 3 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS;
     container4.y = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
 
-    var segmentGround4 = new createjs.Shape();
-    segmentGround4.graphics.beginFill(COLOR_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    var segmentGround4 = segmentGround.clone();
     container4.addChild(segmentGround4);
 
-    var segmentSky4 = new createjs.Shape();
-    segmentSky4.graphics.beginFill(COLOR_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    var segmentSky4 = segmentSky.clone();
     container4.addChild(segmentSky4);
 
     var turtleWrapper = new createjs.Container();
@@ -335,9 +409,7 @@ function init() {
     container4b.x = CIRCLE_RADIUS;
     container4b.y = -CIRCLE_RADIUS;
 //    container4b.y = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
-    var sky4b = new createjs.Shape();
-    sky4b.graphics.beginFill('lightBlue')
-        .drawCircle(0, 0, CIRCLE_RADIUS);
+    var sky4b = sky.clone();
     container4b.addChild(sky4b);
     var cloud4b = new createjs.Shape();
     cloud4b.graphics
@@ -368,7 +440,7 @@ function init() {
     var container4c = new createjs.Container();
     container4c.x = 2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS;
     container4c.y = -(CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS);
-    var sky4c = sky4b.clone();
+    var sky4c = sky.clone();
     container4c.addChild(sky4c);
     var cloud4c = cloud4b.clone();
     container4c.addChild(cloud4c);
@@ -399,4 +471,20 @@ function init() {
     stage.addChildAt(container4a, stage.getNumChildren() - 1);
     stage.addChild(container4b);
     stage.addChild(container4c);
+}
+
+
+/**
+ * Returns a random number between min (inclusive) and max (exclusive)
+ */
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive)
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
