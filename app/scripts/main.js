@@ -103,9 +103,17 @@ function init() {
 
             var tweenFlower = createjs.Tween.get(flower)
                 .set({alpha: 1})
-                .to({radius: 6}, 200, createjs.Ease.getBackOut(2))
+                .to({radius: 8}, 200, createjs.Ease.getBackOut(2))
                 .set({label: 'flower'})
                 .call(function () {
+                    var flowerEyes = new createjs.Shape();
+                    flowerEyes.graphics
+                        .beginFill('black')
+                        .drawCircle(-4, 0, 2)
+                        .endFill().beginFill('black')
+                        .drawCircle(4, 0, 2);
+                    flowerWrapper.addChild(flowerEyes);
+
                     var petalColor = 'hotpink';
                     var petalRadius = 6;
                     var petalDuration = 150;
@@ -308,7 +316,12 @@ function init() {
                 createjs.Tween.get(subContainers[2]).wait(delay).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
                 createjs.Tween.get(subContainers[3]).wait(delay).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut)
                     .wait(200)
-                    .call(container3Start);
+                    .call(function() {
+                        snows.forEach(function(snow) {
+                            createjs.Tween.removeTweens(snow);
+                        });
+                        container3Start();
+                    });
             });
     }
 
