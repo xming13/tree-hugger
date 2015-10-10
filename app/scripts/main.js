@@ -1,16 +1,58 @@
+var CIRCLE_RADIUS = 50;
+var CIRCLE_DIAMETER = CIRCLE_RADIUS * 2;
+var SPACING = 5;
+var ANGLE_START = 30;
+var CANVAS_HEIGHT = 320;
+var CANVAS_WIDTH = 320;
+
+// Colors
+var COLOR_SKY = '#E4F8FF';
+var COLOR_GROUND = 'LightGreen';
+
+// Stage
+var stage;
+
+// for debugging
+var DEBUG = true;
+
 function init() {
-    var CIRCLE_RADIUS = 50;
-    var CIRCLE_DIAMETER = CIRCLE_RADIUS * 2;
-    var SPACING = 10;
-    var ANGLE_START = 30;
+    stage = new createjs.Stage('canvas');
 
-    // Colors
-    var COLOR_SKY = '#E4F8FF';
-    var COLOR_GROUND = 'LightGreen';
+    // Ticker
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick", stage);
 
-    // Stage
-    var stage = new createjs.Stage('canvas');
+    drawMenu();
+    if (DEBUG) {
+        var gridLinesColor = '#F0F8FF';
+        var gridLines = new createjs.Shape();
+        gridLines.graphics.beginFill(gridLinesColor)
+            .rect(0, 0, SPACING, CANVAS_HEIGHT)
+            .endFill().beginFill(gridLinesColor)
+            .rect(SPACING + CIRCLE_DIAMETER, 0, SPACING, CANVAS_HEIGHT)
+            .endFill().beginFill(gridLinesColor)
+            .rect(2 * (SPACING + CIRCLE_DIAMETER), 0, SPACING, CANVAS_HEIGHT)
+            .endFill().beginFill(gridLinesColor)
+            .rect(3 * (SPACING + CIRCLE_DIAMETER), 0, SPACING, CANVAS_HEIGHT)
+            .endFill().beginFill(gridLinesColor)
+            .rect(0, 0, CANVAS_WIDTH, SPACING)
+            .endFill().beginFill(gridLinesColor)
+            .rect(0, SPACING + CIRCLE_DIAMETER, CANVAS_WIDTH, SPACING)
+            .endFill().beginFill(gridLinesColor)
+            .rect(0, 2 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING)
+            .endFill().beginFill(gridLinesColor)
+            .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
+        stage.addChild(gridLines);
+    }
 
+    playAnim();
+}
+
+function drawMenu() {
+
+}
+
+function playAnim() {
     // Clipping Mask
     var clipped_disk = new createjs.Shape();
     clipped_disk.graphics.beginFill('#000000')
@@ -29,9 +71,6 @@ function init() {
 //        .drawCircle(2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, 2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, CIRCLE_RADIUS)
     ;
 
-    // Ticker
-    createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", stage);
 
     // Card 1: flower
     var container1 = new createjs.Container();
@@ -316,8 +355,8 @@ function init() {
                 createjs.Tween.get(subContainers[2]).wait(delay).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
                 createjs.Tween.get(subContainers[3]).wait(delay).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut)
                     .wait(200)
-                    .call(function() {
-                        snows.forEach(function(snow) {
+                    .call(function () {
+                        snows.forEach(function (snow) {
                             createjs.Tween.removeTweens(snow);
                         });
                         container3Start();
@@ -495,7 +534,6 @@ function init() {
     stage.addChild(container4b);
     stage.addChild(container4c);
 }
-
 
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
