@@ -5,6 +5,14 @@ var ANGLE_START = 30;
 var CANVAS_HEIGHT = 320;
 var CANVAS_WIDTH = 320;
 
+var LEFT_0 = TOP_0 = -CIRCLE_RADIUS;
+var LEFT_1 = TOP_1 = SPACING + CIRCLE_RADIUS;
+var LEFT_2 = TOP_2 = LEFT_1 + SPACING + CIRCLE_DIAMETER;
+var LEFT_3 = TOP_3 = LEFT_2 + SPACING + CIRCLE_DIAMETER;
+var LEFT_4 = TOP_4 = LEFT_3 + SPACING + CIRCLE_DIAMETER;
+var TOP_NEG1 = TOP_0 - SPACING - CIRCLE_DIAMETER;
+var TOP_5 = TOP_4 + SPACING + CIRCLE_DIAMETER;
+
 // Colors
 var COLOR_SKY = '#E4F8FF';
 var COLOR_GROUND = 'LightGreen';
@@ -74,8 +82,8 @@ function playAnim() {
 
     // Card 1: flower
     var container1 = new createjs.Container();
-    container1.x = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
-    container1.y = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
+    container1.x = LEFT_2;
+    container1.y = TOP_2;
 
     var segmentGround = new createjs.Shape();
     segmentGround.angle = 90;
@@ -218,8 +226,8 @@ function playAnim() {
 
     // Card 2: Tree
     var container2 = new createjs.Container();
-    container2.x = 3 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS;
-    container2.y = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
+    container2.x = LEFT_4;
+    container2.y = TOP_2;
 
     var segmentGround2 = new createjs.Shape();
     segmentGround2.graphics.beginFill(COLOR_GROUND)
@@ -232,13 +240,13 @@ function playAnim() {
     container2.addChild(segmentSky2);
 
 //    DEVEL
-//    container2.x = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
+//    container2.x = LEFT_2;
 //    container2Start();
 
     function container2Start() {
         console.log('container2Start');
-        createjs.Tween.get(container1).to({x: -1 * CIRCLE_RADIUS}, 500, createjs.Ease.circOut);
-        createjs.Tween.get(container2).to({x: CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS}, 500, createjs.Ease.circOut);
+        createjs.Tween.get(container1).to({x: LEFT_0}, 500, createjs.Ease.circOut);
+        createjs.Tween.get(container2).to({x: LEFT_2}, 500, createjs.Ease.circOut);
 
         var subContainers = [];
         var groundFills = ['#59AE6B', '#FFFFB7', '#EB6907', '#E1F0EB'];
@@ -366,8 +374,8 @@ function playAnim() {
 
     // Card 3: Cat
     var container3 = new createjs.Container();
-    container3.x = 3 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS;
-    container3.y = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
+    container3.x = LEFT_4;
+    container3.y = TOP_2;
 
     var segmentGround3 = segmentGround2.clone();
     container3.addChild(segmentGround3);
@@ -414,8 +422,8 @@ function playAnim() {
     container3.addChild(beeWrapper);
 
     function container3Start() {
-        createjs.Tween.get(container2).to({x: -1 * CIRCLE_RADIUS}, 500, createjs.Ease.circOut);
-        createjs.Tween.get(container3).to({x: CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS}, 500, createjs.Ease.circOut)
+        createjs.Tween.get(container2).to({x: LEFT_0}, 500, createjs.Ease.circOut);
+        createjs.Tween.get(container3).to({x: LEFT_2}, 500, createjs.Ease.circOut)
             .call(function () {
                 var beeDuration = 300;
                 createjs.Tween.get(bee)
@@ -444,8 +452,8 @@ function playAnim() {
 
     // Card 4: Turtle
     var container4 = new createjs.Container();
-    container4.x = 3 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS;
-    container4.y = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
+    container4.x = LEFT_4;
+    container4.y = TOP_2;
 
     var segmentGround4 = segmentGround3.clone();
     container4.addChild(segmentGround4);
@@ -460,17 +468,16 @@ function playAnim() {
     container4.addChild(turtleWrapper);
 
     var container4a = new createjs.Container();
-    container4a.x = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
-    container4a.y = -(2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS);
+    container4a.x = LEFT_2;
+    container4a.y = TOP_NEG1;
     var sky = new createjs.Shape();
     sky.graphics.beginFill('lightBlue')
         .drawCircle(0, 0, CIRCLE_RADIUS);
     container4a.addChild(sky);
 
     var container4b = new createjs.Container();
-    container4b.x = CIRCLE_RADIUS;
-    container4b.y = -CIRCLE_RADIUS;
-//    container4b.y = CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS;
+    container4b.x = LEFT_1;
+    container4b.y = TOP_0;
     var sky4b = sky.clone();
     container4b.addChild(sky4b);
     var cloud4b = new createjs.Shape();
@@ -500,29 +507,27 @@ function playAnim() {
     container4b.addChild(cloud4b);
 
     var container4c = new createjs.Container();
-    container4c.x = 2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS;
-    container4c.y = -(CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS);
+    container4c.x = LEFT_3;
+    container4c.y = TOP_NEG1;
     var sky4c = sky.clone();
     container4c.addChild(sky4c);
     var cloud4c = cloud4b.clone();
     container4c.addChild(cloud4c);
 
     function container4Start() {
-        createjs.Tween.get(container3).to({x: -1 * CIRCLE_RADIUS}, 500, createjs.Ease.circOut);
-        createjs.Tween.get(container4).to({x: CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS}, 500, createjs.Ease.circOut)
+        createjs.Tween.get(container3).to({x: LEFT_0}, 500, createjs.Ease.circOut);
+        createjs.Tween.get(container4).to({x: LEFT_2}, 500, createjs.Ease.circOut)
             .wait(500).call(function () {
-                createjs.Tween.get(container4).to({y: 3 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS}, 1000, createjs.Ease.none);
+                createjs.Tween.get(container4)
+                    .to({y: TOP_4}, 1000, createjs.Ease.none);
                 createjs.Tween.get(turtleWrapper)
-                    .to({y: -(2 * (CIRCLE_DIAMETER + SPACING))}, 1000, createjs.Ease.none);
+                    .to({y: -(TOP_4 - TOP_2)}, 1000, createjs.Ease.none);
                 createjs.Tween.get(container4a)
-                    .to({y: CIRCLE_DIAMETER + SPACING + CIRCLE_RADIUS}, 400, createjs.Ease.linear)
-                    .call(function () {
-
-                    });
+                    .to({y: TOP_2}, 400, createjs.Ease.linear);
                 createjs.Tween.get(container4b)
-                    .to({y: 4 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS}, 2000, createjs.Ease.linear);
+                    .to({y: TOP_5}, 2000, createjs.Ease.linear);
                 createjs.Tween.get(container4c)
-                    .to({y: 3 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS}, 2000, createjs.Ease.linear);
+                    .to({y: TOP_4}, 2000, createjs.Ease.linear);
             });
     }
 
