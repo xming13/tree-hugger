@@ -1,3 +1,4 @@
+// Constants
 var CIRCLE_RADIUS = 50;
 var CIRCLE_DIAMETER = CIRCLE_RADIUS * 2;
 var SPACING = 5;
@@ -6,7 +7,7 @@ var CANVAS_HEIGHT = 320;
 var CANVAS_WIDTH = 320;
 
 var LEFT_0 = TOP_0 = -CIRCLE_RADIUS;
-var LEFT_1 = TOP_1 = SPACING + CIRCLE_RADIUS;
+var LEFT_1 = TOP_1 = LEFT_0 + SPACING + CIRCLE_DIAMETER;
 var LEFT_2 = TOP_2 = LEFT_1 + SPACING + CIRCLE_DIAMETER;
 var LEFT_3 = TOP_3 = LEFT_2 + SPACING + CIRCLE_DIAMETER;
 var LEFT_4 = TOP_4 = LEFT_3 + SPACING + CIRCLE_DIAMETER;
@@ -25,8 +26,15 @@ var stage;
 var pop;
 var popCanPlay = false;
 
+// Menu
+var menuWrapper;
+
+// Animation
+var animationWrapper;
+
 // Gallery Page
 var galleryPageWrapper;
+var galleryWrapper;
 var COLOR_BUTTON_DISABLED = 'lightGrey';
 var COLOR_BUTTON_ENABLED = 'lightBlue';
 var COLOR_BUTTON_DISABLED_CONTENT = 'darkGrey';
@@ -46,7 +54,19 @@ function init() {
 
     loadAudio();
 
+    var borders = new createjs.Shape();
+    borders.graphics.beginFill(COLOR_BORDER)
+        .rect(0, 0, SPACING, CANVAS_HEIGHT)
+        .endFill().beginFill(COLOR_BORDER)
+        .rect(3 * (SPACING + CIRCLE_DIAMETER), 0, SPACING, CANVAS_HEIGHT)
+        .endFill().beginFill(COLOR_BORDER)
+        .rect(0, 0, CANVAS_WIDTH, SPACING)
+        .endFill().beginFill(COLOR_BORDER)
+        .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
+    stage.addChild(borders);
+
     renderMenu();
+
     if (DEBUG) {
         var gridLinesColor = COLOR_BORDER;
         var gridLines = new createjs.Shape();
@@ -124,6 +144,9 @@ function loadAudio() {
 //                    pop.play();
 //                });
             });
+            pop.on('ended', function() {
+                setTimeout(renderMenu, 200);
+            });
         } else {
             console.log('request reached server but error is returned.');
         }
@@ -172,16 +195,13 @@ function loadAudio() {
 }
 
 function renderMenu() {
-    var borders = new createjs.Shape();
-    borders.graphics.beginFill(COLOR_BORDER)
-        .rect(0, 0, SPACING, CANVAS_HEIGHT)
-        .endFill().beginFill(COLOR_BORDER)
-        .rect(3 * (SPACING + CIRCLE_DIAMETER), 0, SPACING, CANVAS_HEIGHT)
-        .endFill().beginFill(COLOR_BORDER)
-        .rect(0, 0, CANVAS_WIDTH, SPACING)
-        .endFill().beginFill(COLOR_BORDER)
-        .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
-    stage.addChild(borders);
+    if (!menuWrapper) {
+        menuWrapper = new createjs.Container();
+    }
+    if (!stage.getChildByName('menuWrapper')) {
+        stage.addChild(menuWrapper);
+    }
+    menuWrapper.removeAllChildren();
 
     var btnPlayWrapper = new createjs.Container();
     btnPlayWrapper.x = LEFT_1 + CIRCLE_RADIUS;
@@ -201,11 +221,10 @@ function renderMenu() {
 
     btnPlayWrapper.addChild(btnPlay);
     btnPlayWrapper.addEventListener('click', function () {
-        stage.removeChild(btnPlayWrapper);
-        stage.removeChild(btnBrowseWrapper);
+        stage.removeChild(menuWrapper);
         renderAnim();
     });
-    stage.addChild(btnPlayWrapper);
+    menuWrapper.addChild(btnPlayWrapper);
 
     var btnBrowseWrapper = new createjs.Container();
     btnBrowseWrapper.x = LEFT_3 - CIRCLE_RADIUS;
@@ -216,14 +235,21 @@ function renderMenu() {
         .drawCircle(0, 0, CIRCLE_RADIUS);
     btnBrowseWrapper.addChild(btnBrowse);
     btnBrowseWrapper.addEventListener('click', function () {
-        stage.removeChild(btnPlayWrapper);
-        stage.removeChild(btnBrowseWrapper);
+        stage.removeChild(menuWrapper);
         renderGalleryPage();
     });
-    stage.addChild(btnBrowseWrapper);
+    menuWrapper.addChild(btnBrowseWrapper);
 }
 
 function renderAnim() {
+    if (!animationWrapper) {
+        animationWrapper = new createjs.Container();
+    }
+    if (!stage.getChildByName('animationWrapper')) {
+        stage.addChild(animationWrapper);
+    }
+    animationWrapper.removeAllChildren();
+
     if (popCanPlay && pop) {
         pop.play();
     }
@@ -699,13 +725,13 @@ function renderAnim() {
             });
     }
 
-    stage.addChild(container1);
-    stage.addChild(container2);
-    stage.addChild(container3);
-    stage.addChild(container4);
-    stage.addChildAt(container4a, stage.getNumChildren() - 1);
-    stage.addChild(container4b);
-    stage.addChild(container4c);
+    animationWrapper.addChild(container1);
+    animationWrapper.addChild(container2);
+    animationWrapper.addChild(container3);
+    animationWrapper.addChild(container4);
+    animationWrapper.addChildAt(container4a, animationWrapper.getNumChildren() - 1);
+    animationWrapper.addChild(container4b);
+    animationWrapper.addChild(container4c);
 }
 
 function renderGalleryPage() {
@@ -724,7 +750,7 @@ function renderGalleryPage() {
 }
 
 function _renderGallery() {
-    var galleryWrapper = galleryPageWrapper.getChildByName('galleryWrapper');
+    galleryWrapper = galleryPageWrapper.getChildByName('galleryWrapper');
 
     if (!galleryWrapper) {
         galleryWrapper = new createjs.Container();
@@ -733,6 +759,7 @@ function _renderGallery() {
 
     switch (currentPage) {
         case 1:
+            _renderFlower();
             break;
         case 2:
             break;
@@ -826,6 +853,156 @@ function _renderBtnHome() {
     galleryPageWrapper.addChild(btnHomeWrapper);
 }
 
+// Galllery render
+function _renderFlower() {
+    // Card 1: flower
+    var container1 = new createjs.Container();
+    container1.x = LEFT_2;
+    container1.y = TOP_2;
+
+    var segmentGround = new createjs.Shape();
+    segmentGround.angle = 90;
+    segmentGround.fill = COLOR_GROUND;
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.angle = ANGLE_START;
+    segmentSky.alpha = 0;
+    segmentSky.fill = COLOR_SKY;
+
+    var flowerWrapper = new createjs.Container();
+    flowerWrapper.y = -5;
+
+    var flowerStem = new createjs.Shape();
+    flowerStem.graphics.beginFill('green');
+    var flowerStemCmd = flowerStem.graphics.rect(-2, 30, 4, 0).command;
+    flowerWrapper.addChild(flowerStem);
+
+    var flower = new createjs.Shape();
+    flower.alpha = 0.0;
+    flower.radius = 0;
+    flower.fill = 'yellow';
+    flowerWrapper.addChild(flower);
+
+    var tweenSegmentGround = createjs.Tween.get(segmentGround)
+        .to({angle: ANGLE_START}, 400, createjs.Ease.getPowIn(2))
+        .call(function () {
+            var tweenSegmentSky = createjs.Tween.get(segmentSky)
+                .to({alpha: 1})
+                .to({angle: -180}, 1200, createjs.Ease.getPowOut(2));
+            tweenSegmentSky.addEventListener('change', changeSegment);
+
+            createjs.Tween.get(flowerStemCmd)
+                .to({h: -30}, 300)
+                .call(function () {
+                    var flowerLeaves = new createjs.Shape();
+                    flowerLeaves.graphics.beginFill('green');
+                    var flowerLeavesCmd = flowerLeaves.graphics
+                        .drawEllipse(0, 18, 0, 6)
+                        .command;
+                    var flowerLeavesCmd2 = flowerLeaves.graphics
+                        .drawEllipse(0, 17, 0, 6)
+                        .command;
+                    flowerWrapper.addChild(flowerLeaves);
+
+                    createjs.Tween.get(flowerLeavesCmd)
+                        .to({w: -10}, 200, createjs.Ease.getBackOut(2));
+                    createjs.Tween.get(flowerLeavesCmd2)
+                        .to({w: 10}, 200, createjs.Ease.getBackOut(2));
+
+                    var tweenFlower = createjs.Tween.get(flower)
+                        .set({alpha: 1})
+                        .to({radius: 8}, 200, createjs.Ease.getBackOut(2))
+                        .set({label: 'flower'})
+                        .call(function () {
+                            var flowerEyes = new createjs.Shape();
+                            flowerEyes.graphics
+                                .beginFill('black')
+                                .drawCircle(-4, 0, 2)
+                                .endFill().beginFill('black')
+                                .drawCircle(4, 0, 2);
+                            flowerWrapper.addChild(flowerEyes);
+
+                            var petalColor = 'hotpink';
+                            var petalRadius = 6;
+                            var petalDuration = 150;
+
+                            var petal1 = new createjs.Shape();
+                            petal1.alpha = 0;
+                            petal1.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal1, 1); // add at index 1 as flowerStem should be at index 0
+                            createjs.Tween.get(petal1)
+                                .set({alpha: 1})
+                                .to({x: 0, y: -11}, petalDuration, createjs.Ease.getBackOut(1));
+
+                            var petal2 = new createjs.Shape();
+                            petal2.alpha = 0;
+                            petal2.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal2, 1);
+                            createjs.Tween.get(petal2)
+                                .wait(.5 * petalDuration)
+                                .set({alpha: 1})
+                                .to({x: 8, y: -4}, petalDuration, createjs.Ease.getBackOut(1));
+
+                            var petal3 = new createjs.Shape();
+                            petal3.alpha = 0;
+                            petal3.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal3, 1);
+                            createjs.Tween.get(petal3)
+                                .wait(1.5 * petalDuration)
+                                .set({alpha: 1})
+                                .to({x: 6, y: 7}, petalDuration, createjs.Ease.getBackOut(1));
+
+                            var petal4 = new createjs.Shape();
+                            petal4.alplha = 0;
+                            petal4.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal4, 1);
+                            createjs.Tween.get(petal4)
+                                .wait(2.5 * petalDuration)
+                                .set({alpha: 1})
+                                .to({x: -6, y: 7}, petalDuration, createjs.Ease.getBackOut(1));
+
+                            var petal5 = new createjs.Shape();
+                            petal5.alpha = 0;
+                            petal5.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+                            flowerWrapper.addChildAt(petal5, 1);
+                            createjs.Tween.get(petal5)
+                                .wait(3.5 * petalDuration)
+                                .set({alpha: 1})
+                                .to({x: -8, y: -4}, petalDuration, createjs.Ease.getBackOut(1))
+                                .call(function() {
+
+                                });
+                        });
+
+                    tweenFlower.addEventListener('change', circleExpand);
+                    function circleExpand(e) {
+                        var obj = e.target.target;
+                        obj.graphics.clear();
+                        obj.graphics.beginFill(obj.fill).drawCircle(0, 0, obj.radius);
+                    }
+                });
+        });
+    tweenSegmentGround.addEventListener('change', changeSegment);
+
+    function changeSegment(e) {
+        var segment = e.target.target;
+        var angleFromCenter = 90 - segment.angle;
+        var startAngle = (90 - angleFromCenter) * Math.PI / 180;
+        var endAngle = (90 + angleFromCenter) * Math.PI / 180;
+
+        segment.graphics.clear();
+        segment.graphics.beginFill(segment.fill)
+            .arc(0, 0, CIRCLE_RADIUS, startAngle, endAngle);
+    }
+
+    container1.addChild(segmentSky);
+    container1.addChild(segmentGround);
+    container1.addChild(flowerWrapper);
+
+    galleryWrapper.addChild(container1);
+}
+
+// Utilities
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  */
