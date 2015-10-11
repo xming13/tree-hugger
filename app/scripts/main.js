@@ -421,7 +421,7 @@ function renderAnim() {
         .add('tree', '+=0')
         .add(treeTimeline, 'tree')
         .add(transitionSeasonTimeline, 'tree')
-        .add(transitionTimeline2, '+=0.2')
+        .add(transitionTimeline2, '+=0')
         .add(catTimeline, '+=0')
         .add(transitionTimeline3, '+=0.2')
         .add(turtleTimeline, '+=0')
@@ -486,6 +486,9 @@ function _renderGallery() {
 
             var roofTopObjs = getRoofTopTimeline(LEFT_1, TOP_2);
             _processTimelineObjs(roofTopObjs);
+
+            var seaObjs = getSeaTimeline(LEFT_2, TOP_2);
+            _processTimelineObjs(seaObjs);
 
             break;
         case 3:
@@ -748,15 +751,98 @@ function getTreeTimeline(x, y) {
     container2.addChild(segmentSky2);
 
     var treeWrapper = new createjs.Container();
-    var tree = new createjs.Shape();
-    tree.graphics.beginFill('green');
-    var treeCmd = tree.graphics.drawCircle(0, 0, 10).command;
-
-    treeWrapper.addChild(tree);
     container2.addChild(treeWrapper);
 
+    var trunk = new createjs.Shape();
+    trunk.graphics.beginFill('#F4A71C');
+    var trunkCmd = trunk.graphics
+        .moveTo(-8, 25)
+        .lineTo(8, 25)
+        .lineTo(0, 25)
+        .command;
+    treeWrapper.addChild(trunk);
+
+    var trunk2 = new createjs.Shape();
+    trunk2.graphics.beginFill('#F4A71C');
+    var trunkCmd2 = trunk2.graphics
+        .rect(-3, 22, 6, 0)
+        .command;
+    treeWrapper.addChild(trunk2);
+
+    var tree = new createjs.Shape();
+    tree.graphics.beginFill('#10CA23');
+    var treeCmd = tree.graphics
+        .drawEllipse(0, 0, 0, 0).command;
+
+    treeWrapper.addChildAt(tree, 0);
+
+    var fruitColor = '#FF6969';
+
+    var fruit1 = new createjs.Shape();
+    fruit1.graphics.beginFill(fruitColor);
+    var fruitCmd1 = fruit1.graphics
+        .drawCircle(-10, 7, 0)
+        .command;
+    treeWrapper.addChild(fruit1);
+
+    var fruit2 = new createjs.Shape();
+    fruit2.graphics.beginFill(fruitColor);
+    var fruitCmd2 = fruit2.graphics
+        .drawCircle(-3, 1, 0)
+        .command;
+    treeWrapper.addChild(fruit2);
+
+    var fruit3 = new createjs.Shape();
+    fruit3.graphics.beginFill(fruitColor);
+    var fruitCmd3 = fruit3.graphics
+        .drawCircle(3, 8, 0)
+        .command;
+    treeWrapper.addChild(fruit3);
+
+    var fruit4 = new createjs.Shape();
+    fruit4.graphics.beginFill(fruitColor);
+    var fruitCmd4 = fruit4.graphics
+        .drawCircle(8, 1, 0)
+        .command;
+    treeWrapper.addChild(fruit4);
+
+    var fruit5 = new createjs.Shape();
+    fruit5.graphics.beginFill(fruitColor);
+    var fruitCmd5 = fruit5.graphics
+        .drawCircle(12, 6, 0)
+        .command;
+    treeWrapper.addChild(fruit5);
+
     treeTimeline
-        .to(treeCmd, 2, {radius: 20, ease: Power2.easeIn});
+        .to(trunkCmd, .2, {y: 20, ease: Power2.easeIn})
+        .to(trunkCmd2, .2, {h: -8, ease: Power2.easeOut})
+        .to(treeCmd, .5, {
+            x: -20,
+            y: -30,
+            w: 40,
+            h: 46,
+            ease: Back.easeOut.config(2)
+        })
+        .to(fruitCmd1, .2, {
+            radius: 2,
+            ease: Back.easeOut.config(2)
+        })
+        .to(fruitCmd2, .2, {
+            radius: 2,
+            ease: Back.easeOut.config(2)
+        })
+        .to(fruitCmd3, .2, {
+            radius: 2,
+            ease: Back.easeOut.config(2)
+        })
+        .to(fruitCmd4, .2, {
+            radius: 2,
+            ease: Back.easeOut.config(2)
+        })
+        .to(fruitCmd5, .2, {
+            radius: 2,
+            ease: Back.easeOut.config(2)
+        });
 
     return [treeTimeline, container2];
 }
@@ -1154,6 +1240,22 @@ function getRoofTopTimeline(x, y) {
             repeat: -1
         }, 2.6);
     return [roofTopTimeline, roofTopContainer];
+}
+
+function getSeaTimeline(x, y) {
+    var seaTimeline = new TimelineMax();
+
+    var seaContainer = new createjs.Container();
+    seaContainer.x = x;
+    seaContainer.y = y;
+
+    var sea = new createjs.Shape();
+    sea.graphics.beginFill('#4D4DD2');
+    sea.graphics.drawCircle(0, 0, CIRCLE_RADIUS);
+
+    seaContainer.addChild(sea);
+
+    return [seaTimeline, seaContainer];
 }
 
 // Utilities
