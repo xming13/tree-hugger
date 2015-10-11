@@ -395,7 +395,15 @@ function renderAnim() {
         .to(turtleWrapper, 1, {y: -(TOP_4 - TOP_2), ease: Power0.easeNone}, 'transition4')
         .to(container4a, .4, {y: TOP_2, ease: Power0.easeNone}, 'transition4')
         .to(container4b, 2, {y: TOP_5, ease: Power0.easeNone}, 'transition4')
-        .to(container4c, 2, {y: TOP_4, ease: Power0.easeNone}, 'transition4')
+        .to(container4c, 2, {y: TOP_4, ease: Power0.easeNone}, 'transition4');
+
+    var roofTopObjs = getRoofTopTimeline(LEFT_4, TOP_3);
+    var container5 = roofTopObjs[1];
+    var transitionTimeline5 = new TimelineMax();
+
+    transitionTimeline5
+        .add('transition5')
+        .to(container5, 3, {x: LEFT_0, ease: Power0.easeNone}, 'transition5');
 
     animationWrapper.addChild(container1);
     animationWrapper.addChild(container2);
@@ -404,11 +412,12 @@ function renderAnim() {
     animationWrapper.addChildAt(container4a, animationWrapper.getNumChildren() - 1);
     animationWrapper.addChild(container4b);
     animationWrapper.addChild(container4c);
+    animationWrapper.addChild(container5);
 
     mainTimeline = new TimelineMax({paused: true});
     mainTimeline
         .add(flowerTimeline, '+=19')
-        .add(transitionTimeline, '+=0.2')
+        .add(transitionTimeline, '+=0.4')
         .add('tree', '+=0')
         .add(treeTimeline, 'tree')
         .add(transitionSeasonTimeline, 'tree')
@@ -417,6 +426,7 @@ function renderAnim() {
         .add(transitionTimeline3, '+=0.2')
         .add(turtleTimeline, '+=0')
         .add(transitionTimeline4, '+=0.5')
+        .add(transitionTimeline5, '+=0.8')
         .play();
 }
 
