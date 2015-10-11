@@ -37,7 +37,7 @@ var mainTimeline;
 var galleryPageWrapper;
 var galleryWrapper;
 var COLOR_BUTTON_DISABLED = 'lightGrey';
-var COLOR_BUTTON_ENABLED = 'lightBlue';
+var COLOR_BUTTON_ENABLED = '#E2E2FF';
 var COLOR_BUTTON_DISABLED_CONTENT = 'darkGrey';
 var COLOR_BUTTON_ENABLED_CONTENT = '#9797FF';
 var PAGE_SIZE = 3;
@@ -446,90 +446,52 @@ function _renderGallery() {
     switch (currentPage) {
         case 1:
             var flowerObjs = getFlowerTimeline(LEFT_1, TOP_1);
-            var flowerTimeline = flowerObjs[0];
-            var flowerContainer = flowerObjs[1];
-            galleryWrapper.addChild(flowerContainer);
-            flowerTimeline.eventCallback('onComplete', function () {
-                this.restart();
-            });
-            flowerTimeline.play();
+            _processTimelineObjs(flowerObjs);
 
             var treeObjs = getTreeTimeline(LEFT_2, TOP_1);
-            var treeTimeline = treeObjs[0];
-            var treeContainer = treeObjs[1];
-            galleryWrapper.addChild(treeContainer);
-            treeTimeline.eventCallback('onComplete', function () {
-                this.restart();
-            });
-            treeTimeline.play();
+            _processTimelineObjs(treeObjs);
 
             var springObjs = getSpringTimeline(LEFT_3, TOP_1);
-            var springTimeline = springObjs[0];
-            var springContainer = springObjs[1];
-            galleryWrapper.addChild(springContainer);
-            springTimeline.eventCallback('onComplete', function () {
-                this.restart();
-            });
-            springTimeline.play();
+            _processTimelineObjs(springObjs);
 
             var summerObjs = getSummerTimeline(LEFT_1, TOP_2);
-            var summerTimeline = summerObjs[0];
-            var summerContainer = summerObjs[1];
-            galleryWrapper.addChild(summerContainer);
-            summerTimeline.eventCallback('onComplete', function () {
-                this.restart();
-            });
-            summerTimeline.play();
+            _processTimelineObjs(summerObjs);
 
             var autumnObjs = getAutumnTimeline(LEFT_2, TOP_2);
-            var autumnTimeline = autumnObjs[0];
-            var autumnContainer = autumnObjs[1];
-            galleryWrapper.addChild(autumnContainer);
-            autumnTimeline.eventCallback('onComplete', function () {
-                this.restart();
-            });
-            autumnTimeline.play();
+            _processTimelineObjs(autumnObjs);
 
             var winterObjs = getWinterTimeline(LEFT_3, TOP_2);
-            var winterTimeline = winterObjs[0];
-            var winterContainer = winterObjs[1];
-            galleryWrapper.addChild(winterContainer);
-            winterTimeline.play();
+            _processTimelineObjs(winterObjs);
 
             break;
         case 2:
             var catObjs = getCatTimeline(LEFT_1, TOP_1);
-            var catTimeline = catObjs[0];
-            var catContainer = catObjs[1];
-            galleryWrapper.addChild(catContainer);
-            catTimeline.eventCallback('onComplete', function () {
-                this.restart();
-            });
-            catTimeline.play();
+            _processTimelineObjs(catObjs);
 
             var turtleObjs = getTurtleTimeline(LEFT_2, TOP_1);
-            var turtleTimeline = turtleObjs[0];
-            var turtleContainer = turtleObjs[1];
-            galleryWrapper.addChild(turtleContainer);
-            turtleTimeline.eventCallback('onComplete', function () {
-                this.restart();
-            });
-            turtleTimeline.play();
+            _processTimelineObjs(turtleObjs);
 
             var cloudObjs = getCloudTimeline(LEFT_3, TOP_1);
-            var cloudTimeline = cloudObjs[0];
-            var cloudContainer = cloudObjs[1];
-            galleryWrapper.addChild(cloudContainer);
-            cloudTimeline.eventCallback('onComplete', function () {
-                this.restart();
-            });
-            cloudTimeline.play();
+            _processTimelineObjs(cloudObjs);
+
+            var roofTopObjs = getRoofTopTimeline(LEFT_1, TOP_2);
+            _processTimelineObjs(roofTopObjs);
 
             break;
         case 3:
             break;
         default:
             break;
+    }
+
+    function _processTimelineObjs(objs) {
+        var timeline = objs[0];
+        var container = objs[1];
+        galleryWrapper.addChild(container);
+        timeline.eventCallback('onComplete', function () {
+            this.restart();
+        });
+        timeline.play();
     }
 }
 
@@ -1110,6 +1072,78 @@ function getCloudTimeline(x, y) {
     cloudContainer.addChild(cloud);
 
     return [cloudTimeline, cloudContainer];
+}
+
+function getRoofTopTimeline(x, y) {
+    var roofTopTimeline = new TimelineMax();
+
+    var roofTopContainer = new createjs.Container();
+    roofTopContainer.x = x;
+    roofTopContainer.y = y;
+
+    var sky = new createjs.Shape();
+    sky.graphics.beginFill('lightBlue')
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    roofTopContainer.addChild(sky);
+
+    var roofTop = new createjs.Shape();
+    roofTop.graphics.beginFill('pink')
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180)
+        .endFill().beginFill('#fff')
+        .rect(10, 8, 16, 17)
+        .endFill().beginFill('pink')
+        .rect(8, 5, 20, 5);
+    roofTopContainer.addChild(roofTop);
+
+    var smoke = new createjs.Shape();
+    smoke.graphics.beginFill('white');
+    var smokeCmd = smoke.graphics
+//        .drawEllipse(13, 5, 10, 3)
+        .drawEllipse(18, 5, 5, 0)
+        .command;
+
+    var smoke2 = new createjs.Shape();
+    smoke2.graphics.beginFill('white');
+    var smokeCmd2 = smoke.graphics
+        .drawEllipse(18, 5, 5, 0)
+        .command;
+
+    var smoke3 = new createjs.Shape();
+    smoke3.graphics.beginFill('white');
+    var smokeCmd3 = smoke.graphics
+        .drawEllipse(18, 5, 5, 0)
+        .command;
+
+    roofTopContainer.addChild(smoke);
+    roofTopContainer.addChild(smoke2);
+    roofTopContainer.addChild(smoke3);
+
+    roofTopTimeline
+        .to(smokeCmd, 4, {
+            x: 13,
+            y: -16,
+            w: 18,
+            h: 5,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 0)
+        .to(smokeCmd2, 4, {
+            x: 13,
+            y: -16,
+            w: 18,
+            h: 5,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 1.3)
+        .to(smokeCmd3, 4, {
+            x: 13,
+            y: -16,
+            w: 18,
+            h: 5,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 2.6);
+    return [roofTopTimeline, roofTopContainer];
 }
 
 // Utilities
