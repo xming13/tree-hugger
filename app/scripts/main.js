@@ -31,6 +31,7 @@ var menuWrapper;
 
 // Animation
 var animationWrapper;
+var mainTimeline;
 
 // Gallery Page
 var galleryPageWrapper;
@@ -194,6 +195,7 @@ function loadAudio() {
     }
 }
 
+// Render
 function renderMenu() {
     if (!menuWrapper) {
         menuWrapper = new createjs.Container();
@@ -272,466 +274,452 @@ function renderAnim() {
 //        .drawCircle(2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, 2 * (CIRCLE_DIAMETER + SPACING) + CIRCLE_RADIUS, CIRCLE_RADIUS)
     ;
 
+    var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
+    var flowerTimeline = flowerObjs[0];
+    var container1 = flowerObjs[1];
 
-    // Card 1: flower
-    var container1 = new createjs.Container();
-    container1.x = LEFT_2;
-    container1.y = TOP_2;
+    var treeObjs = getTreeTimeline(LEFT_4, TOP_2);
+    var treeTimeline = treeObjs[0];
+    var container2 = treeObjs[1];
 
-    var segmentGround = new createjs.Shape();
-    segmentGround.angle = 90;
-    segmentGround.fill = COLOR_GROUND;
+    var transitionTimeline = new TimelineMax();
+    transitionTimeline
+        .add('transition')
+        .to(container1, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
+        .to(container2, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
 
-    var segmentSky = new createjs.Shape();
-    segmentSky.angle = ANGLE_START;
-    segmentSky.alpha = 0;
-    segmentSky.fill = COLOR_SKY;
+    var springObjs = getSpringTimeline(0, 0);
+    var springTimeline = springObjs[0];
+    var springContainer = springObjs[1];
 
-    var flowerWrapper = new createjs.Container();
-    flowerWrapper.y = -5;
+    var summerObjs = getSummerTimeline(0, 0);
+    var summerTimeline = summerObjs[0];
+    var summerContainer = summerObjs[1];
 
-    var flowerStem = new createjs.Shape();
-    flowerStem.graphics.beginFill('green');
-    var flowerStemCmd = flowerStem.graphics.rect(-2, 30, 4, 0).command;
-    flowerWrapper.addChild(flowerStem);
+    var autumnObjs = getAutumnTimeline(0, 0);
+    var autumnTimeline = autumnObjs[0];
+    var autumnContainer = autumnObjs[1];
 
-    var flower = new createjs.Shape();
-    flower.alpha = 0.0;
-    flower.radius = 0;
-    flower.fill = 'yellow';
-    flowerWrapper.addChild(flower);
+    var winterObjs = getWinterTimeline(0, 0);
+    var winterTimeline = winterObjs[0];
+    var winterContainer = winterObjs[1];
 
-    var tweenSegmentGround = createjs.Tween.get(segmentGround)
-        .wait(19500)
-        .to({angle: ANGLE_START}, 400, createjs.Ease.getPowIn(2))
-        .call(function () {
-            var tweenSegmentSky = createjs.Tween.get(segmentSky)
-                .to({alpha: 1})
-                .to({angle: -180}, 1200, createjs.Ease.getPowOut(2));
-            tweenSegmentSky.addEventListener('change', changeSegment);
-
-            createjs.Tween.get(flowerStemCmd)
-                .to({h: -30}, 300)
-                .call(function () {
-                    var flowerLeaves = new createjs.Shape();
-                    flowerLeaves.graphics.beginFill('green');
-                    var flowerLeavesCmd = flowerLeaves.graphics
-                        .drawEllipse(0, 18, 0, 6)
-                        .command;
-                    var flowerLeavesCmd2 = flowerLeaves.graphics
-                        .drawEllipse(0, 17, 0, 6)
-                        .command;
-                    flowerWrapper.addChild(flowerLeaves);
-
-                    createjs.Tween.get(flowerLeavesCmd)
-                        .to({w: -10}, 200, createjs.Ease.getBackOut(2));
-                    createjs.Tween.get(flowerLeavesCmd2)
-                        .to({w: 10}, 200, createjs.Ease.getBackOut(2));
-
-                    var tweenFlower = createjs.Tween.get(flower)
-                        .set({alpha: 1})
-                        .to({radius: 8}, 200, createjs.Ease.getBackOut(2))
-                        .set({label: 'flower'})
-                        .call(function () {
-                            var flowerEyes = new createjs.Shape();
-                            flowerEyes.graphics
-                                .beginFill('black')
-                                .drawCircle(-4, 0, 2)
-                                .endFill().beginFill('black')
-                                .drawCircle(4, 0, 2);
-                            flowerWrapper.addChild(flowerEyes);
-
-                            var petalColor = 'hotpink';
-                            var petalRadius = 6;
-                            var petalDuration = 150;
-
-                            var petal1 = new createjs.Shape();
-                            petal1.alpha = 0;
-                            petal1.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                            flowerWrapper.addChildAt(petal1, 1); // add at index 1 as flowerStem should be at index 0
-                            createjs.Tween.get(petal1)
-                                .set({alpha: 1})
-                                .to({x: 0, y: -11}, petalDuration, createjs.Ease.getBackOut(1));
-
-                            var petal2 = new createjs.Shape();
-                            petal2.alpha = 0;
-                            petal2.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                            flowerWrapper.addChildAt(petal2, 1);
-                            createjs.Tween.get(petal2)
-                                .wait(.5 * petalDuration)
-                                .set({alpha: 1})
-                                .to({x: 8, y: -4}, petalDuration, createjs.Ease.getBackOut(1));
-
-                            var petal3 = new createjs.Shape();
-                            petal3.alpha = 0;
-                            petal3.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                            flowerWrapper.addChildAt(petal3, 1);
-                            createjs.Tween.get(petal3)
-                                .wait(1.5 * petalDuration)
-                                .set({alpha: 1})
-                                .to({x: 6, y: 7}, petalDuration, createjs.Ease.getBackOut(1));
-
-                            var petal4 = new createjs.Shape();
-                            petal4.alplha = 0;
-                            petal4.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                            flowerWrapper.addChildAt(petal4, 1);
-                            createjs.Tween.get(petal4)
-                                .wait(2.5 * petalDuration)
-                                .set({alpha: 1})
-                                .to({x: -6, y: 7}, petalDuration, createjs.Ease.getBackOut(1));
-
-                            var petal5 = new createjs.Shape();
-                            petal5.alpha = 0;
-                            petal5.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
-                            flowerWrapper.addChildAt(petal5, 1);
-                            createjs.Tween.get(petal5)
-                                .wait(3.5 * petalDuration)
-                                .set({alpha: 1})
-                                .to({x: -8, y: -4}, petalDuration, createjs.Ease.getBackOut(1))
-                                .wait(500)
-                                .call(container2Start);
-                        });
-
-                    tweenFlower.addEventListener('change', circleExpand);
-                    function circleExpand(e) {
-                        var obj = e.target.target;
-                        obj.graphics.clear();
-                        obj.graphics.beginFill(obj.fill).drawCircle(0, 0, obj.radius);
-                    }
-                });
-        });
-    tweenSegmentGround.addEventListener('change', changeSegment);
-
-    function changeSegment(e) {
-        var segment = e.target.target;
-        var angleFromCenter = 90 - segment.angle;
-        var startAngle = (90 - angleFromCenter) * Math.PI / 180;
-        var endAngle = (90 + angleFromCenter) * Math.PI / 180;
-
-        segment.graphics.clear();
-        segment.graphics.beginFill(segment.fill)
-            .arc(0, 0, CIRCLE_RADIUS, startAngle, endAngle);
-    }
-
-    container1.addChild(segmentSky);
-    container1.addChild(segmentGround);
-    container1.addChild(flowerWrapper);
+    container2.addChildAt(springContainer, 0);
+    container2.addChildAt(summerContainer, 0);
+    container2.addChildAt(autumnContainer, 0);
+    container2.addChildAt(winterContainer, 0);
 
     // Card 2: Tree
-    var container2 = new createjs.Container();
-    container2.x = LEFT_4;
-    container2.y = TOP_2;
-
-    var segmentGround2 = new createjs.Shape();
-    segmentGround2.graphics.beginFill(COLOR_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    container2.addChild(segmentGround2);
-
-    var segmentSky2 = new createjs.Shape();
-    segmentSky2.graphics.beginFill(COLOR_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    container2.addChild(segmentSky2);
+//    var container2 = new createjs.Container();
+//    container2.x = LEFT_4;
+//    container2.y = TOP_2;
+//
+//    var segmentGround2 = new createjs.Shape();
+//    segmentGround2.graphics.beginFill(COLOR_GROUND)
+//        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+//    container2.addChild(segmentGround2);
+//
+//    var segmentSky2 = new createjs.Shape();
+//    segmentSky2.graphics.beginFill(COLOR_SKY)
+//        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+//    container2.addChild(segmentSky2);
 
 //    DEVEL
 //    container2.x = LEFT_2;
 //    container2Start();
 
-    function container2Start() {
-        console.log('container2Start');
-        createjs.Tween.get(container1).to({x: LEFT_0}, 500, createjs.Ease.circOut);
-        createjs.Tween.get(container2).to({x: LEFT_2}, 500, createjs.Ease.circOut);
+//    function container2Start() {
+//        console.log('container2Start');
+//        createjs.Tween.get(container1).to({x: LEFT_0}, 500, createjs.Ease.circOut);
+//        createjs.Tween.get(container2).to({x: LEFT_2}, 500, createjs.Ease.circOut);
+//
+//        var subContainers = [];
+//        var groundFills = ['#59AE6B', '#FFFFB7', '#EB6907', '#E1F0EB'];
+//        var skyFills = ['#AEE7FB', '#C6FFEA', '#FAA105', '#322F40'];
+//
+//        for (var i = 0; i < 4; i++) {
+//            var _container = new createjs.Container();
+//            var _segmentGround = new createjs.Shape();
+//            _segmentGround.graphics.beginFill(groundFills[i])
+//                .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+//            _container.addChild(_segmentGround);
+//            var _segmentSky = new createjs.Shape();
+//            _segmentSky.graphics.beginFill(skyFills[i])
+//                .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+//            _container.addChild(_segmentSky);
+//
+//            subContainers.push(_container);
+//            container2.addChildAt(_container, 0);
+//        }
+//
+//        var dist = 1.5 * CIRCLE_RADIUS;
+//
+//        // DEVEL
+////        subContainers[0].x = -dist;
+////        subContainers[0].y = -dist;
+////        subContainers[1].x = dist;
+////        subContainers[1].y = -dist;
+////        subContainers[2].x = -dist;
+////        subContainers[2].y = dist;
+////        subContainers[3].x = dist;
+////        subContainers[3].y = dist;
+//
+//        // winter
+//        var snowTreeWrapper = new createjs.Container();
+//        var snowTree = new createjs.Shape();
+//        snowTree.graphics
+//            .beginFill('white')
+//            .lineTo(-12, -5)
+//            .lineTo(0, -20)
+//            .lineTo(12, -5)
+//            .endFill().beginFill('white')
+//            .lineTo(-14, 5)
+//            .lineTo(0, -10)
+//            .lineTo(14, 5)
+//            .endFill().beginFill('white')
+//            .lineTo(-16, 15)
+//            .lineTo(0, 0)
+//            .lineTo(16, 15)
+//            .endFill().beginFill('white')
+//            .lineTo(-18, 25)
+//            .lineTo(0, 10)
+//            .lineTo(18, 25);
+//        snowTreeWrapper.addChild(snowTree);
+//
+//        var snows = [];
+//        var snowWrapper = new createjs.Container();
+//        var snowSize = 3;
+//
+//        for (var i = 0; i < 9; i++) {
+//            var snow = new createjs.Shape();
+//            snow.alpha = 0;
+//            snow.graphics
+//                .beginFill('white')
+//                .drawCircle(0, 0, snowSize);
+//            snows.push(snow);
+//            snowWrapper.addChild(snow);
+//        }
+//
+//        function tweenSnow(snow) {
+//            var _random = Math.random();
+//            var _x = 0;
+//            if (_random <= 0.45) {
+//                _x = getRandomInt(-25, -10);
+//            }
+//            else if (_random <= 0.9) {
+//                _x = getRandomInt(10, 25);
+//            }
+//            else {
+//                _x = getRandomInt(-9, 9);
+//            }
+//
+//            createjs.Tween
+//                .get(snow, {override: true})
+//                .to({alpha: 0}, 100)
+//                .wait(getRandomInt(0, 2000))
+//                .to({alpha: getRandomArbitrary(0.5, 0.9), x: _x, y: getRandomInt(-55, -50)}, 0)
+//                .to({y: 24}, getRandomInt(2500, 3000), createjs.Ease.linear)
+//                .call(function () {
+//                    tweenSnow(snow);
+//                });
+//        }
+//
+//        snows.forEach(function (snow) {
+//            tweenSnow(snow);
+//        });
+//
+//        snowTreeWrapper.addChild(snowWrapper);
+//        subContainers[3].addChild(snowTreeWrapper);
+//
 
-        var subContainers = [];
-        var groundFills = ['#59AE6B', '#FFFFB7', '#EB6907', '#E1F0EB'];
-        var skyFills = ['#AEE7FB', '#C6FFEA', '#FAA105', '#322F40'];
+    var dist = 1.5 * CIRCLE_RADIUS;
+    var subContainerDuration = .7;
 
-        for (var i = 0; i < 4; i++) {
-            var _container = new createjs.Container();
-            var _segmentGround = new createjs.Shape();
-            _segmentGround.graphics.beginFill(groundFills[i])
-                .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-            _container.addChild(_segmentGround);
-            var _segmentSky = new createjs.Shape();
-            _segmentSky.graphics.beginFill(skyFills[i])
-                .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-            _container.addChild(_segmentSky);
-
-            subContainers.push(_container);
-            container2.addChildAt(_container, 0);
-        }
-
-        var dist = 1.5 * CIRCLE_RADIUS;
-
-        // DEVEL
-//        subContainers[0].x = -dist;
-//        subContainers[0].y = -dist;
-//        subContainers[1].x = dist;
-//        subContainers[1].y = -dist;
-//        subContainers[2].x = -dist;
-//        subContainers[2].y = dist;
-//        subContainers[3].x = dist;
-//        subContainers[3].y = dist;
-
-        // winter
-        var snowTreeWrapper = new createjs.Container();
-        var snowTree = new createjs.Shape();
-        snowTree.graphics
-            .beginFill('white')
-            .lineTo(-12, -5)
-            .lineTo(0, -20)
-            .lineTo(12, -5)
-            .endFill().beginFill('white')
-            .lineTo(-14, 5)
-            .lineTo(0, -10)
-            .lineTo(14, 5)
-            .endFill().beginFill('white')
-            .lineTo(-16, 15)
-            .lineTo(0, 0)
-            .lineTo(16, 15)
-            .endFill().beginFill('white')
-            .lineTo(-18, 25)
-            .lineTo(0, 10)
-            .lineTo(18, 25);
-        snowTreeWrapper.addChild(snowTree);
-
-        var snows = [];
-        var snowWrapper = new createjs.Container();
-        var snowSize = 3;
-
-        for (var i = 0; i < 9; i++) {
-            var snow = new createjs.Shape();
-            snow.alpha = 0;
-            snow.graphics
-                .beginFill('white')
-                .drawCircle(0, 0, snowSize);
-            snows.push(snow);
-            snowWrapper.addChild(snow);
-        }
-
-        function tweenSnow(snow) {
-            var _random = Math.random();
-            var _x = 0;
-            if (_random <= 0.45) {
-                _x = getRandomInt(-25, -10);
+    var transitionSeasonTimeline = new TimelineMax();
+    transitionSeasonTimeline
+        .add('transition1', '+=1')
+        .to(springContainer, subContainerDuration, {
+            x: -dist,
+            y: -dist,
+            delay: subContainerDuration,
+            ease: Power3.easeIn
+        }, 'transition1')
+        .to(summerContainer, subContainerDuration, {
+            x: dist,
+            y: -dist,
+            delay: 1.5 * subContainerDuration,
+            ease: Power3.easeIn
+        }, 'transition1')
+        .to(autumnContainer, subContainerDuration, {
+            x: -dist,
+            y: dist,
+            delay: 2 * subContainerDuration,
+            ease: Power3.easeIn
+        }, 'transition1')
+        .to(winterContainer, subContainerDuration, {
+            x: dist,
+            y: dist,
+            delay: 2.5 * subContainerDuration,
+            ease: Power3.easeIn
+        }, 'transition1')
+        .add('reverse', '+=1')
+        .to(springContainer, .3, {
+            x: 0,
+            y: 0,
+            ease: Power3.easeOut
+        }, 'reverse')
+        .to(summerContainer, .3, {
+            x: 0,
+            y: 0,
+            ease: Power3.easeOut
+        }, 'reverse')
+        .to(autumnContainer, .3, {
+            x: 0,
+            y: 0,
+            ease: Power3.easeOut
+        }, 'reverse')
+        .to(winterContainer, .3, {
+            x: 0,
+            y: 0,
+            ease: Power3.easeOut,
+            onComplete: function () {
+                // remove all seasons' animation
+                springTimeline.stop();
+                summerTimeline.stop();
+                autumnTimeline.stop();
+                winterTimeline.stop();
             }
-            else if (_random <= 0.9) {
-                _x = getRandomInt(10, 25);
-            }
-            else {
-                _x = getRandomInt(-9, 9);
-            }
+        }, 'reverse')
+    ;
 
-            createjs.Tween
-                .get(snow, {override: true})
-                .to({alpha: 0}, 100)
-                .wait(getRandomInt(0, 2000))
-                .to({alpha: getRandomArbitrary(0.5, 0.9), x: _x, y: getRandomInt(-55, -50)}, 0)
-                .to({y: 24}, getRandomInt(2500, 3000), createjs.Ease.linear)
-                .call(function () {
-                    tweenSnow(snow);
-                });
-        }
+    var catObjs = getCatTimeline(LEFT_4, TOP_2);
+    var catTimeline = catObjs[0];
+    var container3 = catObjs[1];
 
-        snows.forEach(function (snow) {
-            tweenSnow(snow);
-        });
+    var transitionTimeline2 = new TimelineMax();
+    transitionTimeline2
+        .add('transition')
+        .to(container2, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
+        .to(container3, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
 
-        snowTreeWrapper.addChild(snowWrapper);
-        subContainers[3].addChild(snowTreeWrapper);
+    var turtleObjs = getTurtleTimeline(LEFT_4, TOP_2);
+    var turtleTimeline = turtleObjs[0];
+    var container4 = turtleObjs[1];
 
-        var subContainerDuration = 700;
-        var subContainerInitialWait = 1000;
-        createjs.Tween.get(subContainers[0]).wait(subContainerDuration + subContainerInitialWait)
-            .to({x: -dist, y: -dist}, subContainerDuration, createjs.Ease.cubicIn);
-        createjs.Tween.get(subContainers[1]).wait(1.5 * subContainerDuration + subContainerInitialWait)
-            .to({x: dist, y: -dist}, subContainerDuration, createjs.Ease.cubicIn);
-        createjs.Tween.get(subContainers[2]).wait(2 * subContainerDuration + subContainerInitialWait)
-            .to({x: -dist, y: dist}, subContainerDuration, createjs.Ease.cubicIn);
-        createjs.Tween.get(subContainers[3]).wait(2.5 * subContainerDuration + subContainerInitialWait)
-            .to({x: dist, y: dist}, subContainerDuration, createjs.Ease.cubicIn)
-            .wait(1000)
-            .call(function () {
-                var duration = 300;
-                createjs.Tween.get(subContainers[0]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
-                createjs.Tween.get(subContainers[1]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
-                createjs.Tween.get(subContainers[2]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
-                createjs.Tween.get(subContainers[3]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut)
-                    .wait(200)
-                    .call(function () {
-                        snows.forEach(function (snow) {
-                            createjs.Tween.removeTweens(snow);
-                        });
-                        container3Start();
-                    });
-            });
-    }
+    var transitionTimeline3 = new TimelineMax();
+    transitionTimeline3
+        .add('transition3')
+        .to(container3, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition3')
+        .to(container4, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition3');
+
+//    createjs.Tween.get(subContainers[0]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+////                createjs.Tween.get(subContainers[1]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+////                createjs.Tween.get(subContainers[2]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+////                createjs.Tween.get(subContainers[3]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut)
+
+//        createjs.Tween.get(subContainers[0]).wait(subContainerDuration + subContainerInitialWait)
+//            .to({x: -dist, y: -dist}, subContainerDuration, createjs.Ease.cubicIn);
+//        createjs.Tween.get(subContainers[1]).wait(1.5 * subContainerDuration + subContainerInitialWait)
+//            .to({x: dist, y: -dist}, subContainerDuration, createjs.Ease.cubicIn);
+//        createjs.Tween.get(subContainers[2]).wait(2 * subContainerDuration + subContainerInitialWait)
+//            .to({x: -dist, y: dist}, subContainerDuration, createjs.Ease.cubicIn);
+//        createjs.Tween.get(subContainers[3]).wait(2.5 * subContainerDuration + subContainerInitialWait)
+//            .to({x: dist, y: dist}, subContainerDuration, createjs.Ease.cubicIn)
+//            .wait(1000)
+//            .call(function () {
+//                var duration = 300;
+//                createjs.Tween.get(subContainers[0]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+//                createjs.Tween.get(subContainers[1]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+//                createjs.Tween.get(subContainers[2]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut);
+//                createjs.Tween.get(subContainers[3]).to({x: 0, y: 0}, duration, createjs.Ease.cubicOut)
+//                    .wait(200)
+//                    .call(function () {
+//                        snows.forEach(function (snow) {
+//                            createjs.Tween.removeTweens(snow);
+//                        });
+//                        container3Start();
+//                    });
+//            });
+//    }
 
     // Card 3: Cat
-    var container3 = new createjs.Container();
-    container3.x = LEFT_4;
-    container3.y = TOP_2;
+//    var container3 = new createjs.Container();
+//    container3.x = LEFT_4;
+//    container3.y = TOP_2;
+//
+//    var segmentGround3 = segmentGround2.clone();
+//    container3.addChild(segmentGround3);
+//
+//    var segmentSky3 = segmentSky2.clone();
+//    container3.addChild(segmentSky3);
+//
+//    var catWrapper = new createjs.Container();
+//    var catHead = new createjs.Shape();
+//    catHead.graphics.beginFill('#fff').drawEllipse(-15, 5, 30, 25);
+//    catWrapper.addChild(catHead);
+//
+//    var catEyes = new createjs.Shape();
+//    catEyes.graphics.beginFill('black')
+//        .drawCircle(-10, 14, 2)
+//        .drawCircle(2, 14, 2)
+//        .beginFill('pink')
+//        .drawEllipse(-13, 17, 5, 2)
+//        .drawEllipse(-1, 17, 5, 2);
+//    catWrapper.addChild(catEyes);
+//
+//    var catEars = new createjs.Shape();
+//    catEars.graphics
+//        .beginFill('#fff')
+//        .moveTo(-15, 14)
+//        .lineTo(-10, 0)
+//        .lineTo(-1, 7)
+//        .closePath()
+//        .moveTo(15, 14)
+//        .lineTo(10, 0)
+//        .lineTo(1, 7)
+//        .closePath();
+//    catWrapper.addChild(catEars);
+//
+//    var beeWrapper = new createjs.Container();
+//    var bee = new createjs.Shape();
+//    bee.graphics
+//        .beginFill('yellow')
+//        .drawEllipse(-45, -20, 16, 12);
+//
+//    beeWrapper.addChild(bee);
+//
+//    container3.addChild(catWrapper);
+//    container3.addChild(beeWrapper);
+//
+//    function container3Start() {
+//        createjs.Tween.get(container2).to({x: LEFT_0}, 500, createjs.Ease.circOut);
+//        createjs.Tween.get(container3).to({x: LEFT_2}, 500, createjs.Ease.circOut)
+//            .call(function () {
+//                var beeDuration = 300;
+//                createjs.Tween.get(bee)
+//                    .to({x: 70}, beeDuration * 6, createjs.Ease.none);
+//                createjs.Tween.get(bee)
+//                    .to({y: -5}, beeDuration, createjs.Ease.sineOut)
+//                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+//                    .to({y: 5}, beeDuration, createjs.Ease.sineOut)
+//                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+//                    .to({y: -5}, beeDuration, createjs.Ease.sineOut)
+//                    .to({y: 0}, beeDuration, createjs.Ease.sineIn);
+//
+//                createjs.Tween.get(catEyes)
+//                    .to({x: 7}, beeDuration * 6, createjs.Ease.none);
+//                createjs.Tween.get(catEyes)
+//                    .to({y: -1}, beeDuration, createjs.Ease.sineOut)
+//                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+//                    .to({y: 1}, beeDuration, createjs.Ease.sineOut)
+//                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+//                    .to({y: -1}, beeDuration, createjs.Ease.sineOut)
+//                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
+//                    .wait(200)
+//                    .call(container4Start);
+//            });
+//    }
 
-    var segmentGround3 = segmentGround2.clone();
-    container3.addChild(segmentGround3);
-
-    var segmentSky3 = segmentSky2.clone();
-    container3.addChild(segmentSky3);
-
-    var catWrapper = new createjs.Container();
-    var catHead = new createjs.Shape();
-    catHead.graphics.beginFill('#fff').drawEllipse(-15, 5, 30, 25);
-    catWrapper.addChild(catHead);
-
-    var catEyes = new createjs.Shape();
-    catEyes.graphics.beginFill('black')
-        .drawCircle(-10, 14, 2)
-        .drawCircle(2, 14, 2)
-        .beginFill('pink')
-        .drawEllipse(-13, 17, 5, 2)
-        .drawEllipse(-1, 17, 5, 2);
-    catWrapper.addChild(catEyes);
-
-    var catEars = new createjs.Shape();
-    catEars.graphics
-        .beginFill('#fff')
-        .moveTo(-15, 14)
-        .lineTo(-10, 0)
-        .lineTo(-1, 7)
-        .closePath()
-        .moveTo(15, 14)
-        .lineTo(10, 0)
-        .lineTo(1, 7)
-        .closePath();
-    catWrapper.addChild(catEars);
-
-    var beeWrapper = new createjs.Container();
-    var bee = new createjs.Shape();
-    bee.graphics
-        .beginFill('yellow')
-        .drawEllipse(-45, -20, 16, 12);
-
-    beeWrapper.addChild(bee);
-
-    container3.addChild(catWrapper);
-    container3.addChild(beeWrapper);
-
-    function container3Start() {
-        createjs.Tween.get(container2).to({x: LEFT_0}, 500, createjs.Ease.circOut);
-        createjs.Tween.get(container3).to({x: LEFT_2}, 500, createjs.Ease.circOut)
-            .call(function () {
-                var beeDuration = 300;
-                createjs.Tween.get(bee)
-                    .to({x: 70}, beeDuration * 6, createjs.Ease.none);
-                createjs.Tween.get(bee)
-                    .to({y: -5}, beeDuration, createjs.Ease.sineOut)
-                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
-                    .to({y: 5}, beeDuration, createjs.Ease.sineOut)
-                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
-                    .to({y: -5}, beeDuration, createjs.Ease.sineOut)
-                    .to({y: 0}, beeDuration, createjs.Ease.sineIn);
-
-                createjs.Tween.get(catEyes)
-                    .to({x: 7}, beeDuration * 6, createjs.Ease.none);
-                createjs.Tween.get(catEyes)
-                    .to({y: -1}, beeDuration, createjs.Ease.sineOut)
-                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
-                    .to({y: 1}, beeDuration, createjs.Ease.sineOut)
-                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
-                    .to({y: -1}, beeDuration, createjs.Ease.sineOut)
-                    .to({y: 0}, beeDuration, createjs.Ease.sineIn)
-                    .wait(200)
-                    .call(container4Start);
-            });
-    }
-
-    // Card 4: Turtle
-    var container4 = new createjs.Container();
-    container4.x = LEFT_4;
-    container4.y = TOP_2;
-
-    var segmentGround4 = segmentGround3.clone();
-    container4.addChild(segmentGround4);
-
-    var segmentSky4 = segmentSky3.clone();
-    container4.addChild(segmentSky4);
-
-    var turtleWrapper = new createjs.Container();
-    var turtle = new createjs.Shape();
-    turtle.graphics.beginFill('green').drawCircle(0, 15, 12);
-    turtleWrapper.addChild(turtle);
-    container4.addChild(turtleWrapper);
-
-    var container4a = new createjs.Container();
-    container4a.x = LEFT_2;
-    container4a.y = TOP_NEG1;
-    var sky = new createjs.Shape();
-    sky.graphics.beginFill('lightBlue')
-        .drawCircle(0, 0, CIRCLE_RADIUS);
-    container4a.addChild(sky);
-
-    var container4b = new createjs.Container();
-    container4b.x = LEFT_1;
-    container4b.y = TOP_0;
-    var sky4b = sky.clone();
-    container4b.addChild(sky4b);
-    var cloud4b = new createjs.Shape();
-    cloud4b.graphics
-        .beginFill('white')
-        .drawCircle(-20, 5, 13)
-        .endFill()
-        .beginFill('white')
-        .drawCircle(-5, 12, 12)
-        .endFill()
-        .beginFill('white')
-        .drawCircle(9, 12, 10)
-        .endFill()
-        .beginFill('white')
-        .drawCircle(20, 4, 12)
-        .endFill()
-        .beginFill('white')
-        .drawCircle(-7, -9, 14)
-        .endFill()
-        .beginFill('white')
-        .drawCircle(13, -11, 10)
-        .endFill()
-        .beginFill('white')
-        // filler
-        .drawCircle(0, 5, 15)
-    ;
-    container4b.addChild(cloud4b);
-
-    var container4c = new createjs.Container();
-    container4c.x = LEFT_3;
-    container4c.y = TOP_NEG1;
-    var sky4c = sky.clone();
-    container4c.addChild(sky4c);
-    var cloud4c = cloud4b.clone();
-    container4c.addChild(cloud4c);
-
-    function container4Start() {
-        createjs.Tween.get(container3).to({x: LEFT_0}, 500, createjs.Ease.circOut);
-        createjs.Tween.get(container4).to({x: LEFT_2}, 500, createjs.Ease.circOut)
-            .wait(500).call(function () {
-                createjs.Tween.get(container4)
-                    .to({y: TOP_4}, 1000, createjs.Ease.none);
-                createjs.Tween.get(turtleWrapper)
-                    .to({y: -(TOP_4 - TOP_2)}, 1000, createjs.Ease.none);
-                createjs.Tween.get(container4a)
-                    .to({y: TOP_2}, 400, createjs.Ease.linear);
-                createjs.Tween.get(container4b)
-                    .to({y: TOP_5}, 2000, createjs.Ease.linear);
-                createjs.Tween.get(container4c)
-                    .to({y: TOP_4}, 2000, createjs.Ease.linear);
-            });
-    }
+//    // Card 4: Turtle
+//    var container4 = new createjs.Container();
+//    container4.x = LEFT_4;
+//    container4.y = TOP_2;
+//
+//    var segmentGround4 = segmentGround3.clone();
+//    container4.addChild(segmentGround4);
+//
+//    var segmentSky4 = segmentSky3.clone();
+//    container4.addChild(segmentSky4);
+//
+//    var turtleWrapper = new createjs.Container();
+//    var turtle = new createjs.Shape();
+//    turtle.graphics.beginFill('green').drawCircle(0, 15, 12);
+//    turtleWrapper.addChild(turtle);
+//    container4.addChild(turtleWrapper);
+//
+//    var container4a = new createjs.Container();
+//    container4a.x = LEFT_2;
+//    container4a.y = TOP_NEG1;
+//    var sky = new createjs.Shape();
+//    sky.graphics.beginFill('lightBlue')
+//        .drawCircle(0, 0, CIRCLE_RADIUS);
+//    container4a.addChild(sky);
+//
+//    var container4b = new createjs.Container();
+//    container4b.x = LEFT_1;
+//    container4b.y = TOP_0;
+//    var sky4b = sky.clone();
+//    container4b.addChild(sky4b);
+//    var cloud4b = new createjs.Shape();
+//    cloud4b.graphics
+//        .beginFill('white')
+//        .drawCircle(-20, 5, 13)
+//        .endFill()
+//        .beginFill('white')
+//        .drawCircle(-5, 12, 12)
+//        .endFill()
+//        .beginFill('white')
+//        .drawCircle(9, 12, 10)
+//        .endFill()
+//        .beginFill('white')
+//        .drawCircle(20, 4, 12)
+//        .endFill()
+//        .beginFill('white')
+//        .drawCircle(-7, -9, 14)
+//        .endFill()
+//        .beginFill('white')
+//        .drawCircle(13, -11, 10)
+//        .endFill()
+//        .beginFill('white')
+//        // filler
+//        .drawCircle(0, 5, 15)
+//    ;
+//    container4b.addChild(cloud4b);
+//
+//    var container4c = new createjs.Container();
+//    container4c.x = LEFT_3;
+//    container4c.y = TOP_NEG1;
+//    var sky4c = sky.clone();
+//    container4c.addChild(sky4c);
+//    var cloud4c = cloud4b.clone();
+//    container4c.addChild(cloud4c);
+//
+//    function container4Start() {
+//        createjs.Tween.get(container3).to({x: LEFT_0}, 500, createjs.Ease.circOut);
+//        createjs.Tween.get(container4).to({x: LEFT_2}, 500, createjs.Ease.circOut)
+//            .wait(500).call(function () {
+//                createjs.Tween.get(container4)
+//                    .to({y: TOP_4}, 1000, createjs.Ease.none);
+//                createjs.Tween.get(turtleWrapper)
+//                    .to({y: -(TOP_4 - TOP_2)}, 1000, createjs.Ease.none);
+//                createjs.Tween.get(container4a)
+//                    .to({y: TOP_2}, 400, createjs.Ease.linear);
+//                createjs.Tween.get(container4b)
+//                    .to({y: TOP_5}, 2000, createjs.Ease.linear);
+//                createjs.Tween.get(container4c)
+//                    .to({y: TOP_4}, 2000, createjs.Ease.linear);
+//            });
+//    }
 
     animationWrapper.addChild(container1);
     animationWrapper.addChild(container2);
     animationWrapper.addChild(container3);
     animationWrapper.addChild(container4);
-    animationWrapper.addChildAt(container4a, animationWrapper.getNumChildren() - 1);
-    animationWrapper.addChild(container4b);
-    animationWrapper.addChild(container4c);
+//    animationWrapper.addChildAt(container4a, animationWrapper.getNumChildren() - 1);
+//    animationWrapper.addChild(container4b);
+//    animationWrapper.addChild(container4c);
+
+    mainTimeline = new TimelineMax({paused: true});
+    mainTimeline
+        .add(flowerTimeline, '+=19')
+        .add(transitionTimeline, '+=0.2')
+        .add('tree', '+=0')
+        .add(treeTimeline, 'tree')
+        .add(transitionSeasonTimeline, 'tree')
+        .add(transitionTimeline2, '+=0.2')
+        .add(catTimeline, '+=0')
+        .add(transitionTimeline3, '+=0.2')
+        .play();
 }
 
 function renderGalleryPage() {
@@ -759,9 +747,76 @@ function _renderGallery() {
 
     switch (currentPage) {
         case 1:
-            _renderFlower();
+            var flowerObjs = getFlowerTimeline(LEFT_1, TOP_1);
+            var flowerTimeline = flowerObjs[0];
+            var flowerContainer = flowerObjs[1];
+            galleryWrapper.addChild(flowerContainer);
+            flowerTimeline.eventCallback('onComplete', function () {
+                this.restart();
+            });
+            flowerTimeline.play();
+
+            var treeObjs = getTreeTimeline(LEFT_2, TOP_1);
+            var treeTimeline = treeObjs[0];
+            var treeContainer = treeObjs[1];
+            galleryWrapper.addChild(treeContainer);
+            treeTimeline.eventCallback('onComplete', function () {
+                this.restart();
+            });
+            treeTimeline.play();
+
+            var springObjs = getSpringTimeline(LEFT_3, TOP_1);
+            var springTimeline = springObjs[0];
+            var springContainer = springObjs[1];
+            galleryWrapper.addChild(springContainer);
+            springTimeline.eventCallback('onComplete', function () {
+                this.restart();
+            });
+            springTimeline.play();
+
+            var summerObjs = getSummerTimeline(LEFT_1, TOP_2);
+            var summerTimeline = summerObjs[0];
+            var summerContainer = summerObjs[1];
+            galleryWrapper.addChild(summerContainer);
+            summerTimeline.eventCallback('onComplete', function () {
+                this.restart();
+            });
+            summerTimeline.play();
+
+            var autumnObjs = getAutumnTimeline(LEFT_2, TOP_2);
+            var autumnTimeline = autumnObjs[0];
+            var autumnContainer = autumnObjs[1];
+            galleryWrapper.addChild(autumnContainer);
+            autumnTimeline.eventCallback('onComplete', function () {
+                this.restart();
+            });
+            autumnTimeline.play();
+
+            var winterObjs = getWinterTimeline(LEFT_3, TOP_2);
+            var winterTimeline = winterObjs[0];
+            var winterContainer = winterObjs[1];
+            galleryWrapper.addChild(winterContainer);
+            winterTimeline.play();
+
             break;
         case 2:
+            var catObjs = getCatTimeline(LEFT_1, TOP_1);
+            var catTimeline = catObjs[0];
+            var catContainer = catObjs[1];
+            galleryWrapper.addChild(catContainer);
+            catTimeline.eventCallback('onComplete', function () {
+                this.restart();
+            });
+            catTimeline.play();
+
+            var turtleObjs = getTurtleTimeline(LEFT_2, TOP_1);
+            var turtleTimeline = turtleObjs[0];
+            var turtleContainer = turtleObjs[1];
+            galleryWrapper.addChild(turtleContainer);
+            turtleTimeline.eventCallback('onComplete', function () {
+                this.restart();
+            });
+            turtleTimeline.play();
             break;
         case 3:
             break;
@@ -853,15 +908,13 @@ function _renderBtnHome() {
     galleryPageWrapper.addChild(btnHomeWrapper);
 }
 
-// Galllery render
-function _renderFlower() {
-    var flowerTimeline = new TimelineMax({ onComplete: function () {
-        this.restart();
-    } });
+// Timelines
+function getFlowerTimeline(x, y) {
+    var flowerTimeline = new TimelineMax();
 
     var container1 = new createjs.Container();
-    container1.x = LEFT_1;
-    container1.y = TOP_1;
+    container1.x = x;
+    container1.y = y;
 
     var segmentGround = new createjs.Shape();
     segmentGround.angle = 90;
@@ -993,9 +1046,321 @@ function _renderFlower() {
     container1.addChild(segmentSky);
     container1.addChild(segmentGround);
     container1.addChild(flowerWrapper);
-    galleryWrapper.addChild(container1);
 
-    flowerTimeline.play();
+    return [flowerTimeline, container1];
+}
+
+function getTreeTimeline(x, y) {
+    var treeTimeline = new TimelineMax();
+
+    var container2 = new createjs.Container();
+    container2.x = x;
+    container2.y = y;
+
+    var segmentGround2 = new createjs.Shape();
+    segmentGround2.graphics.beginFill(COLOR_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    container2.addChild(segmentGround2);
+
+    var segmentSky2 = new createjs.Shape();
+    segmentSky2.graphics.beginFill(COLOR_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    container2.addChild(segmentSky2);
+
+    var treeWrapper = new createjs.Container();
+    var tree = new createjs.Shape();
+    tree.graphics.beginFill('green');
+    var treeCmd = tree.graphics.drawCircle(0, 0, 10).command;
+
+    treeWrapper.addChild(tree);
+    container2.addChild(treeWrapper);
+
+    treeTimeline
+        .to(treeCmd, 2, {radius: 20, ease: Power2.easeIn});
+
+    return [treeTimeline, container2];
+}
+
+function getSpringTimeline(x, y) {
+    var springTimeline = new TimelineMax();
+
+    var springContainer = new createjs.Container();
+    springContainer.x = x;
+    springContainer.y = y;
+
+    var groundFill = '#59AE6B';
+    var skyFill = '#AEE7FB';
+
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(groundFill)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    springContainer.addChild(segmentGround);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(skyFill)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    springContainer.addChild(segmentSky);
+
+
+    return [springTimeline, springContainer];
+}
+
+function getSummerTimeline(x, y) {
+    var summerTimeline = new TimelineMax();
+
+    var summerContainer = new createjs.Container();
+    summerContainer.x = x;
+    summerContainer.y = y;
+
+    var groundFill = '#FFFFB7';
+    var skyFill = '#C6FFEA';
+
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(groundFill)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    summerContainer.addChild(segmentGround);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(skyFill)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    summerContainer.addChild(segmentSky);
+
+    return [summerTimeline, summerContainer];
+}
+
+function getAutumnTimeline(x, y) {
+    var autumnTimeline = new TimelineMax();
+
+    var autumnContainer = new createjs.Container();
+    autumnContainer.x = x;
+    autumnContainer.y = y;
+
+    var groundFill = '#EB6907';
+    var skyFill = '#FAA105';
+
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(groundFill)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    autumnContainer.addChild(segmentGround);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(skyFill)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    autumnContainer.addChild(segmentSky);
+
+    return [autumnTimeline, autumnContainer];
+}
+
+function getWinterTimeline(x, y) {
+    var snowTreeTimeline = new TimelineMax();
+    snowTreeTimeline.add('snow');
+
+    var snowTreeContainer = new createjs.Container();
+    snowTreeContainer.x = x;
+    snowTreeContainer.y = y;
+
+    var groundFill = '#E1F0EB';
+    var skyFill = '#322F40';
+
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(groundFill)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    snowTreeContainer.addChild(segmentGround);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(skyFill)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    snowTreeContainer.addChild(segmentSky);
+
+    var snowTreeWrapper = new createjs.Container();
+    var snowTree = new createjs.Shape();
+    snowTree.graphics
+        .beginFill('white')
+        .lineTo(-12, -5)
+        .lineTo(0, -20)
+        .lineTo(12, -5)
+        .endFill().beginFill('white')
+        .lineTo(-14, 5)
+        .lineTo(0, -10)
+        .lineTo(14, 5)
+        .endFill().beginFill('white')
+        .lineTo(-16, 15)
+        .lineTo(0, 0)
+        .lineTo(16, 15)
+        .endFill().beginFill('white')
+        .lineTo(-18, 25)
+        .lineTo(0, 10)
+        .lineTo(18, 25);
+    snowTreeWrapper.addChild(snowTree);
+
+    var snows = [];
+    var snowWrapper = new createjs.Container();
+    var snowSize = 3;
+
+    for (var i = 0; i < 9; i++) {
+        var snow = new createjs.Shape();
+        snow.alpha = 0;
+        snow.graphics
+            .beginFill('white')
+            .drawCircle(0, 0, snowSize);
+        snows.push(snow);
+        snowWrapper.addChild(snow);
+    }
+
+    function tweenSnow(snow) {
+        var _random = Math.random();
+        var _x = 0;
+        if (_random <= 0.45) {
+            _x = getRandomInt(-25, -10);
+        }
+        else if (_random <= 0.9) {
+            _x = getRandomInt(10, 25);
+        }
+        else {
+            _x = getRandomInt(-9, 9);
+        }
+
+        createjs.Tween
+            .get(snow, {override: true})
+            .to({alpha: 0}, 100)
+            .wait(getRandomInt(0, 2000))
+            .to({alpha: getRandomArbitrary(0.5, 0.9), x: _x, y: getRandomInt(-55, -50)}, 0)
+            .to({y: 24}, getRandomInt(2500, 3000), createjs.Ease.linear)
+            .call(function () {
+                tweenSnow(snow);
+            });
+
+//        function randomX() {
+//            var _random = Math.random();
+//            if (_random <= 0.45) {
+//                return getRandomInt(-25, -10);
+//            }
+//            else if (_random <= 0.9) {
+//                return getRandomInt(10, 25);
+//            }
+//            else {
+//                return getRandomInt(-9, 9);
+//            }
+//        }
+
+//        snowTreeTimeline
+//            .delay(getRandomArbitrary(0, 2))
+//            .set(snow, {alpha: getRandomArbitrary(0.5, 0.9), x: randomX(), y: getRandomInt(-55, -50)}, 'snow')
+//            .to(snow, getRandomArbitrary(2.5, 3), {y: 24, onComplete: function () {
+//                tweenSnow(snow);
+//            }});
+    }
+
+    snows.forEach(function (snow) {
+        tweenSnow(snow);
+    });
+
+    snowTreeWrapper.addChild(snowWrapper);
+    snowTreeContainer.addChild(snowTreeWrapper);
+
+    return [snowTreeTimeline, snowTreeContainer];
+}
+
+function getCatTimeline(x, y) {
+    var catTimeline = new TimelineMax();
+
+    var catContainer = new createjs.Container();
+    catContainer.x = x;
+    catContainer.y = y;
+
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    catContainer.addChild(segmentGround);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    catContainer.addChild(segmentSky);
+
+    var catWrapper = new createjs.Container();
+    var catHead = new createjs.Shape();
+    catHead.graphics.beginFill('#fff').drawEllipse(-15, 5, 30, 25);
+    catWrapper.addChild(catHead);
+
+    var catEyes = new createjs.Shape();
+    catEyes.graphics.beginFill('black')
+        .drawCircle(-10, 14, 2)
+        .drawCircle(2, 14, 2)
+        .beginFill('pink')
+        .drawEllipse(-13, 17, 5, 2)
+        .drawEllipse(-1, 17, 5, 2);
+    catWrapper.addChild(catEyes);
+
+    var catEars = new createjs.Shape();
+    catEars.graphics
+        .beginFill('#fff')
+        .moveTo(-15, 14)
+        .lineTo(-10, 0)
+        .lineTo(-1, 7)
+        .closePath()
+        .moveTo(15, 14)
+        .lineTo(10, 0)
+        .lineTo(1, 7)
+        .closePath();
+    catWrapper.addChild(catEars);
+
+    var beeWrapper = new createjs.Container();
+    var bee = new createjs.Shape();
+    bee.graphics
+        .beginFill('yellow')
+        .drawEllipse(-45, -20, 16, 12);
+
+    beeWrapper.addChild(bee);
+
+    catContainer.addChild(catWrapper);
+    catContainer.addChild(beeWrapper);
+
+    var beeDuration = .3;
+    catTimeline
+        .to(bee, beeDuration * 6, {x: 70, ease: Power0.easeNone}, 0)
+        .to(bee, beeDuration, {y: -5, ease: Sine.easeOut}, 0)
+        .to(bee, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
+        .to(bee, beeDuration, {y: 5, ease: Sine.easeOut}, 2 * beeDuration)
+        .to(bee, beeDuration, {y: 0, ease: Sine.easeIn}, 3 * beeDuration)
+        .to(bee, beeDuration, {y: -5, ease: Sine.easeOut}, 4 * beeDuration)
+        .to(bee, beeDuration, {y: 0, ease: Sine.easeIn}, 5 * beeDuration)
+        .to(catEyes, beeDuration * 6, {x: 7, ease: Power0.easeNone}, 0)
+        .to(catEyes, beeDuration, {y: -1, ease: Sine.easeOut}, 0)
+        .to(catEyes, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
+        .to(catEyes, beeDuration, {y: 1, ease: Sine.easeOut}, 2 * beeDuration)
+        .to(catEyes, beeDuration, {y: 0, ease: Sine.easeOut}, 3 * beeDuration)
+        .to(catEyes, beeDuration, {y: -1, ease: Sine.easeOut}, 4 * beeDuration)
+        .to(catEyes, beeDuration, {y: 0, ease: Sine.easeOut}, 5 * beeDuration)
+    ;
+
+    return [catTimeline, catContainer];
+}
+
+function getTurtleTimeline(x, y) {
+    var turtleTimeline = new TimelineMax();
+
+    var turtleContainer = new createjs.Container();
+    turtleContainer.x = x;
+    turtleContainer.y = y;
+
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    turtleContainer.addChild(segmentGround);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    turtleContainer.addChild(segmentSky);
+
+    var turtleWrapper = new createjs.Container();
+    var turtle = new createjs.Shape();
+    turtle.graphics.beginFill('green').drawCircle(0, 15, 12);
+    turtleWrapper.addChild(turtle);
+    turtleContainer.addChild(turtleWrapper);
+
+    return [turtleTimeline, turtleContainer];
 }
 
 // Utilities
