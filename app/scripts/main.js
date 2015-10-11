@@ -408,6 +408,19 @@ function renderAnim() {
         .add('transition5')
         .to(container5, 3, {x: LEFT_0, ease: Power0.easeNone}, 'transition5');
 
+    var seaWaveObjs = getSeaWaveTimeline(LEFT_2, TOP_5);
+    var container6 = seaWaveObjs[1];
+
+    var seaObjs = getSeaTimeline(LEFT_1, TOP_5);
+    var container7 = seaObjs[1];
+
+    var transitionTimeline6 = new TimelineMax();
+    transitionTimeline6
+        .add('transition6')
+        .to(container4a, .5, {y: TOP_0, ease: Circ.easeOut}, 'transition6')
+        .to(container6, .5, {y: TOP_2, ease: Circ.easeOut}, 'transition6')
+        .to(container7, .5, {y: TOP_3, ease: Circ.easeOut}, 'transition6');
+
     animationWrapper.addChild(container1);
     animationWrapper.addChild(container2);
     animationWrapper.addChild(container3);
@@ -416,6 +429,8 @@ function renderAnim() {
     animationWrapper.addChild(container4b);
     animationWrapper.addChild(container4c);
     animationWrapper.addChild(container5);
+    animationWrapper.addChildAt(container6, 0);
+    animationWrapper.addChild(container7);
 
     mainTimeline = new TimelineMax({paused: true});
     mainTimeline
@@ -429,7 +444,8 @@ function renderAnim() {
         .add(transitionTimeline3, '+=0.2')
         .add(turtleTimeline, '+=0')
         .add(transitionTimeline4, '+=0.5')
-        .add(transitionTimeline5, '+=0.8')
+        .add(transitionTimeline5, '+=0.6')
+        .add(transitionTimeline6, '+=0.2')
         .play();
 }
 
