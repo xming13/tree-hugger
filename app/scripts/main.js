@@ -17,6 +17,9 @@ var TOP_5 = TOP_4 + SPACING + CIRCLE_DIAMETER;
 // Colors
 var COLOR_SKY = '#E4F8FF';
 var COLOR_GROUND = 'LightGreen';
+var COLOR_HIGH_SKY = 'LightBlue';
+var COLOR_SEA = '#6DB7FF';
+var COLOR_SEA_GROUND = '#E77E34';
 var COLOR_BORDER = '#F0F8FF';
 
 // Stage
@@ -487,7 +490,10 @@ function _renderGallery() {
             var roofTopObjs = getRoofTopTimeline(LEFT_1, TOP_2);
             _processTimelineObjs(roofTopObjs);
 
-            var seaObjs = getSeaTimeline(LEFT_2, TOP_2);
+            var seaWaveObjs = getSeaWaveTimeline(LEFT_2, TOP_2);
+            _processTimelineObjs(seaWaveObjs);
+
+            var seaObjs = getSeaTimeline(LEFT_3, TOP_2);
             _processTimelineObjs(seaObjs);
 
             break;
@@ -1137,7 +1143,7 @@ function getCloudTimeline(x, y) {
     cloudContainer.y = y;
 
     var sky = new createjs.Shape();
-    sky.graphics.beginFill('lightBlue')
+    sky.graphics.beginFill(COLOR_HIGH_SKY)
         .drawCircle(0, 0, CIRCLE_RADIUS);
     cloudContainer.addChild(sky);
 
@@ -1178,7 +1184,7 @@ function getRoofTopTimeline(x, y) {
     roofTopContainer.y = y;
 
     var sky = new createjs.Shape();
-    sky.graphics.beginFill('lightBlue')
+    sky.graphics.beginFill(COLOR_HIGH_SKY)
         .drawCircle(0, 0, CIRCLE_RADIUS);
     roofTopContainer.addChild(sky);
 
@@ -1242,6 +1248,26 @@ function getRoofTopTimeline(x, y) {
     return [roofTopTimeline, roofTopContainer];
 }
 
+function getSeaWaveTimeline(x, y) {
+    var seaWaveTimeline = new TimelineMax();
+
+    var seaWaveContainer = new createjs.Container();
+    seaWaveContainer.x = x;
+    seaWaveContainer.y = y;
+
+    var segmentSea = new createjs.Shape();
+    segmentSea.graphics.beginFill(COLOR_SEA)
+        .arc(0, 0, CIRCLE_RADIUS, -30 * Math.PI / 180, 210 * Math.PI / 180);
+    seaWaveContainer.addChild(segmentSea);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_HIGH_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 210 * Math.PI / 180, -30 * Math.PI / 180);
+    seaWaveContainer.addChild(segmentSky);
+
+    return [seaWaveTimeline, seaWaveContainer];
+}
+
 function getSeaTimeline(x, y) {
     var seaTimeline = new TimelineMax();
 
@@ -1249,12 +1275,134 @@ function getSeaTimeline(x, y) {
     seaContainer.x = x;
     seaContainer.y = y;
 
-    var sea = new createjs.Shape();
-    sea.graphics.beginFill('#4D4DD2');
-    sea.graphics.drawCircle(0, 0, CIRCLE_RADIUS);
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_SEA_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    seaContainer.addChild(segmentGround);
 
-    seaContainer.addChild(sea);
+    var segmentSea = new createjs.Shape();
+    segmentSea.graphics.beginFill(COLOR_SEA)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    seaContainer.addChild(segmentSea);
 
+    var grass = new createjs.Shape();
+    grass.graphics.beginFill('greenyellow');
+    grass.graphics
+        .drawEllipse(-20, -12, 10, 4)
+        .drawEllipse(-20, -2, 10, 4)
+        .drawEllipse(-20, 8, 10, 4)
+        .drawEllipse(-20, 18, 10, 4)
+        .drawEllipse(-8, -12, 10, 4)
+        .drawEllipse(-8, -2, 10, 4)
+        .drawEllipse(-8, 8, 10, 4)
+        .drawEllipse(-8, 18, 10, 4)
+        .endFill().beginFill('greenyellow')
+        .drawEllipse(-10, -17, 3, 42);
+    ;
+    seaContainer.addChild(grass);
+
+    var grass2 = new createjs.Shape();
+    grass2.graphics.beginFill('green');
+    grass2.graphics
+        .drawEllipse(-4, -14, 10, 5)
+        .drawEllipse(-4, -4, 10, 5)
+        .drawEllipse(-4, 4, 10, 5)
+        .drawEllipse(-4, 14, 10, 5)
+        .drawEllipse(8, -14, 10, 5)
+        .drawEllipse(8, -4, 10, 5)
+        .drawEllipse(8, 4, 10, 5)
+        .drawEllipse(8, 14, 10, 5)
+        .endFill().beginFill('green')
+        .drawEllipse(6, -20, 3, 45);
+    ;
+    seaContainer.addChild(grass2);
+
+    var bubble = new createjs.Shape();
+    var bubbleCmd = bubble.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(-10, -19, 0)
+        .command;
+    seaContainer.addChild(bubble);
+
+    var bubble2 = new createjs.Shape();
+    var bubbleCmd2 = bubble2.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(-10, -19, 0)
+        .command;
+    seaContainer.addChild(bubble2);
+
+    var bubble3 = new createjs.Shape();
+    var bubbleCmd3 = bubble3.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(-10, -19, 0)
+        .command;
+    seaContainer.addChild(bubble3);
+
+    var bubble4 = new createjs.Shape();
+    var bubbleCmd4 = bubble4.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(7, -19, 0)
+        .command;
+    seaContainer.addChild(bubble4);
+
+    var bubble5 = new createjs.Shape();
+    var bubbleCmd5 = bubble5.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(7, -19, 0)
+        .command;
+    seaContainer.addChild(bubble5);
+
+    var bubble6 = new createjs.Shape();
+    var bubbleCmd6 = bubble6.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(7, -19, 0)
+        .command;
+    seaContainer.addChild(bubble6);
+
+    seaTimeline
+        .to(bubbleCmd, 4, {
+            x: -5,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 0)
+        .to(bubbleCmd2, 4, {
+            x: -5,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 1.3)
+        .to(bubbleCmd3, 4, {
+            x: -5,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 2.6)
+        .to(bubbleCmd4, 4, {
+            x: 15,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 0.5)
+        .to(bubbleCmd5, 4, {
+            x: 15,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 1.8)
+        .to(bubbleCmd6, 4, {
+            x: 15,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 3.1)
+    ;
     return [seaTimeline, seaContainer];
 }
 
