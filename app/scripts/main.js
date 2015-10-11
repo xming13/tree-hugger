@@ -25,6 +25,15 @@ var stage;
 var pop;
 var popCanPlay = false;
 
+// Gallery Page
+var galleryPageWrapper;
+var COLOR_BUTTON_DISABLED = 'lightGrey';
+var COLOR_BUTTON_ENABLED = 'lightBlue';
+var COLOR_BUTTON_DISABLED_CONTENT = 'darkGrey';
+var COLOR_BUTTON_ENABLED_CONTENT = '#9797FF';
+var PAGE_SIZE = 3;
+var currentPage = 1;
+
 // for debugging
 var DEBUG = false;
 
@@ -37,7 +46,7 @@ function init() {
 
     loadAudio();
 
-    drawMenu();
+    renderMenu();
     if (DEBUG) {
         var gridLinesColor = COLOR_BORDER;
         var gridLines = new createjs.Shape();
@@ -58,8 +67,6 @@ function init() {
             .endFill().beginFill(gridLinesColor)
             .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
         stage.addChild(gridLines);
-
-
     }
 }
 
@@ -164,7 +171,7 @@ function loadAudio() {
     }
 }
 
-function drawMenu() {
+function renderMenu() {
     var borders = new createjs.Shape();
     borders.graphics.beginFill(COLOR_BORDER)
         .rect(0, 0, SPACING, CANVAS_HEIGHT)
@@ -176,23 +183,47 @@ function drawMenu() {
         .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
     stage.addChild(borders);
 
+    var btnPlayWrapper = new createjs.Container();
+    btnPlayWrapper.x = LEFT_1 + CIRCLE_RADIUS;
+    btnPlayWrapper.y = TOP_2;
+
     var btnPlay = new createjs.Shape();
-    btnPlay.graphics.beginFill('lightblue')
-        .drawCircle(LEFT_1, TOP_2, CIRCLE_RADIUS);
-    btnPlay.addEventListener('click', function () {
-        stage.removeChild(btnPlay);
-        stage.removeChild(btnBrowse);
-        playAnim();
+    var arrowLength = 20;
+    btnPlay.graphics.beginFill(COLOR_BUTTON_ENABLED)
+        .drawCircle(0, 0, CIRCLE_RADIUS)
+        .endFill().beginFill(COLOR_BUTTON_ENABLED_CONTENT)
+        .setStrokeStyle(4, "round", "round")
+        .beginStroke(COLOR_BUTTON_ENABLED_CONTENT)
+        .moveTo(arrowLength, 0)
+        .lineTo(Math.round(-arrowLength * Math.cos(60 * Math.PI / 180)), Math.round(-arrowLength * Math.sin(60 * Math.PI / 180)))
+        .lineTo(Math.round(-arrowLength * Math.cos(60 * Math.PI / 180)), Math.round(arrowLength * Math.sin(60 * Math.PI / 180)))
+        .closePath();
+
+    btnPlayWrapper.addChild(btnPlay);
+    btnPlayWrapper.addEventListener('click', function () {
+        stage.removeChild(btnPlayWrapper);
+        stage.removeChild(btnBrowseWrapper);
+        renderAnim();
     });
-    stage.addChild(btnPlay);
+    stage.addChild(btnPlayWrapper);
+
+    var btnBrowseWrapper = new createjs.Container();
+    btnBrowseWrapper.x = LEFT_3 - CIRCLE_RADIUS;
+    btnBrowseWrapper.y = TOP_2;
 
     var btnBrowse = new createjs.Shape();
     btnBrowse.graphics.beginFill('pink')
-        .drawCircle(LEFT_3, TOP_2, CIRCLE_RADIUS);
-    stage.addChild(btnBrowse);
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    btnBrowseWrapper.addChild(btnBrowse);
+    btnBrowseWrapper.addEventListener('click', function () {
+        stage.removeChild(btnPlayWrapper);
+        stage.removeChild(btnBrowseWrapper);
+        renderGalleryPage();
+    });
+    stage.addChild(btnBrowseWrapper);
 }
 
-function playAnim() {
+function renderAnim() {
     if (popCanPlay && pop) {
         pop.play();
     }
@@ -675,6 +706,124 @@ function playAnim() {
     stage.addChildAt(container4a, stage.getNumChildren() - 1);
     stage.addChild(container4b);
     stage.addChild(container4c);
+}
+
+function renderGalleryPage() {
+    if (!galleryPageWrapper) {
+        galleryPageWrapper = new createjs.Container();
+    }
+    if (!stage.getChildByName('galleryPageWrapper')) {
+        stage.addChild(galleryPageWrapper);
+    }
+    galleryPageWrapper.removeAllChildren();
+
+    _renderGallery();
+    _renderBtnPrev();
+    _renderBtnHome();
+    _renderBtnNext();
+}
+
+function _renderGallery() {
+    var galleryWrapper = galleryPageWrapper.getChildByName('galleryWrapper');
+
+    if (!galleryWrapper) {
+        galleryWrapper = new createjs.Container();
+        galleryPageWrapper.addChild(galleryWrapper);
+    }
+
+    switch (currentPage) {
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        default:
+            break;
+    }
+}
+
+function _renderBtnPrev() {
+    var enabled = currentPage > 1;
+
+    var btnPrevWrapper = new createjs.Container();
+    btnPrevWrapper.x = LEFT_1;
+    btnPrevWrapper.y = TOP_3;
+    btnPrevWrapper.addEventListener('click', function () {
+        if (enabled) {
+            currentPage--;
+            renderGalleryPage();
+        }
+    });
+
+    var btnPrev = new createjs.Shape();
+    btnPrev.graphics.beginFill(enabled ? COLOR_BUTTON_ENABLED : COLOR_BUTTON_DISABLED)
+        .drawCircle(0, 0, CIRCLE_RADIUS * 3 /4)
+        .setStrokeStyle(4, "round", "round")
+        .beginStroke(enabled ? COLOR_BUTTON_ENABLED_CONTENT : COLOR_BUTTON_DISABLED_CONTENT)
+        .moveTo(6, -12)
+        .lineTo(-12, 0)
+        .lineTo(6, 12)
+        .closePath()
+        .endStroke()
+
+    btnPrevWrapper.addChild(btnPrev);
+    galleryPageWrapper.addChild(btnPrevWrapper);
+}
+
+function _renderBtnNext() {
+    var enabled = currentPage < PAGE_SIZE;
+
+    var btnNextWrapper = new createjs.Container();
+    btnNextWrapper.x = LEFT_3;
+    btnNextWrapper.y = TOP_3;
+    btnNextWrapper.addEventListener('click', function () {
+        if (enabled) {
+            currentPage++;
+            renderGalleryPage();
+        }
+    });
+
+    var btnNext = new createjs.Shape();
+    btnNext.graphics.beginFill(enabled ? COLOR_BUTTON_ENABLED : COLOR_BUTTON_DISABLED)
+        .drawCircle(0, 0, CIRCLE_RADIUS * 3 / 4)
+        .setStrokeStyle(4, "round", "round")
+        .beginStroke(enabled ? COLOR_BUTTON_ENABLED_CONTENT : COLOR_BUTTON_DISABLED_CONTENT)
+        .moveTo(-6, -12)
+        .lineTo(12, 0)
+        .lineTo(-6, 12)
+        .closePath()
+        .endStroke();
+    btnNextWrapper.addChild(btnNext);
+    galleryPageWrapper.addChild(btnNextWrapper);
+}
+
+function _renderBtnHome() {
+    var btnHomeWrapper = new createjs.Container();
+    btnHomeWrapper.x = LEFT_2;
+    btnHomeWrapper.y = TOP_3;
+    btnHomeWrapper.addEventListener('click', function () {
+        stage.removeChild(galleryPageWrapper);
+        // reset to page 1
+        currentPage = 1;
+        renderMenu();
+    });
+
+    var btnHome = new createjs.Shape();
+    btnHome.graphics.beginFill(COLOR_BUTTON_ENABLED)
+        .drawCircle(0, 0, CIRCLE_RADIUS * 3 / 4)
+        .endFill()
+        .setStrokeStyle(4, "round", "round")
+        .beginStroke(COLOR_BUTTON_ENABLED_CONTENT)
+        .moveTo(-9, -3)
+        .lineTo(-9, 9)
+        .lineTo(9, 9)
+        .lineTo(9, -3)
+        .lineTo(0, -10.5)
+        .closePath();
+
+    btnHomeWrapper.addChild(btnHome);
+    galleryPageWrapper.addChild(btnHomeWrapper);
 }
 
 /**
