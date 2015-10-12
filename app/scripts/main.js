@@ -421,6 +421,18 @@ function renderAnim() {
         .to(container6, .5, {y: TOP_2, ease: Circ.easeOut}, 'transition6')
         .to(container7, .5, {y: TOP_3, ease: Circ.easeOut}, 'transition6');
 
+    var fishObjs = getFishTimeline(LEFT_4, TOP_2);
+    var container8 = fishObjs[1];
+
+    var transitionTimeline7 = new TimelineMax();
+    transitionTimeline7
+        .add('transition7')
+        .set(container8, {x: LEFT_4}, 'transition7')
+        .to(container8, 8.8, {x: LEFT_0, ease: Power0.easeNone}, 'transition7')
+        .add('transition7b', '+=0.5')
+        .set(container8, {x: LEFT_0, scaleX: -1}, 'transition7b')
+        .to(container8, 8.8, {x: LEFT_4, ease: Power0.easeNone}, 'transition7b');
+
     animationWrapper.addChild(container1);
     animationWrapper.addChild(container2);
     animationWrapper.addChild(container3);
@@ -431,6 +443,7 @@ function renderAnim() {
     animationWrapper.addChild(container5);
     animationWrapper.addChildAt(container6, 0);
     animationWrapper.addChild(container7);
+    animationWrapper.addChild(container8);
 
     mainTimeline = new TimelineMax({paused: true});
     mainTimeline
@@ -446,6 +459,8 @@ function renderAnim() {
         .add(transitionTimeline4, '+=0.5')
         .add(transitionTimeline5, '+=0.6')
         .add(transitionTimeline6, '+=0.2')
+        .add('fish', '+=2')
+        .add(transitionTimeline7, 'fish')
         .play();
 }
 
@@ -514,6 +529,8 @@ function _renderGallery() {
 
             break;
         case 3:
+            var fishObjs = getFishTimeline(LEFT_1, TOP_1);
+            _processTimelineObjs(fishObjs);
             break;
         default:
             break;
@@ -1420,6 +1437,79 @@ function getSeaTimeline(x, y) {
         }, 3.1)
     ;
     return [seaTimeline, seaContainer];
+}
+
+function getFishTimeline(x, y) {
+    var fishTimeline = new TimelineMax();
+
+    var fishContainer = new createjs.Container();
+    fishContainer.x = x;
+    fishContainer.y = y;
+
+    var segmentSea = new createjs.Shape();
+    segmentSea.graphics.beginFill(COLOR_SEA)
+        .arc(0, 0, CIRCLE_RADIUS, -30 * Math.PI / 180, 210 * Math.PI / 180);
+    fishContainer.addChild(segmentSea);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_HIGH_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 210 * Math.PI / 180, -30 * Math.PI / 180);
+    fishContainer.addChild(segmentSky);
+
+    var COLOR_FISH = '#FFCB00';
+
+    var fishWrapper = new createjs.Container();
+    var fish = new createjs.Shape();
+    fish.graphics.beginFill(COLOR_FISH);
+    fish.graphics.drawEllipse(-15, -8, 30, 16);
+    fishWrapper.addChild(fish);
+
+    var wing = new createjs.Shape();
+    wing.graphics.beginFill(COLOR_FISH);
+    wing.graphics.moveTo(-4, -7)
+        .lineTo(6, -7);
+    var wingCmd = wing.graphics
+        .lineTo(8, -12)
+        .command;
+    fishWrapper.addChild(wing);
+
+    var wing2 = new createjs.Shape();
+    wing2.graphics.beginFill(COLOR_FISH);
+    wing2.graphics.moveTo(-4, 7)
+        .lineTo(6, 7);
+    var wingCmd2 = wing2.graphics
+        .lineTo(8, 12)
+        .command;
+    fishWrapper.addChild(wing2);
+
+    var tail = new createjs.Shape();
+    tail.graphics.beginFill(COLOR_FISH);
+    tail.graphics.moveTo(11, 0);
+    var tailCmd = tail.graphics
+        .lineTo(21, -8)
+        .command;
+    tail.graphics.lineTo(19, 0);
+    var tailCmd2 = tail.graphics
+        .lineTo(21, 8)
+        .command;
+    tail.graphics.closePath();
+    fishWrapper.addChild(tail);
+
+    var eye = new createjs.Shape();
+    eye.graphics.beginFill('black');
+    eye.graphics.drawCircle(-8, -2, 1.5);
+    fishWrapper.addChild(eye);
+
+    fishContainer.addChild(fishWrapper);
+
+    fishTimeline
+        .add('fish')
+        .to(wingCmd, 1, {x: 9, y: -9, repeat: -1, yoyo: true}, 'fish')
+        .to(wingCmd2, 1, {x: 9, y: 9, repeat: -1, yoyo: true}, 'fish')
+        .to(tailCmd, 1, {y: -7, repeat: -1, yoyo: true}, 'fish')
+        .to(tailCmd2, 1, {y: 7, repeat: -1, yoyo: true}, 'fish');
+
+    return [fishTimeline, fishContainer];
 }
 
 // Utilities
