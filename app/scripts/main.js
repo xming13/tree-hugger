@@ -419,7 +419,10 @@ function renderAnim() {
         .add('transition6')
         .to(container4a, .5, {y: TOP_0, ease: Circ.easeOut}, 'transition6')
         .to(container6, .5, {y: TOP_2, ease: Circ.easeOut}, 'transition6')
-        .to(container7, .5, {y: TOP_3, ease: Circ.easeOut}, 'transition6');
+        .to(container7, .5, {y: TOP_3, ease: Circ.easeOut}, 'transition6')
+        .add('turtleGone', '+=1')
+        .to(container6, 1, {alpha: 0}, 'turtleGone')
+        .to(turtleWrapper, 1, {alpha: 0}, 'turtleGone');
 
     var fishObjs = getFishTimeline(LEFT_4, TOP_2);
     var container8 = fishObjs[1];
@@ -459,7 +462,7 @@ function renderAnim() {
         .add(transitionTimeline4, '+=0.5')
         .add(transitionTimeline5, '+=0.6')
         .add(transitionTimeline6, '+=0.2')
-        .add('fish', '+=2')
+        .add('fish', '+=0')
         .add(transitionTimeline7, 'fish')
         .play();
 }
