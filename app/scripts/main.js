@@ -51,6 +51,7 @@ var DEBUG = false;
 
 function init() {
     stage = new createjs.Stage('canvas');
+    stage.enableMouseOver(10);
 
     // Ticker
     createjs.Ticker.setFPS(60);
@@ -214,6 +215,7 @@ function renderMenu() {
     var btnPlayWrapper = new createjs.Container();
     btnPlayWrapper.x = LEFT_1 + CIRCLE_RADIUS;
     btnPlayWrapper.y = TOP_2;
+    btnPlayWrapper.cursor = 'pointer';
 
     var btnPlay = new createjs.Shape();
     var arrowLength = 20;
@@ -237,6 +239,7 @@ function renderMenu() {
     var btnBrowseWrapper = new createjs.Container();
     btnBrowseWrapper.x = LEFT_3 - CIRCLE_RADIUS;
     btnBrowseWrapper.y = TOP_2;
+    btnBrowseWrapper.cursor = 'pointer';
 
     var btnBrowse = new createjs.Shape();
     btnBrowse.graphics.beginFill('pink')
@@ -421,8 +424,8 @@ function renderAnim() {
         .to(container6, .5, {y: TOP_2, ease: Circ.easeOut}, 'transition6')
         .to(container7, .5, {y: TOP_3, ease: Circ.easeOut}, 'transition6')
         .add('turtleGone', '+=1')
-        .to(container6, 1, {alpha: 0}, 'turtleGone')
-        .to(turtleWrapper, 1, {alpha: 0}, 'turtleGone');
+        .to(container6, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone')
+        .to(turtleWrapper, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone');
 
     var fishObjs = getFishTimeline(LEFT_4, TOP_2);
     var container8 = fishObjs[1];
@@ -556,6 +559,7 @@ function _renderBtnPrev() {
     var btnPrevWrapper = new createjs.Container();
     btnPrevWrapper.x = LEFT_1;
     btnPrevWrapper.y = TOP_3;
+    btnPrevWrapper.cursor = enabled ? 'pointer' : 'default';
     btnPrevWrapper.addEventListener('click', function () {
         if (enabled) {
             currentPage--;
@@ -584,6 +588,7 @@ function _renderBtnNext() {
     var btnNextWrapper = new createjs.Container();
     btnNextWrapper.x = LEFT_3;
     btnNextWrapper.y = TOP_3;
+    btnNextWrapper.cursor = enabled ? 'pointer' : 'default';
     btnNextWrapper.addEventListener('click', function () {
         if (enabled) {
             currentPage++;
@@ -609,6 +614,7 @@ function _renderBtnHome() {
     var btnHomeWrapper = new createjs.Container();
     btnHomeWrapper.x = LEFT_2;
     btnHomeWrapper.y = TOP_3;
+    btnHomeWrapper.cursor = 'pointer';
     btnHomeWrapper.addEventListener('click', function () {
         stage.removeChild(galleryPageWrapper);
         // reset to page 1
