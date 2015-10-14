@@ -664,13 +664,12 @@ function getFlowerTimeline(x, y) {
     container1.y = y;
 
     var segmentGround = new createjs.Shape();
-    segmentGround.angle = 90;
-    segmentGround.fill = COLOR_GROUND;
+    segmentGround.graphics.beginFill(COLOR_GROUND);
+    var segmentGroundCmd = segmentGround.graphics.arc(0, 0, CIRCLE_RADIUS, 90 * Math.PI / 180, 90 * Math.PI / 180).command;
 
     var segmentSky = new createjs.Shape();
-    segmentSky.angle = ANGLE_START;
-    segmentSky.alpha = 0;
-    segmentSky.fill = COLOR_SKY;
+    segmentSky.graphics.beginFill(COLOR_SKY);
+    var segmentSkyCmd = segmentSky.graphics.arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180).command;
 
     var flowerWrapper = new createjs.Container();
     flowerWrapper.y = -5;
@@ -731,8 +730,9 @@ function getFlowerTimeline(x, y) {
 
     flowerTimeline
         .add('initial')
-        .set(segmentGround, {angle: 90}, 'initial')
-        .set(segmentSky, {angle: ANGLE_START, alpha: 0}, 'initial')
+        .set(segmentGroundCmd, {startAngle: 90 * Math.PI / 180, endAngle: 90 * Math.PI / 180}, 'initial')
+        .set(segmentSky, {alpha: 0}, 'initial')
+        .set(segmentSkyCmd, {startAngle: 30 * Math.PI / 180, endAngle: 150 * Math.PI / 180}, 'initial')
         .set(flowerStemCmd, {h: 0}, 'initial')
         .set(flowerCmd, {radius: 0}, 'initial')
         .set(flowerLeavesCmd, {w: 0}, 'initial')
@@ -743,23 +743,13 @@ function getFlowerTimeline(x, y) {
         .set(petal3, {alpha: 0, x: 0, y: 0}, 'initial')
         .set(petal4, {alpha: 0, x: 0, y: 0}, 'initial')
         .set(petal5, {alpha: 0, x: 0, y: 0}, 'initial')
-        .to(segmentGround, .4, {
-            angle: ANGLE_START,
-            ease: Power2.easeIn,
-            onUpdate: changeSegment,
-            onUpdateParams: ["{self}"]
-        })
+        .to(segmentGroundCmd, .4, {startAngle: 30 * Math.PI / 180, endAngle: 150 * Math.PI / 180, ease: Power2.easeIn })
         .add("segmentGroundComplete")
         .add("flowerStemCmdComplete", "+=0.3")
         .add("flowerCmdComplete", "+=0.5")
         .set(segmentSky, {alpha: 1})
+        .to(segmentSkyCmd, .55, {startAngle: -90 * Math.PI / 180, endAngle: 270 * Math.PI / 180, ease: Power2.easeOut }, "segmentGroundComplete")
         .to(flowerStemCmd, .3, { h: -30 }, "segmentGroundComplete")
-        .to(segmentSky, 0.55, {
-            angle: -90,
-            ease: Power2.easeOut,
-            onUpdate: changeSegment,
-            onUpdateParams: ["{self}"]
-        }, "segmentGroundComplete")
         .to(flowerCmd, .2, {
             radius: 8,
             ease: Back.easeOut.config(2)
@@ -778,17 +768,6 @@ function getFlowerTimeline(x, y) {
         .to(petal3, petalDuration, {x: 6, y: 7, delay: 1.5 * petalDuration, ease: Back.easeOut.config(1)}, 'flowerCmdComplete')
         .to(petal4, petalDuration, {x: -6, y: 7, delay: 2.5 * petalDuration, ease: Back.easeOut.config(1)}, 'flowerCmdComplete')
         .to(petal5, petalDuration, {x: -8, y: -4, delay: 3.5 * petalDuration, ease: Back.easeOut.config(1)}, 'flowerCmdComplete');
-
-    function changeSegment(e) {
-        var segment = e.target;
-        var angleFromCenter = 90 - segment.angle;
-        var startAngle = (90 - angleFromCenter) * Math.PI / 180;
-        var endAngle = (90 + angleFromCenter) * Math.PI / 180;
-
-        segment.graphics.clear();
-        segment.graphics.beginFill(segment.fill)
-            .arc(0, 0, CIRCLE_RADIUS, startAngle, endAngle);
-    }
 
     container1.addChild(segmentSky);
     container1.addChild(segmentGround);
