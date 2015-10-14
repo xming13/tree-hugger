@@ -258,9 +258,9 @@ function renderMenu() {
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
-        timeline.eventCallback('onComplete', function () {
-            this.restart();
-        });
+//        timeline.eventCallback('onComplete', function () {
+//            this.restart();
+//        });
         timeline.play();
     }
 }
@@ -443,14 +443,32 @@ function renderAnim() {
     var fishObjs = getFishTimeline(LEFT_4, TOP_2);
     var container8 = fishObjs[1];
 
+    var cactusObjs = getCactusTimeline(LEFT_2, TOP_1);
+    var cactusTimeline = cactusObjs[0];
+    var container9 = cactusObjs[1];
+//    container9.alpha = 0;
+
     var transitionTimeline7 = new TimelineMax();
     transitionTimeline7
+//        .set(container9, {alpha: 0})
         .add('transition7')
+        .add('transition7half', '+=3')
         .set(container8, {x: LEFT_4}, 'transition7')
         .to(container8, 8.8, {x: LEFT_0, ease: Power0.easeNone}, 'transition7')
+//        .to(container9, 2, {alpha: 1}, 'transition7half')
+        .add(function() { transitionTimeline7.remove(cactusTimeline); })
         .add('transition7b', '+=0.5')
+        .add('transition7bhalf', '+=3')
+//        .set(container9, {alpha: 0})
         .set(container8, {x: LEFT_0, scaleX: -1}, 'transition7b')
-        .to(container8, 8.8, {x: LEFT_4, ease: Power0.easeNone}, 'transition7b');
+        .to(container8, 8.8, {x: LEFT_4, ease: Power0.easeNone}, 'transition7b')
+        .add(cactusTimeline, 'transition7half')
+        .add(function () {
+            console.log('play at 0');
+            cactusTimeline.play(0);
+        }, 'transition7bhalf')
+//        .to(container9, 2, {alpha: 1}, 'transition7bhalf');
+    ;
 
     animationWrapper.addChild(container1);
     animationWrapper.addChild(container2);
@@ -463,6 +481,7 @@ function renderAnim() {
     animationWrapper.addChildAt(container6, 0);
     animationWrapper.addChild(container7);
     animationWrapper.addChild(container8);
+    animationWrapper.addChild(container9);
 
     mainTimeline = new TimelineMax({paused: true});
     mainTimeline
@@ -1534,14 +1553,126 @@ function getCactusTimeline(x, y) {
     cactusContainer.addChild(segmentSky);
     cactusContainer.addChild(segmentDesert);
 
+    var cactusWrapper = new createjs.Container();
+
+    var COLOR_CACTUS = '#1D8232';
+    var COLOR_CACTUS_STRIPE = 'greenyellow';
+
     var cactus = new createjs.Shape();
-    cactusContainer.addChild(cactus);
+    cactus.graphics.beginFill(COLOR_CACTUS);
+    var cactusCmd1 = cactus.graphics.rect(-15, 25, 30, 0).command;
+    cactus.graphics.endFill().beginFill(COLOR_CACTUS);
+    var cactusCmd2 = cactus.graphics.arc(0, -10, 15, 0 * Math.PI / 180, 0 * Math.PI / 180).command;
+    cactusWrapper.addChild(cactus);
+
+    var leftHand = new createjs.Shape();
+    leftHand.graphics.setStrokeStyle(10, 'round', 'round')
+        .beginStroke(COLOR_CACTUS)
+        .moveTo(-15, 10);
+    var leftHandCmd = leftHand.graphics.arcTo(-22, 10, -22, -20, 5).command;
+    var leftHandCmd2 = leftHand.graphics.lineTo(-15, 10).command;
+    cactusWrapper.addChild(leftHand);
+
+    var rightHand = new createjs.Shape();
+    rightHand.graphics
+        .setStrokeStyle(10, 'round', 'round')
+        .beginStroke(COLOR_CACTUS)
+        .moveTo(15, 10);
+    var rightHandCmd = rightHand.graphics.arcTo(22, 10, 22, 20, 5).command;
+    var rightHandCmd2 = rightHand.graphics.lineTo(15, 10).command;
+    cactusWrapper.addChild(rightHand);
+
+    var stripe = new createjs.Shape();
+    stripe.graphics.setStrokeStyle(1, 'round', 'round')
+        .beginStroke(COLOR_CACTUS_STRIPE);
+    stripe.graphics.moveTo(0, 25);
+    var stripeCmd = stripe.graphics.lineTo(0, 25).command;
+
+    stripe.graphics.endStroke()
+        .beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(-8, 25);
+    var stripeCmd2 = stripe.graphics.lineTo(-8, 25).command;
+
+    stripe.graphics.endStroke()
+        .beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(8, 25);
+    var stripeCmd3 = stripe.graphics.lineTo(8, 25).command;
+
+    cactusWrapper.addChild(stripe);
+    var leftStripe = new createjs.Shape();
+    leftStripe.graphics
+        .setStrokeStyle(1, 'round', 'round')
+        .beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(-15, 10);
+    var leftStripeCmd = leftStripe.graphics.arcTo(-22, 10, -22, -20, 5).command;
+    var leftStripeCmd2 = leftStripe.graphics.lineTo(-15, 10).command;
+    cactusWrapper.addChild(leftStripe);
+
+    var rightStripe = new createjs.Shape();
+    rightStripe.graphics
+        .setStrokeStyle(1, 'round', 'round')
+        .beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(15, 10);
+    var rightStripeCmd = rightStripe.graphics.arcTo(22, 10, 22, 20, 5).command;
+    var rightStripeCmd2 = rightStripe.graphics.lineTo(15, 10).command;
+    cactusWrapper.addChild(rightStripe);
+
+    var eyes = new createjs.Shape();
+    eyes.graphics.beginFill('black');
+    eyes.graphics.drawEllipse(-9, -9, 5, 8);
+    eyes.graphics.endFill().beginFill('black');
+    eyes.graphics.drawEllipse(4, -9, 5, 8);
+
+    var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
+    cactusEyesTimeline
+        .to(eyes, .2, {scaleY: 0, y: -5})
+        .to(eyes, .2, {scaleY: 1, y: 0});
+
+    cactusWrapper.addChild(eyes);
+    cactusContainer.addChildAt(cactusWrapper, 1);
 
     cactusTimeline
         .set(segmentSky, {alpha: 0})
+        .set(cactus, {alpha: 0})
+        .set(stripeCmd, {x: 0, y: 25})
+        .set(stripeCmd2, {x: -8, y: 25})
+        .set(stripeCmd3, {x: 8, y: 25})
+        .set(leftHandCmd, {x1: -15, y1: 10, x2: -15, y2: 10, radius: 5})
+        .set(leftStripeCmd, {x1: -15, y1: 10, x2: -15, y2: 10, radius: 5})
+        .set(rightHandCmd, {x1: 15, y1: 10, x2: 15, y2: 10, radius: 5})
+        .set(rightStripeCmd, {x1: 15, y1: 10, x2: 15, y2: 10, radius: 5})
+        .set(segmentDesertCmd, {startAngle: 90 * Math.PI / 180, endAngle: 90 * Math.PI / 180})
+        .set(segmentSkyCmd, {startAngle: 30 * Math.PI / 180, endAngle: 150 * Math.PI / 180})
+        .set(eyes, {alpha: 0})
         .to(segmentDesertCmd, .4, {startAngle: 30 * Math.PI / 180, endAngle: 150 * Math.PI / 180, ease: Power2.easeIn })
         .set(segmentSky, {alpha: 1})
-        .to(segmentSkyCmd, .55, {startAngle: -90 * Math.PI / 180, endAngle: 270 * Math.PI / 180, ease: Power2.easeOut });
+        .set(cactus, {alpha: 1})
+        .add('segmentDesertComplete', '+=0')
+        .add('cactusCmd1Complete', '+=0.4')
+        .add('handCmdComplete', '+=0.6')
+        .to(segmentSkyCmd, .55, {startAngle: -90 * Math.PI / 180, endAngle: 270 * Math.PI / 180, ease: Power2.easeOut }, 'segmentDesertComplete')
+        .to(cactusCmd1, .4, {h: -35, ease: Power2.easeIn }, 'segmentDesertComplete')
+        .to(stripeCmd, .5, {y: -20, ease: Power2.easeIn }, 'segmentDesertComplete')
+        .to(stripeCmd2, .5, {y: -16, ease: Power2.easeIn }, 'segmentDesertComplete')
+        .to(stripeCmd3, .5, {y: -16, ease: Power2.easeIn }, 'segmentDesertComplete')
+        .set(cactusCmd2, {startAngle: 0, endAngle: 180 * Math.PI / 180}, 'cactusCmd1Complete')
+        .to(cactusCmd2, .24, {startAngle: -90 * Math.PI / 180, endAngle: 270 * Math.PI / 180, ease: Power2.easeOut }, 'cactusCmd1Complete')
+        .to(leftHandCmd, .2, {x1: -22, y1: 10, x2: -22, y2: 10}, 'cactusCmd1Complete')
+        .to(leftStripeCmd, .2, {x1: -22, y1: 10, x2: -22, y2: 10}, 'cactusCmd1Complete')
+        .to(rightHandCmd, .2, {x1: 22, y1: 10, x2: 22, y2: 10}, 'cactusCmd1Complete')
+        .to(rightStripeCmd, .2, {x1: 22, y1: 10, x2: 22, y2: 10}, 'cactusCmd1Complete')
+        .set(leftHandCmd2, {x: -22, y: 10}, 'handCmdComplete')
+        .to(leftHandCmd2, .2, {x: -22, y: -5}, 'handCmdComplete')
+        .set(leftStripeCmd2, {x: -22, y: 10}, 'handCmdComplete')
+        .to(leftStripeCmd2, .2, {x: -22, y: -5}, 'handCmdComplete')
+        .set(rightHandCmd2, {x: 22, y: 10}, 'handCmdComplete')
+        .to(rightHandCmd2, .2, {x: 22, y: -10}, 'handCmdComplete')
+        .set(rightStripeCmd2, {x: 22, y: 10}, 'handCmdComplete')
+        .to(rightStripeCmd2, .2, {x: 22, y: -10}, 'handCmdComplete')
+        .set(eyes, {alpha: 1})
+        .add(cactusEyesTimeline)
+    ;
+
     return [cactusTimeline, cactusContainer];
 }
 
