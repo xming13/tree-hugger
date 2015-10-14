@@ -20,6 +20,8 @@ var COLOR_GROUND = 'LightGreen';
 var COLOR_HIGH_SKY = 'LightBlue';
 var COLOR_SEA = '#6DB7FF';
 var COLOR_SEA_GROUND = '#E77E34';
+var COLOR_DESERT = '#FFCD4E';
+var COLOR_DESERT_SKY = '#FFFFA5';
 var COLOR_BORDER = '#F0F8FF';
 
 // Stage
@@ -122,7 +124,7 @@ function loadAudio() {
             }
             console.log(lrcArr);
 
-            pop.on('canplay', function () {
+            pop.on('canplayall', function () {
                 popCanPlay = true;
                 // hide #loading
 //                var loading = document.getElementById('loading');
@@ -250,6 +252,17 @@ function renderMenu() {
         renderGalleryPage();
     });
     menuWrapper.addChild(btnBrowseWrapper);
+
+    if (DEBUG) {
+        var objs = getCactusTimeline(LEFT_2, TOP_1);
+        var timeline = objs[0];
+        var container = objs[1];
+        menuWrapper.addChild(container);
+        timeline.eventCallback('onComplete', function () {
+            this.restart();
+        });
+        timeline.play();
+    }
 }
 
 function renderAnim() {
@@ -537,6 +550,9 @@ function _renderGallery() {
         case 3:
             var fishObjs = getFishTimeline(LEFT_1, TOP_1);
             _processTimelineObjs(fishObjs);
+
+            var cactusObjs = getCactusTimeline(LEFT_2, TOP_1);
+            _processTimelineObjs(cactusObjs);
             break;
         default:
             break;
@@ -738,8 +754,8 @@ function getFlowerTimeline(x, y) {
         .add("flowerCmdComplete", "+=0.5")
         .set(segmentSky, {alpha: 1})
         .to(flowerStemCmd, .3, { h: -30 }, "segmentGroundComplete")
-        .to(segmentSky, 1.2, {
-            angle: -180,
+        .to(segmentSky, 0.55, {
+            angle: -90,
             ease: Power2.easeOut,
             onUpdate: changeSegment,
             onUpdateParams: ["{self}"]
@@ -1495,11 +1511,11 @@ function getFishTimeline(x, y) {
     tail.graphics.beginFill(COLOR_FISH);
     tail.graphics.moveTo(11, 0);
     var tailCmd = tail.graphics
-        .lineTo(21, -8)
+        .lineTo(22, -8)
         .command;
     tail.graphics.lineTo(19, 0);
     var tailCmd2 = tail.graphics
-        .lineTo(21, 8)
+        .lineTo(22, 8)
         .command;
     tail.graphics.closePath();
     fishWrapper.addChild(tail);
@@ -1515,10 +1531,39 @@ function getFishTimeline(x, y) {
         .add('fish')
         .to(wingCmd, 1, {x: 9, y: -9, repeat: -1, yoyo: true}, 'fish')
         .to(wingCmd2, 1, {x: 9, y: 9, repeat: -1, yoyo: true}, 'fish')
-        .to(tailCmd, 1, {y: -7, repeat: -1, yoyo: true}, 'fish')
-        .to(tailCmd2, 1, {y: 7, repeat: -1, yoyo: true}, 'fish');
+        .to(tailCmd, 1, {y: -6, repeat: -1, yoyo: true}, 'fish')
+        .to(tailCmd2, 1, {y: 6, repeat: -1, yoyo: true}, 'fish');
 
     return [fishTimeline, fishContainer];
+}
+
+function getCactusTimeline(x, y) {
+    var cactusTimeline = new TimelineMax();
+
+    var cactusContainer = new createjs.Container();
+    cactusContainer.x = x;
+    cactusContainer.y = y;
+
+    var segmentDesert = new createjs.Shape();
+    segmentDesert.graphics.beginFill(COLOR_DESERT);
+    var segmentDesertCmd = segmentDesert.graphics.arc(0, 0, CIRCLE_RADIUS, 90 * Math.PI / 180, 90 * Math.PI / 180).command;
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DESERT_SKY);
+    var segmentSkyCmd = segmentSky.graphics.arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180).command;
+
+    cactusContainer.addChild(segmentSky);
+    cactusContainer.addChild(segmentDesert);
+
+    var cactus = new createjs.Shape();
+    cactusContainer.addChild(cactus);
+
+    cactusTimeline
+        .set(segmentSky, {alpha: 0})
+        .to(segmentDesertCmd, .4, {startAngle: 30 * Math.PI / 180, endAngle: 150 * Math.PI / 180, ease: Power2.easeIn })
+        .set(segmentSky, {alpha: 1})
+        .to(segmentSkyCmd, .55, {startAngle: -90 * Math.PI / 180, endAngle: 270 * Math.PI / 180, ease: Power2.easeOut });
+    return [cactusTimeline, cactusContainer];
 }
 
 // Utilities
