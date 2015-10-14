@@ -1,8 +1,8 @@
 // Constants
 var CIRCLE_RADIUS = 50;
+var CIRCLE_RADIUS_SMALL = CIRCLE_RADIUS * 3 / 4;
 var CIRCLE_DIAMETER = CIRCLE_RADIUS * 2;
 var SPACING = 5;
-var ANGLE_START = 30;
 var CANVAS_HEIGHT = 320;
 var CANVAS_WIDTH = 320;
 
@@ -215,7 +215,7 @@ function renderMenu() {
     menuWrapper.removeAllChildren();
 
     var btnPlayWrapper = new createjs.Container();
-    btnPlayWrapper.x = LEFT_1 + CIRCLE_RADIUS;
+    btnPlayWrapper.x = LEFT_2;
     btnPlayWrapper.y = TOP_2;
     btnPlayWrapper.cursor = 'pointer';
 
@@ -238,20 +238,72 @@ function renderMenu() {
     });
     menuWrapper.addChild(btnPlayWrapper);
 
+    var btnFbWrapper = new createjs.Container();
+    btnFbWrapper.x = LEFT_1;
+    btnFbWrapper.y = TOP_3;
+    btnFbWrapper.cursor = 'pointer';
+
+    var btnFb = new createjs.Shape();
+    btnFb.graphics.beginFill('#759BE6')
+        .drawCircle(0, 0, CIRCLE_RADIUS_SMALL)
+        .endFill()
+        .setStrokeStyle(7)
+        .beginStroke('#fff')
+        .moveTo(0, 24)
+        .lineTo(0, -11)
+        .arcTo(0, -17, 12, -17, 6)
+        .lineTo(12, -17)
+        .moveTo(-12, -1)
+        .lineTo(12, -1);
+
+    btnFbWrapper.addChild(btnFb);
+    btnFbWrapper.addEventListener('click', function () {
+        alert('not implemented yet!');
+    });
+    menuWrapper.addChild(btnFbWrapper);
+
     var btnBrowseWrapper = new createjs.Container();
-    btnBrowseWrapper.x = LEFT_3 - CIRCLE_RADIUS;
-    btnBrowseWrapper.y = TOP_2;
+    btnBrowseWrapper.x = LEFT_2;
+    btnBrowseWrapper.y = TOP_3;
     btnBrowseWrapper.cursor = 'pointer';
 
     var btnBrowse = new createjs.Shape();
     btnBrowse.graphics.beginFill('pink')
-        .drawCircle(0, 0, CIRCLE_RADIUS);
+        .drawCircle(0, 0, CIRCLE_RADIUS_SMALL);
     btnBrowseWrapper.addChild(btnBrowse);
     btnBrowseWrapper.addEventListener('click', function () {
         stage.removeChild(menuWrapper);
         renderGalleryPage();
     });
     menuWrapper.addChild(btnBrowseWrapper);
+
+    var btnInfoWrapper = new createjs.Container();
+    btnInfoWrapper.x = LEFT_3;
+    btnInfoWrapper.y = TOP_3;
+    btnInfoWrapper.cursor = 'pointer';
+
+    var btnInfo = new createjs.Shape();
+    btnInfo.graphics.beginFill('#D0D0D0')
+        .drawCircle(0, 0, CIRCLE_RADIUS_SMALL)
+        .endFill()
+        .beginFill('#fff')
+        .drawCircle(0, -18, 5)
+        .setStrokeStyle(7)
+        .beginStroke('#fff')
+        .moveTo(-8, -6)
+        .lineTo(2, -6)
+        .lineTo(2, 16)
+        .lineTo(2, -6)
+        .endStroke()
+        .beginStroke('#fff')
+        .moveTo(-11, 16)
+        .lineTo(11, 16);
+
+    btnInfoWrapper.addChild(btnInfo);
+    btnInfoWrapper.addEventListener('click', function () {
+        alert('not implemented yet!')
+    });
+    menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
         var objs = getCactusTimeline(LEFT_2, TOP_1);
@@ -456,7 +508,9 @@ function renderAnim() {
         .set(container8, {x: LEFT_4}, 'transition7')
         .to(container8, 8.8, {x: LEFT_0, ease: Power0.easeNone}, 'transition7')
 //        .to(container9, 2, {alpha: 1}, 'transition7half')
-        .add(function() { transitionTimeline7.remove(cactusTimeline); })
+        .add(function () {
+            transitionTimeline7.remove(cactusTimeline);
+        })
         .add('transition7b', '+=0.5')
         .add('transition7bhalf', '+=3')
 //        .set(container9, {alpha: 0})
@@ -604,7 +658,7 @@ function _renderBtnPrev() {
 
     var btnPrev = new createjs.Shape();
     btnPrev.graphics.beginFill(enabled ? COLOR_BUTTON_ENABLED : COLOR_BUTTON_DISABLED)
-        .drawCircle(0, 0, CIRCLE_RADIUS * 3 / 4)
+        .drawCircle(0, 0, CIRCLE_RADIUS_SMALL)
         .setStrokeStyle(4, "round", "round")
         .beginStroke(enabled ? COLOR_BUTTON_ENABLED_CONTENT : COLOR_BUTTON_DISABLED_CONTENT)
         .moveTo(6, -12)
@@ -633,7 +687,7 @@ function _renderBtnNext() {
 
     var btnNext = new createjs.Shape();
     btnNext.graphics.beginFill(enabled ? COLOR_BUTTON_ENABLED : COLOR_BUTTON_DISABLED)
-        .drawCircle(0, 0, CIRCLE_RADIUS * 3 / 4)
+        .drawCircle(0, 0, CIRCLE_RADIUS_SMALL)
         .setStrokeStyle(4, "round", "round")
         .beginStroke(enabled ? COLOR_BUTTON_ENABLED_CONTENT : COLOR_BUTTON_DISABLED_CONTENT)
         .moveTo(-6, -12)
@@ -659,7 +713,7 @@ function _renderBtnHome() {
 
     var btnHome = new createjs.Shape();
     btnHome.graphics.beginFill(COLOR_BUTTON_ENABLED)
-        .drawCircle(0, 0, CIRCLE_RADIUS * 3 / 4)
+        .drawCircle(0, 0, CIRCLE_RADIUS_SMALL)
         .endFill()
         .setStrokeStyle(4, "round", "round")
         .beginStroke(COLOR_BUTTON_ENABLED_CONTENT)
@@ -1203,6 +1257,7 @@ function getCloudTimeline(x, y) {
         .drawCircle(0, 0, CIRCLE_RADIUS);
     cloudContainer.addChild(sky);
 
+    var cloudWrapper = new createjs.Container();
     var cloud = new createjs.Shape();
     cloud.graphics
         .beginFill('white')
@@ -1227,7 +1282,29 @@ function getCloudTimeline(x, y) {
         // filler
         .drawCircle(0, 5, 15)
     ;
-    cloudContainer.addChild(cloud);
+    cloudWrapper.addChild(cloud);
+
+    var eyes = new createjs.Shape();
+    eyes.graphics.beginFill('black');
+    eyes.graphics.drawEllipse(-9, -6, 5, 8);
+    eyes.graphics.endFill().beginFill('black');
+    eyes.graphics.drawEllipse(4, -6, 5, 8);
+
+    var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
+    eyesTimeline
+        .to(eyes, .2, {scaleY: 0, y: -2})
+        .to(eyes, .2, {scaleY: 1, y: 0});
+    cloudWrapper.addChild(eyes);
+
+    cloudContainer.addChild(cloudWrapper);
+
+    cloudWrapper.x += 6;
+    var movingCloudTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true});
+    movingCloudTimeline.to(cloudWrapper, 2, {x: "-=12", ease: Power2.easeInOut });
+
+    cloudTimeline
+        .add(movingCloudTimeline, 0)
+        .add(eyesTimeline, 0);
 
     return [cloudTimeline, cloudContainer];
 }
