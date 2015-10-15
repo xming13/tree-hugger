@@ -495,6 +495,7 @@ function renderAnim() {
     var cactusTimeline = cactusObjs[0];
     var cactusContainer = cactusObjs[1];
     var cactusFlowerWrapper = cactusObjs[2];
+    var cactusCactusWrapper = cactusObjs[3];
 //    container9.alpha = 0;
 
     cactusTimeline.eventCallback('onComplete', function () {
@@ -526,11 +527,35 @@ function renderAnim() {
 //        .to(container9, 2, {alpha: 1}, 'transition7bhalf');
     ;
 
+    var overlayContainer = new createjs.Container();
+    overlayContainer.x = 0;
+    overlayContainer.y = 0;
+    var overlay = new createjs.Shape();
+    overlay.alpha = 0;
+    overlay.graphics.beginFill('black').rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    overlayContainer.addChild(overlay);
+
     var transitionTimeline8 = new TimelineMax();
     transitionTimeline8
         .add('transition8')
         .to(seaContainer, .5, {y: TOP_4, ease: Power0.easeNone}, 'transition8')
         .to(cactusContainer, .5, {y: TOP_2, ease: Power0.easeNone}, 'transition8')
+        .add('overlay')
+        .add(function () {
+            cactusCactusWrapper.removeChild(cactusFlowerWrapper);
+            cactusFlowerWrapper.x += LEFT_2;
+            cactusFlowerWrapper.y += TOP_2;
+            overlayContainer.addChild(cactusFlowerWrapper);
+        })
+        .set(overlay, {alpha: 0})
+        .to(overlay, .5, {alpha: .6, ease: Power0.easeNone}, 'overlay')
+        .to(cactusFlowerWrapper, 1, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
+        .add(new TimelineMax({delay: 1})
+            .to(cactusFlowerWrapper, .5, {scaleX: -3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper, .4, {scaleX: 3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper, .2, {scaleX: 3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone}))
+        .to(overlay, .5, {alpha: 0, ease: Power0.easeNone})
     ;
 
     animationWrapper.addChild(flowerContainer);
@@ -545,6 +570,7 @@ function renderAnim() {
     animationWrapper.addChild(seaContainer);
     animationWrapper.addChild(fishContainer);
     animationWrapper.addChild(cactusContainer);
+    animationWrapper.addChild(overlayContainer);
 
     mainTimeline = new TimelineMax({paused: true});
     mainTimeline
@@ -1805,7 +1831,7 @@ function getCactusTimeline(x, y) {
         .add(cactusEyesTimeline, 'stripeCmdComplete')
     ;
 
-    return [cactusTimeline, cactusContainer, flowerWrapper];
+    return [cactusTimeline, cactusContainer, flowerWrapper, cactusWrapper];
 }
 
 // Utilities
