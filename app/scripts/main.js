@@ -326,23 +326,19 @@ function renderAnim() {
     }
     animationWrapper.removeAllChildren();
 
-    if (popCanPlay && pop) {
-        pop.play();
-    }
-
     var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
     var flowerTimeline = flowerObjs[0];
-    var container1 = flowerObjs[1];
+    var flowerContainer = flowerObjs[1];
 
     var treeObjs = getTreeTimeline(LEFT_4, TOP_2);
     var treeTimeline = treeObjs[0];
-    var container2 = treeObjs[1];
+    var treeContainer = treeObjs[1];
 
     var transitionTimeline = new TimelineMax();
     transitionTimeline
         .add('transition')
-        .to(container1, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
-        .to(container2, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
+        .to(flowerContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
+        .to(treeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
 
     var springObjs = getSpringTimeline(0, 0);
     var springTimeline = springObjs[0];
@@ -360,10 +356,10 @@ function renderAnim() {
     var winterTimeline = winterObjs[0];
     var winterContainer = winterObjs[1];
 
-    container2.addChildAt(springContainer, 0);
-    container2.addChildAt(summerContainer, 0);
-    container2.addChildAt(autumnContainer, 0);
-    container2.addChildAt(winterContainer, 0);
+    treeContainer.addChildAt(springContainer, 0);
+    treeContainer.addChildAt(summerContainer, 0);
+    treeContainer.addChildAt(autumnContainer, 0);
+    treeContainer.addChildAt(winterContainer, 0);
 
     var dist = 1.5 * CIRCLE_RADIUS;
     var subContainerDuration = .7;
@@ -427,95 +423,101 @@ function renderAnim() {
 
     var catObjs = getCatTimeline(LEFT_4, TOP_2);
     var catTimeline = catObjs[0];
-    var container3 = catObjs[1];
+    var catContainer = catObjs[1];
 
     var transitionTimeline2 = new TimelineMax();
     transitionTimeline2
         .add('transition')
-        .to(container2, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
-        .to(container3, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
+        .to(treeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
+        .to(catContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
 
     var turtleObjs = getTurtleTimeline(LEFT_4, TOP_2);
     var turtleTimeline = turtleObjs[0];
-    var container4 = turtleObjs[1];
+    var turtleContainer = turtleObjs[1];
     var turtleWrapper = turtleObjs[2];
 
     var transitionTimeline3 = new TimelineMax();
     transitionTimeline3
         .add('transition3')
-        .to(container3, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition3')
-        .to(container4, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition3');
+        .to(catContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition3')
+        .to(turtleContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition3');
 
-    var container4a = new createjs.Container();
-    container4a.x = LEFT_2;
-    container4a.y = TOP_NEG1;
+    var skyContainer = new createjs.Container();
+    skyContainer.x = LEFT_2;
+    skyContainer.y = TOP_NEG1;
     var sky = new createjs.Shape();
     sky.graphics.beginFill('lightBlue')
         .drawCircle(0, 0, CIRCLE_RADIUS);
-    container4a.addChild(sky);
+    skyContainer.addChild(sky);
 
     var cloudObjs1 = getCloudTimeline(LEFT_1, TOP_0);
-    var container4b = cloudObjs1[1];
+    var cloudContainer1 = cloudObjs1[1];
     var cloudObjs2 = getCloudTimeline(LEFT_3, TOP_NEG1);
-    var container4c = cloudObjs2[1];
+    var cloudContainer2 = cloudObjs2[1];
 
     var transitionTimeline4 = new TimelineMax();
     transitionTimeline4
         .add('transition4')
-        .to(container4, 1, {y: TOP_4, ease: Power0.easeNone}, 'transition4')
+        .to(turtleContainer, 1, {y: TOP_4, ease: Power0.easeNone}, 'transition4')
         .to(turtleWrapper, 1, {y: -(TOP_4 - TOP_2), ease: Power0.easeNone}, 'transition4')
-        .to(container4a, .4, {y: TOP_2, ease: Power0.easeNone}, 'transition4')
-        .to(container4b, 2, {y: TOP_5, ease: Power0.easeNone}, 'transition4')
-        .to(container4c, 2, {y: TOP_4, ease: Power0.easeNone}, 'transition4');
+        .to(skyContainer, .4, {y: TOP_2, ease: Power0.easeNone}, 'transition4')
+        .to(cloudContainer1, 2, {y: TOP_5, ease: Power0.easeNone}, 'transition4')
+        .to(cloudContainer2, 2, {y: TOP_4, ease: Power0.easeNone}, 'transition4');
 
     var roofTopObjs = getRoofTopTimeline(LEFT_4, TOP_3);
-    var container5 = roofTopObjs[1];
+    var roofTopContainer = roofTopObjs[1];
     var transitionTimeline5 = new TimelineMax();
 
     transitionTimeline5
         .add('transition5')
-        .to(container5, 3, {x: LEFT_0, ease: Power0.easeNone}, 'transition5');
+        .to(roofTopContainer, 3, {x: LEFT_0, ease: Power0.easeNone}, 'transition5');
 
     var seaWaveObjs = getSeaWaveTimeline(LEFT_2, TOP_5);
-    var container6 = seaWaveObjs[1];
+    var seaWaveContainer = seaWaveObjs[1];
 
     var seaObjs = getSeaTimeline(LEFT_1, TOP_5);
-    var container7 = seaObjs[1];
+    var seaContainer = seaObjs[1];
 
     var transitionTimeline6 = new TimelineMax();
     transitionTimeline6
         .add('transition6')
-        .to(container4a, .5, {y: TOP_0, ease: Circ.easeOut}, 'transition6')
-        .to(container6, .5, {y: TOP_2, ease: Circ.easeOut}, 'transition6')
-        .to(container7, .5, {y: TOP_3, ease: Circ.easeOut}, 'transition6')
+        .to(skyContainer, .5, {y: TOP_0, ease: Circ.easeOut}, 'transition6')
+        .to(seaWaveContainer, .5, {y: TOP_2, ease: Circ.easeOut}, 'transition6')
+        .to(seaContainer, .5, {y: TOP_3, ease: Circ.easeOut}, 'transition6')
         .add('turtleGone', '+=1')
-        .to(container6, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone')
+        .to(seaWaveContainer, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone')
         .to(turtleWrapper, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone');
 
     var fishObjs = getFishTimeline(LEFT_4, TOP_2);
-    var container8 = fishObjs[1];
+    var fishContainer = fishObjs[1];
 
     var cactusObjs = getCactusTimeline(LEFT_2, TOP_1);
     var cactusTimeline = cactusObjs[0];
-    var container9 = cactusObjs[1];
+    var cactusContainer = cactusObjs[1];
+    var cactusFlowerWrapper = cactusObjs[2];
 //    container9.alpha = 0;
+
+    cactusTimeline.eventCallback('onComplete', function () {
+        console.log('cactusTimeline complete');
+        this.restart();
+    });
 
     var transitionTimeline7 = new TimelineMax();
     transitionTimeline7
 //        .set(container9, {alpha: 0})
         .add('transition7')
         .add('transition7half', '+=3')
-        .set(container8, {x: LEFT_4}, 'transition7')
-        .to(container8, 8.8, {x: LEFT_0, ease: Power0.easeNone}, 'transition7')
+        .set(fishContainer, {x: LEFT_4}, 'transition7')
+        .to(fishContainer, 8.8, {x: LEFT_0, ease: Power0.easeNone}, 'transition7')
 //        .to(container9, 2, {alpha: 1}, 'transition7half')
-        .add(function () {
-            transitionTimeline7.remove(cactusTimeline);
-        })
+//        .add(function () {
+//            transitionTimeline7.remove(cactusTimeline);
+//        })
         .add('transition7b', '+=0.5')
         .add('transition7bhalf', '+=3')
 //        .set(container9, {alpha: 0})
-        .set(container8, {x: LEFT_0, scaleX: -1}, 'transition7b')
-        .to(container8, 8.8, {x: LEFT_4, ease: Power0.easeNone}, 'transition7b')
+        .set(fishContainer, {x: LEFT_0, scaleX: -1}, 'transition7b')
+        .to(fishContainer, 8.8, {x: LEFT_4, ease: Power0.easeNone}, 'transition7b')
         .add(cactusTimeline, 'transition7half')
         .add(function () {
             console.log('play at 0');
@@ -524,18 +526,25 @@ function renderAnim() {
 //        .to(container9, 2, {alpha: 1}, 'transition7bhalf');
     ;
 
-    animationWrapper.addChild(container1);
-    animationWrapper.addChild(container2);
-    animationWrapper.addChild(container3);
-    animationWrapper.addChild(container4);
-    animationWrapper.addChildAt(container4a, animationWrapper.getNumChildren() - 1);
-    animationWrapper.addChild(container4b);
-    animationWrapper.addChild(container4c);
-    animationWrapper.addChild(container5);
-    animationWrapper.addChildAt(container6, 0);
-    animationWrapper.addChild(container7);
-    animationWrapper.addChild(container8);
-    animationWrapper.addChild(container9);
+    var transitionTimeline8 = new TimelineMax();
+    transitionTimeline8
+        .add('transition8')
+        .to(seaContainer, .5, {y: TOP_4, ease: Power0.easeNone}, 'transition8')
+        .to(cactusContainer, .5, {y: TOP_2, ease: Power0.easeNone}, 'transition8')
+    ;
+
+    animationWrapper.addChild(flowerContainer);
+    animationWrapper.addChild(treeContainer);
+    animationWrapper.addChild(catContainer);
+    animationWrapper.addChild(turtleContainer);
+    animationWrapper.addChildAt(skyContainer, animationWrapper.getNumChildren() - 1);
+    animationWrapper.addChild(cloudContainer1);
+    animationWrapper.addChild(cloudContainer2);
+    animationWrapper.addChild(roofTopContainer);
+    animationWrapper.addChildAt(seaWaveContainer, 0);
+    animationWrapper.addChild(seaContainer);
+    animationWrapper.addChild(fishContainer);
+    animationWrapper.addChild(cactusContainer);
 
     mainTimeline = new TimelineMax({paused: true});
     mainTimeline
@@ -552,8 +561,15 @@ function renderAnim() {
         .add(transitionTimeline5, '+=0.6')
         .add(transitionTimeline6, '+=0.2')
         .add('fish', '+=0')
+        .add('desert', '+=18.1')
         .add(transitionTimeline7, 'fish')
-        .play();
+        .add(transitionTimeline8, 'desert')
+    ;
+
+    if (popCanPlay && pop) {
+        pop.play();
+    }
+    mainTimeline.play();
 }
 
 function renderGalleryPage() {
@@ -1706,6 +1722,43 @@ function getCactusTimeline(x, y) {
         .to(eyes, .2, {scaleY: 1, y: 0});
 
     cactusWrapper.addChild(eyes);
+
+    var flowerWrapper = new createjs.Container();
+    flowerWrapper.x = 12;
+    flowerWrapper.y = -19;
+    flowerWrapper.scaleX = 0;
+    flowerWrapper.scaleY = 0;
+
+    var flower = new createjs.Shape();
+    flower.graphics
+        .beginFill('yellow')
+        .drawCircle(0, 0, 3)
+    flowerWrapper.addChild(flower);
+
+    var petalColor = 'hotpink';
+    var petalRadius = 3;
+
+    var petal1 = new createjs.Shape();
+    petal1.graphics.beginFill(petalColor).drawCircle(0, -5.5, petalRadius);
+    flowerWrapper.addChildAt(petal1, 0);
+
+    var petal2 = new createjs.Shape();
+    petal2.graphics.beginFill(petalColor).drawCircle(4, -2, petalRadius);
+    flowerWrapper.addChildAt(petal2, 0);
+
+    var petal3 = new createjs.Shape();
+    petal3.graphics.beginFill(petalColor).drawCircle(3, 3.5, petalRadius);
+    flowerWrapper.addChildAt(petal3, 0);
+
+    var petal4 = new createjs.Shape();
+    petal4.graphics.beginFill(petalColor).drawCircle(-3, 3.5, petalRadius);
+    flowerWrapper.addChildAt(petal4, 0);
+
+    var petal5 = new createjs.Shape();
+    petal5.graphics.beginFill(petalColor).drawCircle(-4, -2, petalRadius);
+    flowerWrapper.addChildAt(petal5, 0);
+
+    cactusWrapper.addChild(flowerWrapper);
     cactusContainer.addChildAt(cactusWrapper, 1);
 
     cactusTimeline
@@ -1727,6 +1780,7 @@ function getCactusTimeline(x, y) {
         .add('segmentDesertComplete', '+=0')
         .add('cactusCmd1Complete', '+=0.4')
         .add('handCmdComplete', '+=0.6')
+        .add('stripeCmdComplete', '+=0.8')
         .to(segmentSkyCmd, .55, {startAngle: -90 * Math.PI / 180, endAngle: 270 * Math.PI / 180, ease: Power2.easeOut }, 'segmentDesertComplete')
         .to(cactusCmd1, .4, {h: -35, ease: Power2.easeIn }, 'segmentDesertComplete')
         .to(stripeCmd, .5, {y: -20, ease: Power2.easeIn }, 'segmentDesertComplete')
@@ -1746,11 +1800,12 @@ function getCactusTimeline(x, y) {
         .to(rightHandCmd2, .2, {x: 22, y: -10}, 'handCmdComplete')
         .set(rightStripeCmd2, {x: 22, y: 10}, 'handCmdComplete')
         .to(rightStripeCmd2, .2, {x: 22, y: -10}, 'handCmdComplete')
-        .set(eyes, {alpha: 1})
-        .add(cactusEyesTimeline)
+        .to(flowerWrapper, .6, { scaleX: 1, scaleY: 1, ease: Back.easeOut.config(4) }, 'stripeCmdComplete')
+        .set(eyes, {alpha: 1}, 'stripeCmdComplete')
+        .add(cactusEyesTimeline, 'stripeCmdComplete')
     ;
 
-    return [cactusTimeline, cactusContainer];
+    return [cactusTimeline, cactusContainer, flowerWrapper];
 }
 
 // Utilities
