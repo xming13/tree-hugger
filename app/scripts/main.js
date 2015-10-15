@@ -49,7 +49,7 @@ var PAGE_SIZE = 3;
 var currentPage = 1;
 
 // for debugging
-var DEBUG = false;
+var DEBUG = true;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -224,7 +224,7 @@ function renderMenu() {
     btnPlay.graphics.beginFill(COLOR_BUTTON_ENABLED)
         .drawCircle(0, 0, CIRCLE_RADIUS)
         .endFill().beginFill(COLOR_BUTTON_ENABLED_CONTENT)
-        .setStrokeStyle(4, "round", "round")
+        .setStrokeStyle(4, 'round', 'round')
         .beginStroke(COLOR_BUTTON_ENABLED_CONTENT)
         .moveTo(arrowLength, 0)
         .lineTo(Math.round(-arrowLength * Math.cos(60 * Math.PI / 180)), Math.round(-arrowLength * Math.sin(60 * Math.PI / 180)))
@@ -306,7 +306,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getCactusTimeline(LEFT_2, TOP_1);
+        var objs = getDesertTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -549,8 +549,8 @@ function renderAnim() {
         })
         .set(overlay, {alpha: 0})
         .to(overlay, .5, {alpha: .6, ease: Power0.easeNone}, 'overlay')
-        .to(cactusFlowerWrapper, 1, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
-        .add(new TimelineMax({delay: 1})
+        .to(cactusFlowerWrapper, .5, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
+        .add(new TimelineMax({delay: .5})
             .to(cactusFlowerWrapper, .5, {scaleX: -3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
             .to(cactusFlowerWrapper, .4, {scaleX: 3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
             .to(cactusFlowerWrapper, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
@@ -1132,24 +1132,24 @@ function getWinterTimeline(x, y) {
     }
 
     function tweenSnow(snow) {
-        var _random = Math.random();
+        var chance = Math.random();
         var _x = 0;
-        if (_random <= 0.45) {
-            _x = getRandomInt(-25, -10);
+        if (chance <= 0.45) {
+            _x = _randomInteger(-25, -10);
         }
-        else if (_random <= 0.9) {
-            _x = getRandomInt(10, 25);
+        else if (chance <= 0.9) {
+            _x = _randomInteger(10, 25);
         }
         else {
-            _x = getRandomInt(-9, 9);
+            _x = _randomInteger(-9, 9);
         }
 
         createjs.Tween
             .get(snow, {override: true})
             .to({alpha: 0}, 100)
-            .wait(getRandomInt(0, 2000))
-            .to({alpha: getRandomArbitrary(0.5, 0.9), x: _x, y: getRandomInt(-55, -50)}, 0)
-            .to({y: 24}, getRandomInt(2500, 3000), createjs.Ease.linear)
+            .wait(_randomInteger(0, 2000))
+            .to({alpha: _random(0.5, 0.9), x: _x, y: _randomInteger(-55, -50)}, 0)
+            .to({y: 24}, _randomInteger(2500, 3000), createjs.Ease.linear)
             .call(function () {
                 tweenSnow(snow);
             });
@@ -1157,20 +1157,20 @@ function getWinterTimeline(x, y) {
 //        function randomX() {
 //            var _random = Math.random();
 //            if (_random <= 0.45) {
-//                return getRandomInt(-25, -10);
+//                return _randomInteger(-25, -10);
 //            }
 //            else if (_random <= 0.9) {
-//                return getRandomInt(10, 25);
+//                return _randomInteger(10, 25);
 //            }
 //            else {
-//                return getRandomInt(-9, 9);
+//                return _randomInteger(-9, 9);
 //            }
 //        }
 
 //        snowTreeTimeline
-//            .delay(getRandomArbitrary(0, 2))
-//            .set(snow, {alpha: getRandomArbitrary(0.5, 0.9), x: randomX(), y: getRandomInt(-55, -50)}, 'snow')
-//            .to(snow, getRandomArbitrary(2.5, 3), {y: 24, onComplete: function () {
+//            .delay(_random(0, 2))
+//            .set(snow, {alpha: _random(0.5, 0.9), x: randomX(), y: _randomInteger(-55, -50)}, 'snow')
+//            .to(snow, _random(2.5, 3), {y: 24, onComplete: function () {
 //                tweenSnow(snow);
 //            }});
     }
@@ -1834,11 +1834,34 @@ function getCactusTimeline(x, y) {
     return [cactusTimeline, cactusContainer, flowerWrapper, cactusWrapper];
 }
 
+function getDesertTimeline(x, y) {
+    var desertTimeline = new TimelineMax();
+
+    var desertContainer = new createjs.Container();
+    desertContainer.x = x;
+    desertContainer.y = y;
+
+    var segmentDesert = new createjs.Shape();
+    segmentDesert.graphics
+        .beginFill(COLOR_DESERT)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics
+        .beginFill(COLOR_DESERT_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, -90 * Math.PI / 180, 270 * Math.PI / 180);
+
+    desertContainer.addChild(segmentSky);
+    desertContainer.addChild(segmentDesert);
+
+    return [desertTimeline, desertContainer];
+}
+
 // Utilities
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  */
-function getRandomArbitrary(min, max) {
+function _random(min, max) {
     return Math.random() * (max - min) + min;
 }
 
@@ -1846,6 +1869,6 @@ function getRandomArbitrary(min, max) {
  * Returns a random integer between min (inclusive) and max (inclusive)
  * Using Math.round() will give you a non-uniform distribution!
  */
-function getRandomInt(min, max) {
+function _randomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
