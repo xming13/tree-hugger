@@ -49,7 +49,7 @@ var PAGE_SIZE = 3;
 var currentPage = 1;
 
 // for debugging
-var DEBUG = true;
+var DEBUG = false;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -535,9 +535,22 @@ function renderAnim() {
     overlay.graphics.beginFill('black').rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     overlayContainer.addChild(overlay);
 
+    var desertGroundContainer1 = getDesertGroundContainer(LEFT_1, TOP_2);
+    var desertGroundContainer2 = getDesertGroundContainer(LEFT_3, TOP_2);
+    var desertContainer1 = getDesertContainer(LEFT_1, TOP_3);
+    var desertContainer2 = getDesertContainer(LEFT_2, TOP_3);
+    var desertContainer3 = getDesertContainer(LEFT_3, TOP_3);
+    desertGroundContainer1.scaleX = desertGroundContainer1.scaleY
+        = desertGroundContainer1.scaleX = desertGroundContainer2.scaleY
+        = desertContainer1.scaleX = desertContainer1.scaleY
+        = desertContainer2.scaleX = desertContainer2.scaleY
+        = desertContainer3.scaleX = desertContainer3.scaleY
+        = 0;
+
     var transitionTimeline8 = new TimelineMax();
     transitionTimeline8
         .add('transition8')
+        .set([desertGroundContainer1, desertGroundContainer2, desertContainer1, desertContainer2, desertContainer3], {scaleX: 0, scaleY: 0})
         .to(seaContainer, .5, {y: TOP_4, ease: Power0.easeNone}, 'transition8')
         .to(cactusContainer, .5, {y: TOP_2, ease: Power0.easeNone}, 'transition8')
         .add('overlay')
@@ -556,7 +569,10 @@ function renderAnim() {
             .to(cactusFlowerWrapper, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
             .to(cactusFlowerWrapper, .2, {scaleX: 3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone}))
         .to(overlay, .5, {alpha: 0, ease: Power0.easeNone})
+        .to([desertGroundContainer1, desertGroundContainer2, desertContainer1, desertContainer2, desertContainer3], .5,
+            {scaleX: 1, scaleY: 1, ease: Circ.easeIn})
     ;
+
 
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
@@ -571,6 +587,11 @@ function renderAnim() {
     animationWrapper.addChild(fishContainer);
     animationWrapper.addChild(cactusContainer);
     animationWrapper.addChild(overlayContainer);
+    animationWrapper.addChild(desertGroundContainer1);
+    animationWrapper.addChild(desertGroundContainer2);
+    animationWrapper.addChild(desertContainer1);
+    animationWrapper.addChild(desertContainer2);
+    animationWrapper.addChild(desertContainer3);
 
     mainTimeline = new TimelineMax({paused: true});
     mainTimeline
@@ -1834,12 +1855,11 @@ function getCactusTimeline(x, y) {
     return [cactusTimeline, cactusContainer, flowerWrapper, cactusWrapper];
 }
 
-function getDesertTimeline(x, y) {
-    var desertTimeline = new TimelineMax();
-
-    var desertContainer = new createjs.Container();
-    desertContainer.x = x;
-    desertContainer.y = y;
+// Containers
+function getDesertGroundContainer(x, y) {
+    var desertGroundContainer = new createjs.Container();
+    desertGroundContainer.x = x;
+    desertGroundContainer.y = y;
 
     var segmentDesert = new createjs.Shape();
     segmentDesert.graphics
@@ -1851,10 +1871,24 @@ function getDesertTimeline(x, y) {
         .beginFill(COLOR_DESERT_SKY)
         .arc(0, 0, CIRCLE_RADIUS, -90 * Math.PI / 180, 270 * Math.PI / 180);
 
-    desertContainer.addChild(segmentSky);
-    desertContainer.addChild(segmentDesert);
+    desertGroundContainer.addChild(segmentSky);
+    desertGroundContainer.addChild(segmentDesert);
 
-    return [desertTimeline, desertContainer];
+    return desertGroundContainer;
+}
+
+function getDesertContainer(x, y) {
+    var desertContainer = new createjs.Container();
+    desertContainer.x = x;
+    desertContainer.y = y;
+
+    var desert = new createjs.Shape();
+    desert.graphics
+        .beginFill(COLOR_DESERT)
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    desertContainer.addChild(desert);
+
+    return desertContainer;
 }
 
 // Utilities
