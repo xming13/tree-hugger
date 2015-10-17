@@ -24,6 +24,7 @@ var COLOR_SEA = '#6DB7FF';
 var COLOR_SEA_GROUND = '#E77E34';
 var COLOR_DARK_SKY = '#000025';
 var COLOR_DARK_SEA = '#AAAAB3';
+var COLOR_ICE_GROUND = '#F2F2F2';
 var COLOR_DESERT = '#FFD466';
 var COLOR_DESERT_SKY = '#FFFFA5';
 
@@ -37,6 +38,8 @@ var COLOR_BALLOON_STRING = 'white';
 var COLOR_BALLOON_1 = '#FF9999';
 var COLOR_BALLOON_2 = '#9999FF';
 var COLOR_BALLOON_3 = '#FFFF99';
+
+var COLOR_SHARK = '#CCCCCC';
 
 // Stage
 var stage;
@@ -324,7 +327,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getSeaMonsterTimeline(LEFT_2, TOP_1);
+        var objs = getSharkTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -738,8 +741,14 @@ function _renderGallery() {
             var desertFaceObjs = getDesertFaceTimeline(LEFT_2, TOP_1);
             _processTimelineObjs(desertFaceObjs);
 
+            var jackalopeObjs = getJackalopeTimeline(LEFT_3, TOP_1);
+            _processTimelineObjs(jackalopeObjs);
+
             var seaMonsterObjs = getSeaMonsterTimeline(LEFT_2, TOP_2);
             _processTimelineObjs(seaMonsterObjs);
+
+            var sharkObjs = getSharkTimeline(LEFT_3, TOP_2);
+            _processTimelineObjs(sharkObjs);
 
             break;
         default:
@@ -2148,6 +2157,26 @@ function getDesertFaceTimeline(x, y) {
     return [desertFaceTimeline, desertFaceContainer];
 }
 
+function getJackalopeTimeline(x, y) {
+    var jackalopeTimeline = new TimelineMax();
+
+    var jackalopeContainer = new createjs.Container();
+    jackalopeContainer.x = x;
+    jackalopeContainer.y = y;
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    jackalopeContainer.addChild(segmentSky);
+
+    var segmentIce = new createjs.Shape();
+    segmentIce.graphics.beginFill(COLOR_ICE_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    jackalopeContainer.addChild(segmentIce);
+
+    return [jackalopeTimeline, jackalopeContainer];
+}
+
 function getSeaMonsterTimeline(x, y) {
     var seaMonsterTimeline = new TimelineMax();
 
@@ -2204,6 +2233,37 @@ function getSeaMonsterTimeline(x, y) {
     ;
 
     return [seaMonsterTimeline, seaMonsterContainer];
+}
+
+function getSharkTimeline(x, y) {
+    var sharkTimeline = new TimelineMax();
+
+    var sharkContainer = new createjs.Container();
+    sharkContainer.x = x;
+    sharkContainer.y = y;
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    sharkContainer.addChild(segmentSky);
+
+    var segmentSea = new createjs.Shape();
+    segmentSea.graphics.beginFill(COLOR_DARK_SEA)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    sharkContainer.addChild(segmentSea);
+
+    var shark = new createjs.Shape();
+    shark.graphics.beginFill(COLOR_SHARK)
+        .moveTo(-25, 25)
+        .arcTo(-12.5, 5, 0, 2, 40)
+        .arcTo(2, 12, 8, 25, 30)
+        .lineTo(8, 25)
+    ;
+    sharkContainer.addChild(shark);
+
+    sharkTimeline
+        .to(shark, 2, {x: -19, startAt: {x: 36}, repeat: -1, yoyo: true});
+    return [sharkTimeline, sharkContainer];
 }
 
 // Containers
