@@ -20,7 +20,7 @@ var COLOR_GROUND = 'LightGreen';
 var COLOR_HIGH_SKY = 'LightBlue';
 var COLOR_SEA = '#6DB7FF';
 var COLOR_SEA_GROUND = '#E77E34';
-var COLOR_DESERT = '#FFCD4E';
+var COLOR_DESERT = '#FFD466';
 var COLOR_DESERT_SKY = '#FFFFA5';
 var COLOR_BORDER = '#F0F8FF';
 
@@ -49,8 +49,8 @@ var PAGE_SIZE = 3;
 var currentPage = 1;
 
 // for debugging
-var DEBUG = false;
-var START_TIME = DEBUG ? 44 : 0;
+var DEBUG = true;
+var START_TIME = DEBUG ? 45 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -311,9 +311,9 @@ function renderMenu() {
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
-//        timeline.eventCallback('onComplete', function () {
-//            this.restart();
-//        });
+        timeline.eventCallback('onComplete', function () {
+            this.restart();
+        });
         timeline.play();
     }
 }
@@ -506,8 +506,8 @@ function renderAnim() {
     transitionTimeline7
         .add('transition7')
         .to(fishContainer, 8.8, {x: LEFT_0, startAt: {x: LEFT_4}, ease: Power0.easeNone}, 'transition7')
+        .to(cactusContainer, .5, {scaleX: 0, scaleY: 0, ease: Power2.easeOut })
         .add(function () {
-            cactusTimeline.seek(0);
             // remove cactusTimeline from the timeline
             transitionTimeline7.remove(cactusTimeline);
         })
@@ -531,7 +531,9 @@ function renderAnim() {
     var desertContainer2 = getDesertContainer(LEFT_3, TOP_3);
 
     var desertFaceObjs = getDesertFaceTimeline(LEFT_2, TOP_3);
+    var desertFaceTimeline = desertFaceObjs[0];
     var desertFaceContainer = desertFaceObjs[1];
+
     desertGroundContainer1.scaleX = desertGroundContainer1.scaleY
         = desertGroundContainer1.scaleX = desertGroundContainer2.scaleY
         = desertContainer1.scaleX = desertContainer1.scaleY
@@ -554,15 +556,19 @@ function renderAnim() {
         })
         .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}, ease: Power0.easeNone}, 'overlay')
         .to(cactusFlowerWrapper2, .5, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
-        .add(new TimelineMax({delay: .5})
-            .to(cactusFlowerWrapper2, .5, {scaleX: -3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .4, {scaleX: 3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .2, {scaleX: 3, y: "-=" + CIRCLE_RADIUS, ease: Power0.easeNone}))
+        .add(new TimelineMax({delay: .8})
+            .to(cactusFlowerWrapper2, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper2, .26, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper2, .22, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper2, .18, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper2, .14, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper2, .1, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper2, .06, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
+            .to(cactusFlowerWrapper2, .02, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone}))
         .to(overlay, .5, {alpha: 0, ease: Power0.easeNone})
-        .add('desert', '+=1')
-        .to([desertGroundContainer1, desertGroundContainer2], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)})
-        .to([desertContainer1, desertContainer2, desertFaceContainer], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert')
+        .add('desert', '+=4')
+        .to([desertGroundContainer1, desertGroundContainer2], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert')
+        .to([desertContainer1, desertContainer2, desertFaceContainer], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert+=1')
     ;
 
     animationWrapper.addChild(flowerContainer);
@@ -611,6 +617,7 @@ function renderAnim() {
         .add('desert', '+=18.1')
         .add(transitionTimeline7, 'fish')
         .add(transitionTimeline8, 'desert')
+        .add(desertFaceTimeline, '+=1')
     ;
 
     mainTimeline.play(START_TIME, false);
@@ -1616,7 +1623,7 @@ function getFishTimeline(x, y) {
         .arc(0, 0, CIRCLE_RADIUS, 210 * Math.PI / 180, -30 * Math.PI / 180);
     fishContainer.addChild(segmentSky);
 
-    var COLOR_FISH = '#FFCB00';
+    var COLOR_FISH = '#FFE926';
 
     var fishWrapper = new createjs.Container();
     var fish = new createjs.Shape();
@@ -1762,7 +1769,7 @@ function getCactusTimeline(x, y) {
     eyes.graphics.endFill().beginFill('black');
     eyes.graphics.drawEllipse(4, -9, 5, 8);
 
-    var cactusEyesTimeline = new TimelineMax({repeat: 0, repeatDelay: 2, delay: 2});
+    var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
     cactusEyesTimeline
         .to(eyes, .2, {scaleY: 0, y: -5})
         .to(eyes, .2, {scaleY: 1, y: 0});
@@ -1839,7 +1846,6 @@ function getCactusTimeline(x, y) {
         .to([leftHandCmd2, leftStripeCmd2], .2, {x: -22, y: -5, startAt: {x: -22, y: 10}}, 'handCmdComplete')
         .to([rightHandCmd2, rightStripeCmd2], .2, {x: 22, y: -10, startAt: {x: 22, y: 10}}, 'handCmdComplete')
         .set(eyes, {alpha: 1}, 'stripeCmdComplete')
-        .add(cactusEyesTimeline, 'stripeCmdComplete')
         .to(flowerWrapper, .6, { scaleX: 1, scaleY: 1, ease: Back.easeOut.config(4) }, 'eyeComplete')
     ;
 
@@ -1861,33 +1867,55 @@ function getDesertFaceTimeline(x, y) {
 
     var desertFace = new createjs.Container();
     var eyes = new createjs.Shape();
-    eyes.graphics.beginFill('#000')
-        .drawCircle(-12, 0, 3)
-        .drawCircle(12, 0, 3);
+    eyes.graphics
+        .beginFill('black')
+        .drawEllipse(-14, 0, 6, 10)
+        .endFill().beginFill('black')
+        .drawEllipse(8, 0, 6, 10);
+
+    var desertFaceEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
+    desertFaceEyesTimeline
+        .to(eyes, .2, {scaleY: 0, y: 5})
+        .to(eyes, .2, {scaleY: 1, y: 0});
+
     desertFace.addChild(eyes);
 
     var eyebrows = new createjs.Shape();
     eyebrows.graphics
         .setStrokeStyle(2, 'round', 'round')
         .beginStroke('#000')
-        .moveTo(-8, -20)
-        .arcTo(-13, -9.5, -28, -6, 30)
-        .lineTo(-28, -6)
-        .moveTo(8, -20)
-        .arcTo(13, -9.5, 28, -6, 30)
-        .lineTo(28, -6);
+        .moveTo(-8, -18);
+    var eyebrowsCmd = eyebrows.graphics
+        .arcTo(-18, -13, -28, -3, 20)
+        .command;
+    eyebrows.graphics
+        .lineTo(-28, -3)
+        .moveTo(8, -18);
+    var eyebrowsCmd2 = eyebrows.graphics
+        .arcTo(18, -13, 28, -3, 20)
+        .command;
+    eyebrows.graphics
+        .lineTo(28, -3);
     desertFace.addChild(eyebrows);
 
-    var mouth = new createjs.Shape();
-    mouth.graphics
-        .setStrokeStyle(2, 'round', 'round')
-        .beginStroke('#000')
-        .moveTo(-24, 22)
-        .arcTo(0, 0, 24, 22, 36);
-
-    desertFace.addChild(mouth);
+//    var mouth = new createjs.Shape();
+//    mouth.graphics
+//        .setStrokeStyle(2, 'round', 'round')
+//        .beginStroke('#000')
+//        .moveTo(-24, 22)
+//        .arcTo(0, 0, 24, 22, 36);
+//    desertFace.addChild(mouth);
 
     desertFaceContainer.addChild(desertFace);
+    desertFaceTimeline
+        .set([eyes, eyebrows], {alpha: 0})
+        .to([eyes, eyebrows], .6, {alpha: 1})
+        .set(eyebrowsCmd, {x1: -18, y1: -13, x2: -28, y2: -3, radius: 20})
+        .set(eyebrowsCmd2, {x1: 18, y1: -13, x2: 28, y2: -3, radius: 20})
+        .add('desertFace', '+=1.2')
+        .to(eyebrowsCmd, .8, {x1: -13, y1: -8, x2: -28, y2: -3, radius: 20}, 'desertFace')
+        .to(eyebrowsCmd2, .8, {x1: 13, y1: -8, x2: 28, y2: -3, radius: 20}, 'desertFace')
+    ;
 
     return [desertFaceTimeline, desertFaceContainer];
 }
