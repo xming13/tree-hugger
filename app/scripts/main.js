@@ -23,9 +23,17 @@ var COLOR_SEA_GROUND = '#E77E34';
 var COLOR_DESERT = '#FFD466';
 var COLOR_DESERT_SKY = '#FFFFA5';
 var COLOR_BORDER = '#F0F8FF';
+
 var COLOR_BEE_BODY = 'yellow';
 var COLOR_BEE_WING = '#ABCCB0';
 var COLOR_BEE_BODY_STRIPE = 'black'
+
+var COLOR_TURTLE_SHELL = '#25B325';
+var COLOR_TURTLE_BODY = '#FFBE00';
+var COLOR_BALLOON_STRING = 'white';
+var COLOR_BALLOON_1 = '#FF9999';
+var COLOR_BALLOON_2 = '#9999FF';
+var COLOR_BALLOON_3 = '#FFFF99';
 
 // Stage
 var stage;
@@ -53,7 +61,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 45 : 0;
+var START_TIME = DEBUG ? 35 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -310,7 +318,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getCatTimeline(LEFT_2, TOP_1);
+        var objs = getFishTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -464,16 +472,21 @@ function renderAnim() {
         .add('transition4')
         .to(turtleContainer, 1, {y: TOP_4, ease: Power0.easeNone}, 'transition4')
         .to(turtleWrapper, 1, {y: -(TOP_4 - TOP_2), ease: Power0.easeNone}, 'transition4')
-        .to(skyContainer, .4, {y: TOP_2, ease: Power0.easeNone}, 'transition4')
+        .to(skyContainer, 1, {y: TOP_2, ease: Power0.easeNone}, 'transition4')
         .to(cloudContainer1, 2, {y: TOP_5, ease: Power0.easeNone}, 'transition4')
-        .to(cloudContainer2, 2, {y: TOP_4, ease: Power0.easeNone}, 'transition4');
+        .to(cloudContainer2, 2.4, {y: TOP_4, ease: Power0.easeNone}, 'transition4');
 
     var roofTopObjs = getRoofTopTimeline(LEFT_4, TOP_3);
     var roofTopContainer = roofTopObjs[1];
+
+    var cloudObjs3 = getCloudTimeline(LEFT_4, TOP_1);
+    var cloudContainer3 = cloudObjs3[1];
+
     var transitionTimeline5 = new TimelineMax();
 
     transitionTimeline5
         .add('transition5')
+        .to(cloudContainer3, 3.2, {x: LEFT_2, ease: Power0.easeNone}, 'transition5')
         .to(roofTopContainer, 3, {x: LEFT_0, ease: Power0.easeNone}, 'transition5');
 
     var seaWaveObjs = getSeaWaveTimeline(LEFT_2, TOP_5);
@@ -485,12 +498,19 @@ function renderAnim() {
     var transitionTimeline6 = new TimelineMax();
     transitionTimeline6
         .add('transition6')
+        .to(cloudContainer3, .5, {y: TOP_NEG1, ease: Circ.easeOut}, 'transition6')
         .to(skyContainer, .5, {y: TOP_0, ease: Circ.easeOut}, 'transition6')
         .to(seaWaveContainer, .5, {y: TOP_2, ease: Circ.easeOut}, 'transition6')
         .to(seaContainer, .5, {y: TOP_3, ease: Circ.easeOut}, 'transition6')
-        .add('turtleGone', '+=1')
-        .to(seaWaveContainer, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone')
-        .to(turtleWrapper, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone');
+        .add(function () {
+            var balloonWrapper = turtleWrapper.getChildAt(0);
+            skyContainer.addChild(balloonWrapper);
+            turtleWrapper.removeChild(balloonWrapper);
+        }, 'transition6')
+        .add('turtleGone', '+=0')
+        .to(turtleWrapper, 1, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0, ease: Power0.easeNone}, 'turtleGone')
+        .to(seaWaveContainer, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone+=1')
+    ;
 
     var fishObjs = getFishTimeline(LEFT_4, TOP_2);
     var fishContainer = fishObjs[1];
@@ -581,6 +601,7 @@ function renderAnim() {
     animationWrapper.addChildAt(skyContainer, animationWrapper.getNumChildren() - 1);
     animationWrapper.addChild(cloudContainer1);
     animationWrapper.addChild(cloudContainer2);
+    animationWrapper.addChild(cloudContainer3);
     animationWrapper.addChild(roofTopContainer);
     animationWrapper.addChildAt(seaWaveContainer, 0);
     animationWrapper.addChild(seaContainer);
@@ -610,12 +631,12 @@ function renderAnim() {
         .add(treeTimeline, 'tree')
         .add(transitionSeasonTimeline, 'tree')
         .add(transitionTimeline2, '+=0')
-        .add(catTimeline, '+=0')
-        .add(transitionTimeline3, '+=0.2')
-        .add(turtleTimeline, '+=0')
-        .add(transitionTimeline4, '+=0.5')
+        .add(catTimeline, '-=0.3')
+        .add(transitionTimeline3, '+=0')
+        .add(turtleTimeline, '+=0.4')
+        .add(transitionTimeline4, '+=0.1')
         .add(transitionTimeline5, '+=0.6')
-        .add(transitionTimeline6, '+=0.2')
+        .add(transitionTimeline6, '+=0')
         .add('fish', '+=0')
         .add('desert', '+=18.1')
         .add(transitionTimeline7, 'fish')
@@ -1299,12 +1320,12 @@ function getCatTimeline(x, y) {
 
     var beeDuration = .3;
     catTimeline
-        .to(wings, beeDuration, {alpha: .8, y: "+=2", ease: Power0.easeNone}, 0)
-        .to(wings, beeDuration, {alpha: .5, y: "-=2", ease: Power0.easeNone}, beeDuration)
-        .to(wings, beeDuration, {alpha: .8, y: "+=2", ease: Power0.easeNone}, 2 * beeDuration)
-        .to(wings, beeDuration, {alpha: .5, y: "-=2", ease: Power0.easeNone}, 3 * beeDuration)
-        .to(wings, beeDuration, {alpha: .8, y: "+=2", ease: Power0.easeNone}, 4 * beeDuration)
-        .to(wings, beeDuration, {alpha: .5, y: "-=2", ease: Power0.easeNone}, 5 * beeDuration)
+        .to(wings, beeDuration, {alpha: .8, y: "+=1", ease: Power0.easeNone}, 0)
+        .to(wings, beeDuration, {alpha: .5, y: "-=1", ease: Power0.easeNone}, beeDuration)
+        .to(wings, beeDuration, {alpha: .8, y: "+=1", ease: Power0.easeNone}, 2 * beeDuration)
+        .to(wings, beeDuration, {alpha: .5, y: "-=1", ease: Power0.easeNone}, 3 * beeDuration)
+        .to(wings, beeDuration, {alpha: .8, y: "+=1", ease: Power0.easeNone}, 4 * beeDuration)
+        .to(wings, beeDuration, {alpha: .5, y: "-=1", ease: Power0.easeNone}, 5 * beeDuration)
         .to(beeWrapper, beeDuration * 6, {x: 70, ease: Power0.easeNone}, 0)
         .to(beeWrapper, beeDuration, {y: -5, ease: Sine.easeOut}, 0)
         .to(beeWrapper, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
@@ -1343,11 +1364,114 @@ function getTurtleTimeline(x, y) {
 
     var turtleWrapper = new createjs.Container();
     var turtle = new createjs.Shape();
-    turtle.graphics.beginFill('green').drawCircle(0, 15, 12);
+    turtle.graphics.beginFill(COLOR_TURTLE_SHELL)
+        .arc(0, 25, 15, 0, 180 * Math.PI / 180, true);
     turtleWrapper.addChild(turtle);
+
+    var head = new createjs.Shape();
+    head.graphics.beginFill(COLOR_TURTLE_BODY)
+        .drawCircle(0, 21, 4.5);
+    turtleWrapper.addChild(head);
+
+    var eyes = new createjs.Shape();
+    eyes.graphics
+        .beginFill('black')
+        .drawEllipse(-4, 20, 2, 2)
+        .endFill().beginFill('black')
+        .drawEllipse(2, 20, 2, 2);
+    turtleWrapper.addChild(eyes);
+
+    var turtleEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
+    turtleEyesTimeline
+        .to(eyes, .2, {scaleY: 0, y: 21})
+        .to(eyes, .2, {scaleY: 1, y: 0});
+
+    var hand1 = new createjs.Shape();
+    hand1.graphics
+        .beginFill(COLOR_TURTLE_BODY)
+        .moveTo(15, 25)
+        .lineTo(13, 18)
+        .lineTo(22, 25);
+    turtleWrapper.addChild(hand1);
+
+    var hand2 = new createjs.Shape();
+    hand2.graphics
+        .beginFill(COLOR_TURTLE_BODY)
+        .moveTo(-15, 25)
+        .lineTo(-13, 18)
+        .lineTo(-22, 25);
+    turtleWrapper.addChild(hand2);
+
+    var balloonWrapper = new createjs.Container();
+    var balloon1 = new createjs.Shape();
+    var balloon1StringCmd = balloon1.graphics
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(-6, 24)
+        .lineTo(-11, -11)
+        .command;
+    var balloon1Cmd = balloon1.graphics
+        .endStroke()
+        .endFill().beginFill(COLOR_BALLOON_1)
+        .drawEllipse(-18, -20, 14, 18)
+        .command;
+    balloon1.rotation = -12;
+    balloonWrapper.addChild(balloon1);
+
+    var balloon2 = new createjs.Shape();
+    var balloon2StringCmd = balloon2.graphics
+        .setStrokeStyle(1)
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(0, 24)
+        .lineTo(0, -11)
+        .command;
+    var balloon2Cmd = balloon2.graphics
+        .endStroke()
+        .beginFill(COLOR_BALLOON_2)
+        .drawEllipse(-7, -24, 14, 18)
+        .command;
+    balloon2.rotation = 0;
+    balloonWrapper.addChild(balloon2);
+
+    var balloon3 = new createjs.Shape();
+    var balloon3StringCmd = balloon3.graphics
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(6, 24)
+        .lineTo(11, -11)
+        .command;
+    var balloon3Cmd = balloon3.graphics
+        .endStroke()
+        .endFill().beginFill(COLOR_BALLOON_3)
+        .drawEllipse(4, -20, 14, 18)
+        .command;
+    balloon3.rotation = 12;
+    balloonWrapper.addChild(balloon3);
+
+    turtleWrapper.addChildAt(balloonWrapper, 0);
     turtleContainer.addChild(turtleWrapper);
 
-    return [turtleTimeline, turtleContainer, turtleWrapper];
+    turtleTimeline
+        .set(balloon1StringCmd, {x: -6, y: 24})
+        .set(balloon2StringCmd, {y: 24})
+        .set(balloon3StringCmd, {x: 6, y: 24})
+        .set(balloon1Cmd, {x: -11, y: -1, w: 0, h: 0})
+        .set(balloon2Cmd, {x: 0, y: -3, w: 0, h: 0})
+        .set(balloon3Cmd, {x: 9, y: -1, w: 0, h: 0})
+        .add('balloon')
+        .to(balloon1StringCmd, .4, {x: -10, y: -4})
+        .to(balloon2StringCmd, .4, {y: -11}, 'balloon+=0.2')
+        .to(balloon3StringCmd, .4, {x: 10, y: -4}, 'balloon+=0.4')
+        .to(balloon1Cmd, .4, {x: -18, y: -20, w: 14, h: 18}, 'balloon+=0.2')
+        .to(balloon2Cmd, .4, {x: -7, y: -24, w: 14, h: 18}, 'balloon+=0.4')
+        .to(balloon3Cmd, .4, {x: 4, y: -20, w: 14, h: 18}, 'balloon+=0.6')
+    ;
+    var flyTimeline = new TimelineMax();
+    flyTimeline
+        .add('hands')
+        .to(hand1, .5, {rotation: "-=4", startAt: {rotation: "+=2"}, repeat: -1, yoyo: true}, 'hands')
+        .to(hand2, .5, {rotation: "+=4", startAt: {rotation: "-=2"}, repeat: -1, yoyo: true}, 'hands')
+    ;
+
+    return [turtleTimeline, turtleContainer, turtleWrapper, balloonWrapper];
 }
 
 function getCloudTimeline(x, y) {
@@ -1705,7 +1829,28 @@ function getFishTimeline(x, y) {
     eye.graphics.drawCircle(-8, -2, 1.5);
     fishWrapper.addChild(eye);
 
+    var bubble = new createjs.Shape();
+    var bubbleCmd = bubble.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(-12, -8, 0)
+        .command;
+    fishContainer.addChild(bubble);
+
     fishContainer.addChild(fishWrapper);
+
+    var bubbleTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.2});
+    bubbleTimeline.to(bubbleCmd, 2, {
+        x: -10,
+        y: -24,
+        radius: 1,
+        ease: Power1.easeIn,
+        onStart: function () {
+            bubble.alpha = 1
+        },
+        onComplete: function (e) {
+            bubble.alpha = 0;
+        }
+    })
 
     fishTimeline
         .add('fish')
