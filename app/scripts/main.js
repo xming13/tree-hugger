@@ -15,14 +15,17 @@ var TOP_NEG1 = TOP_0 - SPACING - CIRCLE_DIAMETER;
 var TOP_5 = TOP_4 + SPACING + CIRCLE_DIAMETER;
 
 // Colors
+var COLOR_BORDER = '#F0F8FF';
+
 var COLOR_SKY = '#E4F8FF';
 var COLOR_GROUND = 'LightGreen';
 var COLOR_HIGH_SKY = 'LightBlue';
 var COLOR_SEA = '#6DB7FF';
 var COLOR_SEA_GROUND = '#E77E34';
+var COLOR_DARK_SKY = '#000025';
+var COLOR_DARK_SEA = '#AAAAB3';
 var COLOR_DESERT = '#FFD466';
 var COLOR_DESERT_SKY = '#FFFFA5';
-var COLOR_BORDER = '#F0F8FF';
 
 var COLOR_BEE_BODY = 'yellow';
 var COLOR_BEE_WING = '#ABCCB0';
@@ -70,6 +73,9 @@ function init() {
     // Ticker
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", stage);
+
+    // Defaults;
+    TweenLite.defaultEase = Power0.easeNone;
 
     loadAudio();
 
@@ -318,7 +324,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getDesertFaceTimeline(LEFT_2, TOP_1);
+        var objs = getSeaMonsterTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -326,9 +332,6 @@ function renderMenu() {
             this.restart();
         });
         timeline.play();
-
-        var container = getHeartContainer(LEFT_1, TOP_1);
-        menuWrapper.addChild(container);
     }
 }
 
@@ -460,6 +463,7 @@ function renderAnim() {
     var skyContainer = new createjs.Container();
     skyContainer.x = LEFT_2;
     skyContainer.y = TOP_NEG1;
+    skyContainer.alpha = 0;
     var sky = new createjs.Shape();
     sky.graphics.beginFill('lightBlue')
         .drawCircle(0, 0, CIRCLE_RADIUS);
@@ -473,11 +477,12 @@ function renderAnim() {
     var transitionTimeline4 = new TimelineMax();
     transitionTimeline4
         .add('transition4')
-        .to(turtleContainer, 1, {y: TOP_4, ease: Power0.easeNone}, 'transition4')
-        .to(turtleWrapper, 1, {y: -(TOP_4 - TOP_2), ease: Power0.easeNone}, 'transition4')
-        .to(skyContainer, 1, {y: TOP_2, ease: Power0.easeNone}, 'transition4')
-        .to(cloudContainer1, 2, {y: TOP_5, ease: Power0.easeNone}, 'transition4')
-        .to(cloudContainer2, 2.4, {y: TOP_4, ease: Power0.easeNone}, 'transition4');
+        .set(skyContainer, {alpha: 0}, 'transition4')
+        .to(turtleContainer, 1, {y: TOP_4}, 'transition4')
+        .to(turtleWrapper, 1, {y: -(TOP_4 - TOP_2)}, 'transition4')
+        .to(skyContainer, .01, {y: TOP_2, alpha: 1}, 'transition4')
+        .to(cloudContainer1, 2, {y: TOP_5}, 'transition4')
+        .to(cloudContainer2, 2.4, {y: TOP_4}, 'transition4');
 
     var roofTopObjs = getRoofTopTimeline(LEFT_4, TOP_3);
     var roofTopContainer = roofTopObjs[1];
@@ -489,8 +494,8 @@ function renderAnim() {
 
     transitionTimeline5
         .add('transition5')
-        .to(cloudContainer3, 3.2, {x: LEFT_2, ease: Power0.easeNone}, 'transition5')
-        .to(roofTopContainer, 3, {x: LEFT_0, ease: Power0.easeNone}, 'transition5');
+        .to(cloudContainer3, 3.2, {x: LEFT_2}, 'transition5')
+        .to(roofTopContainer, 3, {x: LEFT_0}, 'transition5');
 
     var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_5);
 
@@ -510,7 +515,7 @@ function renderAnim() {
             turtleWrapper.removeChild(balloonWrapper);
         }, 'transition6')
         .add('turtleGone', '+=0')
-        .to(turtleWrapper, 1, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0, ease: Power0.easeNone}, 'turtleGone')
+        .to(turtleWrapper, 1, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0}, 'turtleGone')
         .to(seaWaveContainer, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone+=1')
     ;
 
@@ -530,14 +535,14 @@ function renderAnim() {
     var transitionTimeline7 = new TimelineMax();
     transitionTimeline7
         .add('transition7')
-        .to(fishContainer, 8.8, {x: LEFT_0, startAt: {x: LEFT_4}, ease: Power0.easeNone}, 'transition7')
+        .to(fishContainer, 8.8, {x: LEFT_0, startAt: {x: LEFT_4}}, 'transition7')
         .to(cactusContainer, .5, {scaleX: 0, scaleY: 0, ease: Power2.easeOut })
         .add(function () {
             // remove cactusTimeline from the timeline
             transitionTimeline7.remove(cactusTimeline);
         })
         .add('transition7b', '+=0.5')
-        .to(fishContainer, 8.8, {x: LEFT_4, startAt: {x: LEFT_0, scaleX: -1}, ease: Power0.easeNone}, 'transition7b')
+        .to(fishContainer, 8.8, {x: LEFT_4, startAt: {x: LEFT_0, scaleX: -1}}, 'transition7b')
         .add(cactusTimeline, 'transition7+=5')
         .add(cactusTimeline2, 'transition7b+=5')
     ;
@@ -577,8 +582,8 @@ function renderAnim() {
     transitionTimeline8
         .add('transition8')
         .set([desertGroundContainer1, desertGroundContainer2, desertContainer1, desertContainer2, desertFaceContainer], {scaleX: 0, scaleY: 0})
-        .to(seaContainer, .5, {y: TOP_4, ease: Power0.easeNone}, 'transition8')
-        .to(cactusContainer2, .5, {y: TOP_2, ease: Power0.easeNone}, 'transition8')
+        .to(seaContainer, .5, {y: TOP_4}, 'transition8')
+        .to(cactusContainer2, .5, {y: TOP_2}, 'transition8')
         .add('overlay')
         .add(function () {
             cactusCactusWrapper2.removeChild(cactusFlowerWrapper2);
@@ -586,22 +591,22 @@ function renderAnim() {
             cactusFlowerWrapper2.y += TOP_2;
             overlayContainer.addChild(cactusFlowerWrapper2);
         })
-        .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}, ease: Power0.easeNone}, 'overlay')
+        .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
         .to(cactusFlowerWrapper2, .5, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
         .add(new TimelineMax({delay: .8})
-            .to(cactusFlowerWrapper2, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .26, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .22, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .18, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .14, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .1, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .06, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
-            .to(cactusFlowerWrapper2, .02, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone}))
+            .to(cactusFlowerWrapper2, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
+            .to(cactusFlowerWrapper2, .26, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
+            .to(cactusFlowerWrapper2, .22, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
+            .to(cactusFlowerWrapper2, .18, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
+            .to(cactusFlowerWrapper2, .14, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
+            .to(cactusFlowerWrapper2, .1, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
+            .to(cactusFlowerWrapper2, .06, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
+            .to(cactusFlowerWrapper2, .02, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2}))
         .add('overlayend', '+=4')
         .add('desert', '+=4.5')
-        .to(hearts, 16, {y: "+=" + (CIRCLE_DIAMETER + CIRCLE_DIAMETER + CIRCLE_DIAMETER), ease: Power0.easeNone})
-        .to(hearts, 2, {alpha: 0, ease: Power0.easeNone}, '-=2')
-        .to(overlay, .5, {alpha: 0, ease: Power0.easeNone}, 'overlayend')
+        .to(hearts, 16, {y: "+=" + (CIRCLE_DIAMETER + CIRCLE_DIAMETER + CIRCLE_DIAMETER)})
+        .to(hearts, 2, {alpha: 0}, '-=2')
+        .to(overlay, .5, {alpha: 0}, 'overlayend')
         .to([desertGroundContainer1, desertGroundContainer2], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert')
         .to([desertContainer1, desertContainer2, desertFaceContainer], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert+=1')
         .add(desertFaceTimeline, 'desert+=2')
@@ -733,6 +738,9 @@ function _renderGallery() {
             var desertFaceObjs = getDesertFaceTimeline(LEFT_2, TOP_1);
             _processTimelineObjs(desertFaceObjs);
 
+            var seaMonsterObjs = getSeaMonsterTimeline(LEFT_2, TOP_2);
+            _processTimelineObjs(seaMonsterObjs);
+
             break;
         default:
             break;
@@ -743,7 +751,10 @@ function _renderGallery() {
         var container = objs[1];
         galleryWrapper.addChild(container);
         timeline.eventCallback('onComplete', function () {
-            this.restart();
+            var self = this;
+            setTimeout(function () {
+                self.restart();
+            }, 500);
         });
         timeline.play();
     }
@@ -1333,20 +1344,20 @@ function getCatTimeline(x, y) {
 
     var beeDuration = .3;
     catTimeline
-        .to(wings, beeDuration, {alpha: .8, y: "+=1", ease: Power0.easeNone}, 0)
-        .to(wings, beeDuration, {alpha: .5, y: "-=1", ease: Power0.easeNone}, beeDuration)
-        .to(wings, beeDuration, {alpha: .8, y: "+=1", ease: Power0.easeNone}, 2 * beeDuration)
-        .to(wings, beeDuration, {alpha: .5, y: "-=1", ease: Power0.easeNone}, 3 * beeDuration)
-        .to(wings, beeDuration, {alpha: .8, y: "+=1", ease: Power0.easeNone}, 4 * beeDuration)
-        .to(wings, beeDuration, {alpha: .5, y: "-=1", ease: Power0.easeNone}, 5 * beeDuration)
-        .to(beeWrapper, beeDuration * 6, {x: 70, ease: Power0.easeNone}, 0)
+        .to(wings, beeDuration, {alpha: .8, y: "+=1"}, 0)
+        .to(wings, beeDuration, {alpha: .5, y: "-=1"}, beeDuration)
+        .to(wings, beeDuration, {alpha: .8, y: "+=1"}, 2 * beeDuration)
+        .to(wings, beeDuration, {alpha: .5, y: "-=1"}, 3 * beeDuration)
+        .to(wings, beeDuration, {alpha: .8, y: "+=1"}, 4 * beeDuration)
+        .to(wings, beeDuration, {alpha: .5, y: "-=1"}, 5 * beeDuration)
+        .to(beeWrapper, beeDuration * 6, {x: 70}, 0)
         .to(beeWrapper, beeDuration, {y: -5, ease: Sine.easeOut}, 0)
         .to(beeWrapper, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
         .to(beeWrapper, beeDuration, {y: 5, ease: Sine.easeOut}, 2 * beeDuration)
         .to(beeWrapper, beeDuration, {y: 0, ease: Sine.easeIn}, 3 * beeDuration)
         .to(beeWrapper, beeDuration, {y: -5, ease: Sine.easeOut}, 4 * beeDuration)
         .to(beeWrapper, beeDuration, {y: 0, ease: Sine.easeIn}, 5 * beeDuration)
-        .to(catEyes, beeDuration * 6, {x: 7, ease: Power0.easeNone}, 0)
+        .to(catEyes, beeDuration * 6, {x: 7}, 0)
         .to(catEyes, beeDuration, {y: -1, ease: Sine.easeOut}, 0)
         .to(catEyes, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
         .to(catEyes, beeDuration, {y: 1, ease: Sine.easeOut}, 2 * beeDuration)
@@ -2135,6 +2146,64 @@ function getDesertFaceTimeline(x, y) {
     ;
 
     return [desertFaceTimeline, desertFaceContainer];
+}
+
+function getSeaMonsterTimeline(x, y) {
+    var seaMonsterTimeline = new TimelineMax();
+
+    var seaMonsterContainer = new createjs.Container();
+    seaMonsterContainer.x = x;
+    seaMonsterContainer.y = y;
+
+    var COLOR_SEA_MONSTER = 'darkgreen';
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    seaMonsterContainer.addChild(segmentSky);
+
+    var segmentSea = new createjs.Shape();
+    segmentSea.graphics.beginFill(COLOR_DARK_SEA)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    seaMonsterContainer.addChild(segmentSea);
+
+    var seaMonster = new createjs.Shape();
+    var seaMonsterCmd = seaMonster.graphics
+        .beginFill(COLOR_SEA_MONSTER)
+        .arc(-10, 45, 20, 269 * Math.PI / 180, -90 * Math.PI / 180)
+        .command;
+
+    var seaMonsterCmd2 = seaMonster.graphics
+        .endFill().beginFill(COLOR_SEA_MONSTER)
+        .rect(10, 25, 8, -40)
+        .command;
+
+    var seaMonsterCmd3 = seaMonster.graphics
+        .endFill().beginFill(COLOR_SEA_MONSTER)
+        .drawEllipse(10, -22, 20, 12)
+        .command;
+
+    var eye = new createjs.Shape();
+    var eyeCmd = eye.graphics
+        .beginFill('black')
+        .drawEllipse(21, -19, 4, 4)
+        .command;
+
+    seaMonsterContainer.addChildAt(seaMonster, 1);
+    seaMonsterContainer.addChild(eye);
+
+    seaMonsterTimeline
+        .set(seaMonsterCmd, {startAngle: 269 * Math.PI / 180, endAngle: -90 * Math.PI / 180})
+        .add('head')
+        .add('seaMonster', '+=0.5')
+        .to(seaMonsterCmd2, 1, {h: -40, startAt: {h: 0}}, 'head')
+        .to(seaMonsterCmd3, 1, {y: -22, startAt: {y: 18}}, 'head')
+        .to(eyeCmd, 1, {y: -19, startAt: {y: 21}}, 'head')
+        .to(seaMonsterCmd, .5, {startAngle: 180 * Math.PI / 180, endAngle: 0 * Math.PI / 180, ease: Sine.easeOut}, 'seaMonster')
+        .to(seaMonsterCmd, .5, {y: 25, startAt: {y: 50}}, 'seaMonster')
+    ;
+
+    return [seaMonsterTimeline, seaMonsterContainer];
 }
 
 // Containers
