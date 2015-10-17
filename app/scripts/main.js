@@ -61,7 +61,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 35 : 0;
+var START_TIME = DEBUG ? 70 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -318,7 +318,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getFishTimeline(LEFT_2, TOP_1);
+        var objs = getDesertFaceTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -326,6 +326,9 @@ function renderMenu() {
             this.restart();
         });
         timeline.play();
+
+        var container = getHeartContainer(LEFT_1, TOP_1);
+        menuWrapper.addChild(container);
     }
 }
 
@@ -489,8 +492,7 @@ function renderAnim() {
         .to(cloudContainer3, 3.2, {x: LEFT_2, ease: Power0.easeNone}, 'transition5')
         .to(roofTopContainer, 3, {x: LEFT_0, ease: Power0.easeNone}, 'transition5');
 
-    var seaWaveObjs = getSeaWaveTimeline(LEFT_2, TOP_5);
-    var seaWaveContainer = seaWaveObjs[1];
+    var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_5);
 
     var seaObjs = getSeaTimeline(LEFT_1, TOP_5);
     var seaContainer = seaObjs[1];
@@ -564,6 +566,13 @@ function renderAnim() {
         = desertFaceContainer.scaleX = desertFaceContainer.scaleY
         = 0;
 
+    var hearts = [];
+    for (var i = 1; i <= 25; i++) {
+        var heartContainer = getHeartContainer(_random(10, 310), TOP_0 - _random(0, CIRCLE_RADIUS));
+        heartContainer.alpha = .8;
+        hearts.push(heartContainer);
+    }
+
     var transitionTimeline8 = new TimelineMax();
     transitionTimeline8
         .add('transition8')
@@ -588,10 +597,14 @@ function renderAnim() {
             .to(cactusFlowerWrapper2, .1, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
             .to(cactusFlowerWrapper2, .06, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone})
             .to(cactusFlowerWrapper2, .02, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2, ease: Power0.easeNone}))
-        .to(overlay, .5, {alpha: 0, ease: Power0.easeNone})
-        .add('desert', '+=4')
+        .add('overlayend', '+=4')
+        .add('desert', '+=4.5')
+        .to(hearts, 16, {y: "+=" + (CIRCLE_DIAMETER + CIRCLE_DIAMETER + CIRCLE_DIAMETER), ease: Power0.easeNone})
+        .to(hearts, 2, {alpha: 0, ease: Power0.easeNone}, '-=2')
+        .to(overlay, .5, {alpha: 0, ease: Power0.easeNone}, 'overlayend')
         .to([desertGroundContainer1, desertGroundContainer2], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert')
         .to([desertContainer1, desertContainer2, desertFaceContainer], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert+=1')
+        .add(desertFaceTimeline, 'desert+=2')
     ;
 
     animationWrapper.addChild(flowerContainer);
@@ -614,6 +627,9 @@ function renderAnim() {
     animationWrapper.addChild(desertContainer1);
     animationWrapper.addChild(desertContainer2);
     animationWrapper.addChild(desertFaceContainer);
+    hearts.forEach(function (heartContainer) {
+        animationWrapper.addChild(heartContainer);
+    });
 
     mainTimeline = new TimelineMax({
         paused: true,
@@ -641,7 +657,6 @@ function renderAnim() {
         .add('desert', '+=18.1')
         .add(transitionTimeline7, 'fish')
         .add(transitionTimeline8, 'desert')
-        .add(desertFaceTimeline, '+=1')
     ;
 
     mainTimeline.play(START_TIME, false);
@@ -704,22 +719,20 @@ function _renderGallery() {
             var roofTopObjs = getRoofTopTimeline(LEFT_1, TOP_2);
             _processTimelineObjs(roofTopObjs);
 
-            var seaWaveObjs = getSeaWaveTimeline(LEFT_2, TOP_2);
-            _processTimelineObjs(seaWaveObjs);
-
-            var seaObjs = getSeaTimeline(LEFT_3, TOP_2);
+            var seaObjs = getSeaTimeline(LEFT_2, TOP_2);
             _processTimelineObjs(seaObjs);
+
+            var fishObjs = getFishTimeline(LEFT_3, TOP_2);
+            _processTimelineObjs(fishObjs);
 
             break;
         case 3:
-            var fishObjs = getFishTimeline(LEFT_1, TOP_1);
-            _processTimelineObjs(fishObjs);
-
-            var cactusObjs = getCactusTimeline(LEFT_2, TOP_1);
+            var cactusObjs = getCactusTimeline(LEFT_1, TOP_1);
             _processTimelineObjs(cactusObjs);
 
-            var desertFaceObjs = getDesertFaceTimeline(LEFT_3, TOP_1);
+            var desertFaceObjs = getDesertFaceTimeline(LEFT_2, TOP_1);
             _processTimelineObjs(desertFaceObjs);
+
             break;
         default:
             break;
@@ -1562,7 +1575,6 @@ function getRoofTopTimeline(x, y) {
     var smoke = new createjs.Shape();
     smoke.graphics.beginFill('white');
     var smokeCmd = smoke.graphics
-//        .drawEllipse(13, 5, 10, 3)
         .drawEllipse(18, 5, 5, 0)
         .command;
 
@@ -1608,26 +1620,6 @@ function getRoofTopTimeline(x, y) {
             repeat: -1
         }, 2.6);
     return [roofTopTimeline, roofTopContainer];
-}
-
-function getSeaWaveTimeline(x, y) {
-    var seaWaveTimeline = new TimelineMax();
-
-    var seaWaveContainer = new createjs.Container();
-    seaWaveContainer.x = x;
-    seaWaveContainer.y = y;
-
-    var segmentSea = new createjs.Shape();
-    segmentSea.graphics.beginFill(COLOR_SEA)
-        .arc(0, 0, CIRCLE_RADIUS, -30 * Math.PI / 180, 210 * Math.PI / 180);
-    seaWaveContainer.addChild(segmentSea);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_HIGH_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 210 * Math.PI / 180, -30 * Math.PI / 180);
-    seaWaveContainer.addChild(segmentSky);
-
-    return [seaWaveTimeline, seaWaveContainer];
 }
 
 function getSeaTimeline(x, y) {
@@ -1784,6 +1776,30 @@ function getFishTimeline(x, y) {
     segmentSky.graphics.beginFill(COLOR_HIGH_SKY)
         .arc(0, 0, CIRCLE_RADIUS, 210 * Math.PI / 180, -30 * Math.PI / 180);
     fishContainer.addChild(segmentSky);
+
+//    var wave = new createjs.Shape();
+//    var waveSize = 4;
+//    var waveTop = -25;
+//    wave.graphics.beginFill(COLOR_HIGH_SKY)
+//        .arc(-40, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(-30, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(-20, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(-10, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(0, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(10, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(20, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(30, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(40, waveTop, waveSize, 0, 180 * Math.PI / 180)
+//    ;
+//    fishContainer.addChild(wave);
 
     var COLOR_FISH = '#FFE926';
 
@@ -2050,11 +2066,14 @@ function getDesertFaceTimeline(x, y) {
 
     var desertFace = new createjs.Container();
     var eyes = new createjs.Shape();
-    eyes.graphics
+    var eyesCmd = eyes.graphics
         .beginFill('black')
         .drawEllipse(-14, 0, 6, 10)
+        .command;
+    var eyesCmd2 = eyes.graphics
         .endFill().beginFill('black')
-        .drawEllipse(8, 0, 6, 10);
+        .drawEllipse(8, 0, 6, 10)
+        .command;
 
     var desertFaceEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
     desertFaceEyesTimeline
@@ -2064,46 +2083,102 @@ function getDesertFaceTimeline(x, y) {
     desertFace.addChild(eyes);
 
     var eyebrows = new createjs.Shape();
-    eyebrows.graphics
+    var eyebrowsStartCmd = eyebrows.graphics
         .setStrokeStyle(2, 'round', 'round')
         .beginStroke('#000')
-        .moveTo(-8, -18);
-    var eyebrowsCmd = eyebrows.graphics
+        .moveTo(-8, -18)
+        .command;
+    var eyebrowsArcCmd = eyebrows.graphics
         .arcTo(-18, -13, -28, -3, 20)
         .command;
-    eyebrows.graphics
+    var eyebrowsEndCmd = eyebrows.graphics
         .lineTo(-28, -3)
-        .moveTo(8, -18);
-    var eyebrowsCmd2 = eyebrows.graphics
+        .command;
+
+    var eyebrowsStartCmd2 = eyebrows.graphics
+        .endStroke().beginStroke('#000')
+        .moveTo(8, -18)
+        .command;
+    var eyebrowsArcCmd2 = eyebrows.graphics
         .arcTo(18, -13, 28, -3, 20)
         .command;
-    eyebrows.graphics
-        .lineTo(28, -3);
+    var eyebrowsEndCmd2 = eyebrows.graphics
+        .lineTo(28, -3)
+        .command;
     desertFace.addChild(eyebrows);
 
-//    var mouth = new createjs.Shape();
-//    mouth.graphics
-//        .setStrokeStyle(2, 'round', 'round')
-//        .beginStroke('#000')
-//        .moveTo(-24, 22)
-//        .arcTo(0, 0, 24, 22, 36);
-//    desertFace.addChild(mouth);
+    var pink = new createjs.Shape();
+    pink.graphics.beginFill('#FF8097')
+        .drawEllipse(-22, 12, 14, 5)
+        .drawEllipse(8, 12, 14, 5);
+    pink.alpha = 0;
+    desertFace.addChild(pink);
 
     desertFaceContainer.addChild(desertFace);
     desertFaceTimeline
         .set([eyes, eyebrows], {alpha: 0})
         .to([eyes, eyebrows], .6, {alpha: 1})
-        .set(eyebrowsCmd, {x1: -18, y1: -13, x2: -28, y2: -3, radius: 20})
-        .set(eyebrowsCmd2, {x1: 18, y1: -13, x2: 28, y2: -3, radius: 20})
+        .set(eyebrowsArcCmd, {x1: -18, y1: -13, x2: -28, y2: -3, radius: 20})
+        .set(eyebrowsArcCmd2, {x1: 18, y1: -13, x2: 28, y2: -3, radius: 20})
         .add('desertFace', '+=1.2')
-        .to(eyebrowsCmd, .8, {x1: -13, y1: -8, x2: -28, y2: -3, radius: 20}, 'desertFace')
-        .to(eyebrowsCmd2, .8, {x1: 13, y1: -8, x2: 28, y2: -3, radius: 20}, 'desertFace')
+        .add('happyFace', '+=5.7')
+        .to(eyebrowsArcCmd, .8, {x1: -13, y1: -8, x2: -28, y2: -3, radius: 20}, 'desertFace')
+        .to(eyebrowsArcCmd2, .8, {x1: 13, y1: -8, x2: 28, y2: -3, radius: 20}, 'desertFace')
+        .to(eyebrowsStartCmd, .6, {x: -6, y: -4}, 'happyFace')
+        .to(eyebrowsArcCmd, .6, {x1: -17, y1: -20, x2: -28, y2: 0, radius: 10}, 'happyFace')
+        .to(eyebrowsEndCmd, .6, {x: -28, y: 0}, 'happyFace')
+        .to(eyebrowsStartCmd2, .6, {x: 6, y: -4}, 'happyFace')
+        .to(eyebrowsArcCmd2, .6, {x1: 17, y1: -20, x2: 28, y2: 0, radius: 10}, 'happyFace')
+        .to(eyebrowsEndCmd2, .6, {x: 28, y: 0}, 'happyFace')
+        .to([eyesCmd, eyesCmd2], .6, {x: '+=2', y: '+=2', h: '0', w: '0'}, 'happyFace')
+        .to(pink, .6, {alpha: 1}, 'happyFace')
     ;
 
     return [desertFaceTimeline, desertFaceContainer];
 }
 
 // Containers
+function getSeaWaveContainer(x, y) {
+    var seaWaveContainer = new createjs.Container();
+    seaWaveContainer.x = x;
+    seaWaveContainer.y = y;
+
+    var segmentSea = new createjs.Shape();
+    segmentSea.graphics.beginFill(COLOR_SEA)
+        .arc(0, 0, CIRCLE_RADIUS, -30 * Math.PI / 180, 210 * Math.PI / 180);
+    seaWaveContainer.addChild(segmentSea);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_HIGH_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 210 * Math.PI / 180, -30 * Math.PI / 180);
+    seaWaveContainer.addChild(segmentSky);
+
+//    var wave = new createjs.Shape();
+//    var waveSize = 4;
+//    wave.graphics.beginFill(COLOR_HIGH_SKY)
+//        .arc(-40, -25, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(-30, -25, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(-20, -25, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(-10, -25, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(0, -25, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(10, -25, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(20, -25, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(30, -25, waveSize, 0, 180 * Math.PI / 180)
+//        .endFill().beginFill(COLOR_HIGH_SKY)
+//        .arc(40, -25, waveSize, 0, 180 * Math.PI / 180)
+//    ;
+//    seaWaveContainer.addChild(wave);
+
+    return seaWaveContainer;
+}
+
 function getDesertGroundContainer(x, y) {
     var desertGroundContainer = new createjs.Container();
     desertGroundContainer.x = x;
@@ -2137,6 +2212,26 @@ function getDesertContainer(x, y) {
     desertContainer.addChild(desert);
 
     return desertContainer;
+}
+
+function getHeartContainer(x, y) {
+    var heartContainer = new createjs.Container();
+    heartContainer.x = x;
+    heartContainer.y = y;
+
+    var COLOR_HEART = '#ff6666';
+    var heartSize = 10;
+    var heart = new createjs.Shape();
+    heart.graphics
+        .beginFill(COLOR_HEART)
+        .arc(0, -heartSize / 2, heartSize / 2, 0, 180 * Math.PI / 180, true)
+        .arc(heartSize / 2, 0, heartSize / 2, 270 * Math.PI / 180, 90 * Math.PI / 180)
+        .rect(-heartSize / 2, -heartSize / 2, heartSize, heartSize)
+    ;
+    heart.rotation = -45;
+    heartContainer.addChild(heart);
+
+    return heartContainer;
 }
 
 // Utilities
