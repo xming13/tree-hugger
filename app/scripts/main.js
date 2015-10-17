@@ -23,6 +23,9 @@ var COLOR_SEA_GROUND = '#E77E34';
 var COLOR_DESERT = '#FFD466';
 var COLOR_DESERT_SKY = '#FFFFA5';
 var COLOR_BORDER = '#F0F8FF';
+var COLOR_BEE_BODY = 'yellow';
+var COLOR_BEE_WING = '#ABCCB0';
+var COLOR_BEE_BODY_STRIPE = 'black'
 
 // Stage
 var stage;
@@ -49,7 +52,7 @@ var PAGE_SIZE = 3;
 var currentPage = 1;
 
 // for debugging
-var DEBUG = true;
+var DEBUG = false;
 var START_TIME = DEBUG ? 45 : 0;
 
 function init() {
@@ -307,7 +310,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getDesertFaceTimeline(LEFT_2, TOP_1);
+        var objs = getCatTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -693,6 +696,9 @@ function _renderGallery() {
 
             var cactusObjs = getCactusTimeline(LEFT_2, TOP_1);
             _processTimelineObjs(cactusObjs);
+
+            var desertFaceObjs = getDesertFaceTimeline(LEFT_3, TOP_1);
+            _processTimelineObjs(desertFaceObjs);
             break;
         default:
             break;
@@ -1255,25 +1261,57 @@ function getCatTimeline(x, y) {
     catWrapper.addChild(catEars);
 
     var beeWrapper = new createjs.Container();
-    var bee = new createjs.Shape();
-    bee.graphics
-        .beginFill('yellow')
-        .drawEllipse(-45, -20, 16, 12);
 
-    beeWrapper.addChild(bee);
+    var wings = new createjs.Shape();
+    wings.graphics
+        .endFill().beginFill(COLOR_BEE_WING)
+        .drawCircle(-42, -20, 2.5)
+        .endFill().beginFill(COLOR_BEE_WING)
+        .drawEllipse(-39.5, -24, 5, 6);
+    wings.alpha = .8;
+    beeWrapper.addChild(wings);
+
+    var body = new createjs.Shape();
+    body.graphics
+        .endFill().beginFill(COLOR_BEE_BODY)
+        .drawEllipse(-45, -20, 16, 12)
+        .endFill().beginFill(COLOR_BEE_BODY_STRIPE)
+        .arc(-37, -14, 5, 80 * Math.PI / 180, 100 * Math.PI / 180)
+        .arc(-37, -14, 5, 260 * Math.PI / 180, 280 * Math.PI / 180)
+        .endFill().beginFill(COLOR_BEE_BODY_STRIPE)
+        .arc(-41, -14, 4, 80 * Math.PI / 180, 100 * Math.PI / 180)
+        .arc(-41, -14, 4, 260 * Math.PI / 180, 280 * Math.PI / 180)
+        .endFill().beginFill(COLOR_BEE_BODY_STRIPE)
+        .moveTo(-45, -12.5)
+        .lineTo(-45, -15.5)
+        .lineTo(-49, -14);
+
+    beeWrapper.addChild(body);
+
+    var eye = new createjs.Shape();
+    eye.graphics
+        .beginFill('black')
+        .drawCircle(-33, -16, 1);
+    beeWrapper.addChild(eye);
 
     catContainer.addChild(catWrapper);
     catContainer.addChild(beeWrapper);
 
     var beeDuration = .3;
     catTimeline
-        .to(bee, beeDuration * 6, {x: 70, ease: Power0.easeNone}, 0)
-        .to(bee, beeDuration, {y: -5, ease: Sine.easeOut}, 0)
-        .to(bee, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
-        .to(bee, beeDuration, {y: 5, ease: Sine.easeOut}, 2 * beeDuration)
-        .to(bee, beeDuration, {y: 0, ease: Sine.easeIn}, 3 * beeDuration)
-        .to(bee, beeDuration, {y: -5, ease: Sine.easeOut}, 4 * beeDuration)
-        .to(bee, beeDuration, {y: 0, ease: Sine.easeIn}, 5 * beeDuration)
+        .to(wings, beeDuration, {alpha: .8, y: "+=2", ease: Power0.easeNone}, 0)
+        .to(wings, beeDuration, {alpha: .5, y: "-=2", ease: Power0.easeNone}, beeDuration)
+        .to(wings, beeDuration, {alpha: .8, y: "+=2", ease: Power0.easeNone}, 2 * beeDuration)
+        .to(wings, beeDuration, {alpha: .5, y: "-=2", ease: Power0.easeNone}, 3 * beeDuration)
+        .to(wings, beeDuration, {alpha: .8, y: "+=2", ease: Power0.easeNone}, 4 * beeDuration)
+        .to(wings, beeDuration, {alpha: .5, y: "-=2", ease: Power0.easeNone}, 5 * beeDuration)
+        .to(beeWrapper, beeDuration * 6, {x: 70, ease: Power0.easeNone}, 0)
+        .to(beeWrapper, beeDuration, {y: -5, ease: Sine.easeOut}, 0)
+        .to(beeWrapper, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
+        .to(beeWrapper, beeDuration, {y: 5, ease: Sine.easeOut}, 2 * beeDuration)
+        .to(beeWrapper, beeDuration, {y: 0, ease: Sine.easeIn}, 3 * beeDuration)
+        .to(beeWrapper, beeDuration, {y: -5, ease: Sine.easeOut}, 4 * beeDuration)
+        .to(beeWrapper, beeDuration, {y: 0, ease: Sine.easeIn}, 5 * beeDuration)
         .to(catEyes, beeDuration * 6, {x: 7, ease: Power0.easeNone}, 0)
         .to(catEyes, beeDuration, {y: -1, ease: Sine.easeOut}, 0)
         .to(catEyes, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
