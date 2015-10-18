@@ -42,6 +42,7 @@ var COLOR_BALLOON_3 = '#FFFF99';
 var COLOR_FISH = '#FFE926';
 var COLOR_JACKALOPE = '#FFDB89';
 var COLOR_JACKALOPE_HORN = '#996C4D';
+var COLOR_YETI = '#fff';
 var COLOR_SEA_MONSTER = 'darkgreen';
 var COLOR_SHARK = '#CCCCCC';
 
@@ -71,7 +72,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 70 : 0;
+var START_TIME = DEBUG ? 75 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -331,7 +332,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getJackalopeTimeline(LEFT_2, TOP_1);
+        var objs = getYetiTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -629,6 +630,23 @@ function renderAnim() {
         .5, {x: "-=" + ((CIRCLE_DIAMETER + SPACING) * 3), ease: Circ.easeOut}, 'transition9')
         .to(jackalopeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition9');
 
+    var yetiObjs = getYetiTimeline(LEFT_4, TOP_2);
+    var yetiContainer = yetiObjs[1];
+    var yetiObjs2 = getYetiTimeline(LEFT_0, TOP_2);
+    var yetiContainer2 = yetiObjs2[1];
+
+    var transitionTimeline10 = new TimelineMax();
+    transitionTimeline10
+        .add('transition10')
+        .to(jackalopeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition10')
+        .to(yetiContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition10');
+
+    var transitionTimeline11 = new TimelineMax();
+    transitionTimeline11
+        .add('transition11')
+        .to(yetiContainer, 3, {x: LEFT_4}, 'transition11')
+        .to(yetiContainer2, 3, {x: LEFT_2}, '-=1.5');
+
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
     animationWrapper.addChild(catContainer);
@@ -653,9 +671,12 @@ function renderAnim() {
         animationWrapper.addChild(heartContainer);
     });
     animationWrapper.addChild(jackalopeContainer);
+    animationWrapper.addChild(yetiContainer);
+    animationWrapper.addChild(yetiContainer2);
 
     mainTimeline = new TimelineMax({
         paused: true,
+        autoRemoveChildren: true,
         onStart: function () {
             if (popCanPlay && pop) {
                 pop.play(START_TIME);
@@ -663,33 +684,45 @@ function renderAnim() {
         }
     });
 
-    var flowerToDesertTimeline = new TimelineMax();
-    flowerToDesertTimeline
-        .add('flower')
-        .add(flowerTimeline, '+=19')
-        .add(transitionTimeline, '+=0.4')
-        .add('tree', '+=0')
-        .add(treeTimeline, 'tree')
-        .add(transitionSeasonTimeline, 'tree')
-        .add(transitionTimeline2, '+=0')
-        .add(catTimeline, '-=0.3')
-        .add(transitionTimeline3, '+=0')
-        .add(turtleTimeline, '+=0.4')
-        .add(transitionTimeline4, '+=0.1')
-        .add(transitionTimeline5, '+=0.1')
-        .add(transitionTimeline6, '+=0')
-        .add('fish', '+=0')
-        .add('desert', '+=18.1')
-        .add(transitionTimeline7, 'fish')
-        .add(transitionTimeline8, 'desert')
-        .add(transitionTimeline9, '+=0.8')
+    function getFlowerToDesertTimeline() {
+        var flowerToDesertTimeline = new TimelineMax({
+            autoRemoveChildren: true
+        });
 
-    var iceWorldTimeline = new TimelineMax();
+        flowerToDesertTimeline
+            .add('flower')
+            .add(flowerTimeline)
+            .add(transitionTimeline, '+=0.4')
+            .add('tree', '+=0')
+            .add(treeTimeline, 'tree')
+            .add(transitionSeasonTimeline, 'tree')
+            .add(transitionTimeline2, '+=0')
+            .add(catTimeline, '-=0.3')
+            .add(transitionTimeline3, '+=0')
+            .add(turtleTimeline, '+=0.4')
+            .add(transitionTimeline4, '+=0.1')
+            .add(transitionTimeline5, '+=0.1')
+            .add(transitionTimeline6, '+=0')
+            .add('fish', '+=0')
+            .add('desert', '+=18.1')
+            .add(transitionTimeline7, 'fish')
+            .add(transitionTimeline8, 'desert');
+
+        return flowerToDesertTimeline;
+    }
+
+    var iceWorldTimeline = new TimelineMax({
+        autoRemoveChildren: true
+    });
     iceWorldTimeline
-        .add('iceWorld');
+        .add('iceWorld')
+        .add(transitionTimeline9, '+=0.4')
+        .add(transitionTimeline10, '+=1.5')
+        .add(transitionTimeline11, '+=2');
 
-    mainTimeline.add(flowerToDesertTimeline);
-    mainTimeline.add(iceWorldTimeline);
+    mainTimeline
+        .add(getFlowerToDesertTimeline(), '+=19')
+        .add(iceWorldTimeline);
 
     mainTimeline.play(START_TIME, false);
 }
@@ -767,6 +800,9 @@ function _renderGallery() {
 
             var jackalopeObjs = getJackalopeTimeline(LEFT_3, TOP_1);
             _processTimelineObjs(jackalopeObjs);
+
+            var yetiObjs = getYetiTimeline(LEFT_1, TOP_2);
+            _processTimelineObjs(yetiObjs);
 
             var seaMonsterObjs = getSeaMonsterTimeline(LEFT_2, TOP_2);
             _processTimelineObjs(seaMonsterObjs);
@@ -2261,14 +2297,58 @@ function getJackalopeTimeline(x, y) {
 
     var earTimeline = new TimelineMax({repeat: -1, yoyo: true, repeatDelay: 1});
     earTimeline
-        .add('start')
-        .to(ear, .5, {rotation: 50}, 'start')
-        .to(ear2, .5, {rotation: -50}, 'start')
-        .add('end')
-        .to(ear, .5, {rotation: 40}, 'end')
-        .to(ear2, .5, {rotation: -40}, 'end')
+        .add('s1')
+        .to(ear, .4, {rotation: 55}, 's1')
+        .to(ear2, .4, {rotation: -55}, 's1')
+        .add('s2')
+        .to(ear, .2, {rotation: 45}, 's2')
+        .to(ear2, .2, {rotation: -45}, 's2')
+        .add('s3')
+        .to(ear, .2, {rotation: 50}, 's3')
+        .to(ear2, .2, {rotation: -50}, 's3')
+        .add('s4')
+        .to(ear, .4, {rotation: 40}, 's4')
+        .to(ear2, .4, {rotation: -40}, 's4')
 
     return [jackalopeTimeline, jackalopeContainer];
+}
+
+function getYetiTimeline(x, y) {
+    var yetiTimeline = new TimelineMax();
+
+    var yetiContainer = new createjs.Container();
+    yetiContainer.x = x;
+    yetiContainer.y = y;
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+    yetiContainer.addChild(segmentSky);
+
+    var segmentIce = new createjs.Shape();
+    segmentIce.graphics.beginFill(COLOR_ICE_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+    yetiContainer.addChild(segmentIce);
+
+    var yetiWrapper = new createjs.Container();
+
+    var body = new createjs.Shape();
+    body.graphics
+        .beginFill(COLOR_YETI)
+        .drawEllipse(-15, -15, 30, 40);
+
+    yetiWrapper.addChild(body);
+
+    var foot = new createjs.Shape();
+    foot.graphics
+        .beginFill(COLOR_YETI)
+        .drawEllipse(0, 16, 26, 10);
+
+    yetiWrapper.addChild(foot);
+
+    yetiContainer.addChild(yetiWrapper);
+
+    return [yetiTimeline, yetiContainer];
 }
 
 function getSeaMonsterTimeline(x, y) {
