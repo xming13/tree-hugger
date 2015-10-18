@@ -39,6 +39,10 @@ var COLOR_BALLOON_1 = '#FF9999';
 var COLOR_BALLOON_2 = '#9999FF';
 var COLOR_BALLOON_3 = '#FFFF99';
 
+var COLOR_FISH = '#FFE926';
+var COLOR_JACKALOPE = '#FFDB89';
+var COLOR_JACKALOPE_HORN = '#996C4D';
+var COLOR_SEA_MONSTER = 'darkgreen';
 var COLOR_SHARK = '#CCCCCC';
 
 // Stage
@@ -327,7 +331,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getSharkTimeline(LEFT_2, TOP_1);
+        var objs = getJackalopeTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -497,8 +501,8 @@ function renderAnim() {
 
     transitionTimeline5
         .add('transition5')
-        .to(cloudContainer3, 3.2, {x: LEFT_2}, 'transition5')
-        .to(roofTopContainer, 3, {x: LEFT_0}, 'transition5');
+        .to(cloudContainer3, 3, {x: LEFT_2}, 'transition5')
+        .to(roofTopContainer, 2.8, {x: LEFT_0}, 'transition5');
 
     var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_5);
 
@@ -518,8 +522,8 @@ function renderAnim() {
             turtleWrapper.removeChild(balloonWrapper);
         }, 'transition6')
         .add('turtleGone', '+=0')
-        .to(turtleWrapper, 1, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0}, 'turtleGone')
-        .to(seaWaveContainer, 1, {alpha: 0, ease: Circ.easeOut}, 'turtleGone+=1')
+        .to(turtleWrapper, 1.2, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0}, 'turtleGone')
+        .to(seaWaveContainer, 1.2, {alpha: 0, ease: Circ.easeOut}, 'turtleGone+=1')
     ;
 
     var fishObjs = getFishTimeline(LEFT_4, TOP_2);
@@ -615,6 +619,16 @@ function renderAnim() {
         .add(desertFaceTimeline, 'desert+=2')
     ;
 
+    var jackalopeObjs = getJackalopeTimeline(LEFT_4, TOP_2);
+    var jackalopeContainer = jackalopeObjs[1];
+
+    var transitionTimeline9 = new TimelineMax();
+    transitionTimeline9
+        .add('transition9')
+        .to([desertGroundContainer1, desertGroundContainer2, cactusContainer2, desertContainer1, desertContainer2, desertFaceContainer],
+        .5, {x: "-=" + ((CIRCLE_DIAMETER + SPACING) * 3), ease: Circ.easeOut}, 'transition9')
+        .to(jackalopeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition9');
+
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
     animationWrapper.addChild(catContainer);
@@ -638,6 +652,7 @@ function renderAnim() {
     hearts.forEach(function (heartContainer) {
         animationWrapper.addChild(heartContainer);
     });
+    animationWrapper.addChild(jackalopeContainer);
 
     mainTimeline = new TimelineMax({
         paused: true,
@@ -647,7 +662,9 @@ function renderAnim() {
             }
         }
     });
-    mainTimeline
+
+    var flowerToDesertTimeline = new TimelineMax();
+    flowerToDesertTimeline
         .add('flower')
         .add(flowerTimeline, '+=19')
         .add(transitionTimeline, '+=0.4')
@@ -659,13 +676,20 @@ function renderAnim() {
         .add(transitionTimeline3, '+=0')
         .add(turtleTimeline, '+=0.4')
         .add(transitionTimeline4, '+=0.1')
-        .add(transitionTimeline5, '+=0.6')
+        .add(transitionTimeline5, '+=0.1')
         .add(transitionTimeline6, '+=0')
         .add('fish', '+=0')
         .add('desert', '+=18.1')
         .add(transitionTimeline7, 'fish')
         .add(transitionTimeline8, 'desert')
-    ;
+        .add(transitionTimeline9, '+=0.8')
+
+    var iceWorldTimeline = new TimelineMax();
+    iceWorldTimeline
+        .add('iceWorld');
+
+    mainTimeline.add(flowerToDesertTimeline);
+    mainTimeline.add(iceWorldTimeline);
 
     mainTimeline.play(START_TIME, false);
 }
@@ -1821,8 +1845,6 @@ function getFishTimeline(x, y) {
 //    ;
 //    fishContainer.addChild(wave);
 
-    var COLOR_FISH = '#FFE926';
-
     var fishWrapper = new createjs.Container();
     var fish = new createjs.Shape();
     fish.graphics.beginFill(COLOR_FISH);
@@ -2174,6 +2196,78 @@ function getJackalopeTimeline(x, y) {
         .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
     jackalopeContainer.addChild(segmentIce);
 
+    var jackalopeWrapper = new createjs.Container();
+    var body = new createjs.Shape();
+    body.graphics
+        .beginFill(COLOR_JACKALOPE)
+        .arc(0, 25, 12.5, 180 * Math.PI / 180, 0 * Math.PI / 180);
+    jackalopeWrapper.addChild(body);
+
+    var faceWrapper = new createjs.Container();
+
+    var face = new createjs.Shape();
+    face.graphics
+        .beginFill(COLOR_JACKALOPE)
+        .drawEllipse(-7, 0, 14, 15);
+    faceWrapper.addChild(face);
+
+    var eyes = new createjs.Shape();
+    eyes.graphics
+        .beginFill('black')
+        .drawCircle(-3, 7, 1.5)
+        .drawCircle(3, 7, 1.5);
+    faceWrapper.addChild(eyes);
+
+    var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true});
+    eyesTimeline
+        .to(eyes, .2, {scaleY: 0, y: 7})
+        .to(eyes, .2, {scaleY: 1, y: 0});
+
+    var ear = new createjs.Shape();
+    ear.graphics
+        .beginFill(COLOR_JACKALOPE)
+        .drawEllipse(4.5, -14, 4, 14);
+    ear.rotation = 40;
+    faceWrapper.addChild(ear);
+
+    var ear2 = new createjs.Shape();
+    ear2.graphics
+        .beginFill(COLOR_JACKALOPE)
+        .drawEllipse(-8.5, -14, 4, 14);
+    ear2.rotation = -40;
+    faceWrapper.addChild(ear2);
+
+    var anthelopeHorns = new createjs.Shape();
+    anthelopeHorns.graphics
+        .setStrokeStyle(2, 'round', 'round')
+        .beginStroke(COLOR_JACKALOPE_HORN)
+        .moveTo(-3, 0)
+        .arcTo(-9, -3, -4, -6, 4)
+        .endStroke().beginStroke(COLOR_JACKALOPE_HORN)
+        .moveTo(-5, -3)
+        .arcTo(-17, -9, -9, -14, 6)
+        .endStroke().beginStroke(COLOR_JACKALOPE_HORN)
+        .moveTo(3, 0)
+        .arcTo(9, -3, 4, -6, 4)
+        .endStroke().beginStroke(COLOR_JACKALOPE_HORN)
+        .moveTo(5, -3)
+        .arcTo(17, -9, 9, -14, 6)
+    ;
+    faceWrapper.addChild(anthelopeHorns);
+
+    faceWrapper.x = 5;
+    jackalopeWrapper.addChild(faceWrapper);
+    jackalopeContainer.addChild(jackalopeWrapper);
+
+    var earTimeline = new TimelineMax({repeat: -1, yoyo: true, repeatDelay: 1});
+    earTimeline
+        .add('start')
+        .to(ear, .5, {rotation: 50}, 'start')
+        .to(ear2, .5, {rotation: -50}, 'start')
+        .add('end')
+        .to(ear, .5, {rotation: 40}, 'end')
+        .to(ear2, .5, {rotation: -40}, 'end')
+
     return [jackalopeTimeline, jackalopeContainer];
 }
 
@@ -2183,8 +2277,6 @@ function getSeaMonsterTimeline(x, y) {
     var seaMonsterContainer = new createjs.Container();
     seaMonsterContainer.x = x;
     seaMonsterContainer.y = y;
-
-    var COLOR_SEA_MONSTER = 'darkgreen';
 
     var segmentSky = new createjs.Shape();
     segmentSky.graphics.beginFill(COLOR_DARK_SKY)
