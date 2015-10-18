@@ -72,7 +72,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 75 : 0;
+var START_TIME = DEBUG ? 88 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -332,7 +332,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getYetiTimeline(LEFT_2, TOP_1);
+        var objs = getSeaMonsterTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -647,6 +647,33 @@ function renderAnim() {
         .to(yetiContainer, 3, {x: LEFT_4}, 'transition11')
         .to(yetiContainer2, 3, {x: LEFT_2}, '-=1.5');
 
+    var seaMonsterObjs = getSeaMonsterTimeline(LEFT_4, TOP_2);
+    var seaMonsterTimeline = seaMonsterObjs[0];
+    var seaMonsterContainer = seaMonsterObjs[1];
+
+    var seaMonsterObjs2 = getSeaMonsterTimeline(LEFT_0, TOP_2);
+    var seaMonsterContainer2 = seaMonsterObjs2[1];
+
+    var transitionTimeline12 = new TimelineMax();
+    transitionTimeline12
+        .add('transition12')
+        .to(yetiContainer2, .5, {x: LEFT_0}, 'transition12')
+        .to(seaMonsterContainer, .5, {x: LEFT_2}, 'transition12');
+
+    var sharkObjs = getSharkTimeline(LEFT_3, TOP_2);
+    var sharkContainer = sharkObjs[1];
+    var sharkObjs2 = getSharkTimeline(LEFT_1, TOP_2);
+    var sharkContainer2 = sharkObjs2[1];
+
+    var transitionTimeline13 = new TimelineMax();
+    transitionTimeline13
+        .add('transition13')
+        .set([sharkContainer, sharkContainer2], {scaleX: 0, scaleY: 0})
+        .to(seaMonsterContainer, 1.2, {x: LEFT_4}, 'transition13')
+        .to(seaMonsterContainer2, 1.2, {x: LEFT_2}, 'transition13+=0.6')
+        .to(sharkContainer, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=.9')
+        .to(sharkContainer2, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=1.5');
+
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
     animationWrapper.addChild(catContainer);
@@ -673,6 +700,10 @@ function renderAnim() {
     animationWrapper.addChild(jackalopeContainer);
     animationWrapper.addChild(yetiContainer);
     animationWrapper.addChild(yetiContainer2);
+    animationWrapper.addChild(seaMonsterContainer);
+    animationWrapper.addChild(seaMonsterContainer2);
+    animationWrapper.addChild(sharkContainer);
+    animationWrapper.addChild(sharkContainer2);
 
     mainTimeline = new TimelineMax({
         paused: true,
@@ -718,7 +749,11 @@ function renderAnim() {
         .add('iceWorld')
         .add(transitionTimeline9, '+=0.4')
         .add(transitionTimeline10, '+=1.5')
-        .add(transitionTimeline11, '+=2');
+        .add(transitionTimeline11, '+=2')
+        .add(transitionTimeline12, '+=2')
+        .add(seaMonsterTimeline)
+        .add(transitionTimeline13, '+=1.5')
+    ;
 
     mainTimeline
         .add(getFlowerToDesertTimeline(), '+=19')
@@ -2368,6 +2403,8 @@ function getSeaMonsterTimeline(x, y) {
         .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
     seaMonsterContainer.addChild(segmentSea);
 
+    var seaMonsterWrapper = new createjs.Container();
+
     var seaMonster = new createjs.Shape();
     var seaMonsterCmd = seaMonster.graphics
         .beginFill(COLOR_SEA_MONSTER)
@@ -2383,25 +2420,29 @@ function getSeaMonsterTimeline(x, y) {
         .endFill().beginFill(COLOR_SEA_MONSTER)
         .drawEllipse(10, -22, 20, 12)
         .command;
+    seaMonsterWrapper.addChild(seaMonster);
 
     var eye = new createjs.Shape();
     var eyeCmd = eye.graphics
         .beginFill('black')
         .drawEllipse(21, -19, 4, 4)
         .command;
+    seaMonsterWrapper.addChild(eye);
 
-    seaMonsterContainer.addChildAt(seaMonster, 1);
-    seaMonsterContainer.addChild(eye);
+    seaMonsterContainer.addChildAt(seaMonsterWrapper, 1);
 
     seaMonsterTimeline
-        .set(seaMonsterCmd, {startAngle: 269 * Math.PI / 180, endAngle: -90 * Math.PI / 180})
-        .add('head')
-        .add('seaMonster', '+=0.5')
-        .to(seaMonsterCmd2, 1, {h: -40, startAt: {h: 0}}, 'head')
-        .to(seaMonsterCmd3, 1, {y: -22, startAt: {y: 18}}, 'head')
-        .to(eyeCmd, 1, {y: -19, startAt: {y: 21}}, 'head')
+        .set(seaMonsterCmd, {y: 50, startAngle: 269 * Math.PI / 180, endAngle: -90 * Math.PI / 180})
+        .set(seaMonsterCmd2, {h: 7})
+        .set(seaMonsterCmd3, {y: 25})
+        .set(eyeCmd, {y: 28})
+        .add('head', '+=0.5')
+        .add('seaMonster', '+=1')
+        .to(seaMonsterCmd2, 1, {h: -40}, 'head')
+        .to(seaMonsterCmd3, 1, {y: -22}, 'head')
+        .to(eyeCmd, 1, {y: -19}, 'head')
         .to(seaMonsterCmd, .5, {startAngle: 180 * Math.PI / 180, endAngle: 0 * Math.PI / 180, ease: Sine.easeOut}, 'seaMonster')
-        .to(seaMonsterCmd, .5, {y: 25, startAt: {y: 50}}, 'seaMonster')
+        .to(seaMonsterCmd, .5, {y: 25}, 'seaMonster')
     ;
 
     return [seaMonsterTimeline, seaMonsterContainer];
