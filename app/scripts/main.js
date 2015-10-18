@@ -2423,11 +2423,18 @@ function getSeaMonsterTimeline(x, y) {
     seaMonsterWrapper.addChild(seaMonster);
 
     var eye = new createjs.Shape();
-    var eyeCmd = eye.graphics
+    eye.graphics
         .beginFill('black')
-        .drawEllipse(21, -19, 4, 4)
-        .command;
-    seaMonsterWrapper.addChild(eye);
+        .drawCircle(0, 2, 2);
+    var eyeWrapper = new createjs.Container();
+    eyeWrapper.x = 23;
+    eyeWrapper.addChild(eye);
+    seaMonsterWrapper.addChild(eyeWrapper);
+
+    var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
+    eyeTimeline
+        .to(eye, .2, {scaleY: 0, y: 2})
+        .to(eye, .2, {scaleY: 1, y: 0});
 
     seaMonsterContainer.addChildAt(seaMonsterWrapper, 1);
 
@@ -2435,12 +2442,12 @@ function getSeaMonsterTimeline(x, y) {
         .set(seaMonsterCmd, {y: 50, startAngle: 269 * Math.PI / 180, endAngle: -90 * Math.PI / 180})
         .set(seaMonsterCmd2, {h: 7})
         .set(seaMonsterCmd3, {y: 25})
-        .set(eyeCmd, {y: 28})
+        .set(eyeWrapper, {y: 28})
         .add('head', '+=0.5')
         .add('seaMonster', '+=1')
         .to(seaMonsterCmd2, 1, {h: -40}, 'head')
         .to(seaMonsterCmd3, 1, {y: -22}, 'head')
-        .to(eyeCmd, 1, {y: -19}, 'head')
+        .to(eyeWrapper, 1, {y: -19}, 'head')
         .to(seaMonsterCmd, .5, {startAngle: 180 * Math.PI / 180, endAngle: 0 * Math.PI / 180, ease: Sine.easeOut}, 'seaMonster')
         .to(seaMonsterCmd, .5, {y: 25}, 'seaMonster')
     ;
@@ -2449,7 +2456,7 @@ function getSeaMonsterTimeline(x, y) {
 }
 
 function getSharkTimeline(x, y) {
-    var sharkTimeline = new TimelineMax();
+    var sharkTimeline = new TimelineMax({repeat: -1});
 
     var sharkContainer = new createjs.Container();
     sharkContainer.x = x;
@@ -2475,7 +2482,12 @@ function getSharkTimeline(x, y) {
     sharkContainer.addChild(shark);
 
     sharkTimeline
-        .to(shark, 2, {x: -19, startAt: {x: 36}, repeat: -1, yoyo: true});
+        .set(shark, {x: 36, scaleX: 1})
+        .to(shark, 2, {x: -19})
+        .to(shark, .1, {x: -38, scaleX: -1})
+        .to(shark, 2, {x: 17})
+        .to(shark, .1, {x: 36, scaleX: 1});
+
     return [sharkTimeline, sharkContainer];
 }
 
