@@ -84,7 +84,7 @@ function init() {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", stage);
 
-    // Defaults;
+    // Defaults
     TweenLite.defaultEase = Power0.easeNone;
 
     loadAudio();
@@ -134,6 +134,9 @@ function loadAudio() {
 
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
+            var status = document.getElementById('status');
+            status.innerHTML = 'loading';
+
             var lrcArr = parseLrc(request.responseText);
 
             var lrc, lrcNext;
@@ -154,6 +157,10 @@ function loadAudio() {
 
             pop.on('canplayall', function () {
                 popCanPlay = true;
+
+                var status = document.getElementById('status');
+                status.innerHTML = 'ready';
+
                 // hide #loading
 //                var loading = document.getElementById('loading');
 //                loading.style.display = 'none';
@@ -346,6 +353,9 @@ function renderMenu() {
 }
 
 function renderAnim() {
+    var status = document.getElementById('status');
+    status.innerHTML = '';
+
     if (!animationWrapper) {
         animationWrapper = new createjs.Container();
     }
