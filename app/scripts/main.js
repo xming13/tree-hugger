@@ -46,6 +46,8 @@ var COLOR_YETI = '#fff';
 var COLOR_SEA_MONSTER = 'darkgreen';
 var COLOR_SHARK = '#CCCCCC';
 
+var COLOR_SNAKE = '#F4A460';
+
 // Stage
 var stage;
 
@@ -67,7 +69,7 @@ var COLOR_BUTTON_DISABLED = 'lightGrey';
 var COLOR_BUTTON_ENABLED = '#E2E2FF';
 var COLOR_BUTTON_DISABLED_CONTENT = 'darkGrey';
 var COLOR_BUTTON_ENABLED_CONTENT = '#9797FF';
-var PAGE_SIZE = 3;
+var PAGE_SIZE = 4;
 var currentPage = 1;
 
 // for debugging
@@ -332,7 +334,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getSeaMonsterTimeline(LEFT_2, TOP_1);
+        var objs = getSnakeTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -674,6 +676,17 @@ function renderAnim() {
         .to(sharkContainer, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=.9')
         .to(sharkContainer2, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=1.5');
 
+    var snakeObjs = getSnakeTimeline(LEFT_4, TOP_2);
+    var snakeTimeline = snakeObjs[0];
+    var snakeContainer = snakeObjs[1];
+
+    var transitionTimeline14 = new TimelineMax();
+    transitionTimeline14
+        .add('transition14')
+        .to(seaMonsterContainer2, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition14')
+        .to([sharkContainer, sharkContainer2], .01, {alpha: 0}, 'transition14')
+        .to(snakeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition14');
+
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
     animationWrapper.addChild(catContainer);
@@ -704,6 +717,7 @@ function renderAnim() {
     animationWrapper.addChild(seaMonsterContainer2);
     animationWrapper.addChild(sharkContainer);
     animationWrapper.addChild(sharkContainer2);
+    animationWrapper.addChild(snakeContainer);
 
     mainTimeline = new TimelineMax({
         paused: true,
@@ -753,6 +767,8 @@ function renderAnim() {
         .add(transitionTimeline12, '+=2')
         .add(seaMonsterTimeline)
         .add(transitionTimeline13, '+=1.5')
+        .add(transitionTimeline14, '+=2.2')
+        .add(snakeTimeline)
     ;
 
     mainTimeline
@@ -844,6 +860,11 @@ function _renderGallery() {
 
             var sharkObjs = getSharkTimeline(LEFT_3, TOP_2);
             _processTimelineObjs(sharkObjs);
+
+            break;
+        case 4:
+            var snakeObjs = getSnakeTimeline(LEFT_1, TOP_1);
+            _processTimelineObjs(snakeObjs);
 
             break;
         default:
@@ -2489,6 +2510,119 @@ function getSharkTimeline(x, y) {
         .to(shark, .1, {x: 36, scaleX: 1});
 
     return [sharkTimeline, sharkContainer];
+}
+
+function getSnakeTimeline(x, y) {
+    var snakeTimeline = new TimelineMax();
+
+    var snakeContainer = new createjs.Container();
+    snakeContainer.x = x;
+    snakeContainer.y = y;
+
+    var segmentDesert = new createjs.Shape();
+    segmentDesert.graphics.beginFill(COLOR_DESERT)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DESERT_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    snakeContainer.addChild(segmentSky);
+    snakeContainer.addChild(segmentDesert);
+
+    var snakeWrapper = new createjs.Container();
+
+    var snake = new createjs.Shape();
+    var snakeCmd1 = snake.graphics.beginFill(COLOR_SNAKE)
+        .rect(-15, 20, 30, 5)
+        .command;
+    var snakeCmd2 = snake.graphics
+        .rect(10, 15, 20, 5)
+        .command;
+    var snakeCmd3 = snake.graphics
+        .rect(-5, 10, 10, 5)
+        .command;
+    var snakeCmd4 = snake.graphics
+        .rect(-2.5, 10, 5, 14)
+        .command;
+
+    var head = new createjs.Shape();
+    var headCmd = head.graphics
+        .beginFill(COLOR_SNAKE)
+        .drawEllipse(-2.5, -10, 14, 8)
+        .command;
+
+    snakeWrapper.addChild(snake);
+    snakeWrapper.addChild(head);
+
+    var eyes = new createjs.Shape();
+    eyes.graphics
+        .beginFill('black')
+        .drawEllipse(6, -8, 2, 2);
+    snakeWrapper.addChild(eyes);
+
+    var hands = new createjs.Shape();
+    var handsCmd1 = hands.graphics
+        .beginFill(COLOR_SNAKE)
+        .drawCircle(-15, 0, 5)
+        .command;
+    var handsCmd2 = hands.graphics
+        .endFill().beginFill(COLOR_SNAKE)
+        .drawCircle(-23, 0, 2)
+        .command;
+    var handsCmd3 = hands.graphics
+        .endFill().beginFill(COLOR_SNAKE)
+        .drawCircle(-21, -5, 2)
+        .command;
+    var handsCmd4 = hands.graphics
+        .endFill().beginFill(COLOR_SNAKE)
+        .drawCircle(-17, -8, 2)
+        .command;
+    var handsCmd5 = hands.graphics
+        .endFill().beginFill(COLOR_SNAKE)
+        .drawCircle(22, 0, 5)
+        .command;
+    var handsCmd6 = hands.graphics
+        .endFill().beginFill(COLOR_SNAKE)
+        .drawCircle(30, 0, 2)
+        .command;
+    var handsCmd7 = hands.graphics
+        .endFill().beginFill(COLOR_SNAKE)
+        .drawCircle(28, -5, 2)
+        .command;
+    var handsCmd8 = hands.graphics
+        .endFill().beginFill(COLOR_SNAKE)
+        .drawCircle(24, -8, 2)
+        .command;
+
+    snakeWrapper.addChild(hands);
+
+    var snakeEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
+    snakeEyesTimeline
+        .to(eyes, .2, {scaleY: 0, y: -5})
+        .to(eyes, .2, {scaleY: 1, y: 0});
+
+    snakeContainer.addChild(snakeWrapper);
+
+    snakeTimeline
+        .set([snakeCmd1, snakeCmd2, snakeCmd3], {w: 0})
+        .set(snakeCmd4, {h: 0})
+        .set(headCmd, {w: 0})
+        .set(eyes, {alpha: 0})
+        .set([handsCmd1, handsCmd2, handsCmd3, handsCmd4, handsCmd5, handsCmd6, handsCmd7, handsCmd8], {radius: 0})
+        .to(snakeCmd1, .4, {w: 30})
+        .to(snakeCmd2, .35, {w: -20})
+        .to(snakeCmd3, .3, {w: 10})
+        .to(snakeCmd4, .3, {h: -16})
+        .to(headCmd, .3, {w: 14})
+        .set(eyes, {alpha: 1})
+        .to(handsCmd1, .2, {radius: 5}, '+=.65')
+        .to([handsCmd2, handsCmd3, handsCmd4], .2, {radius: 2})
+        .to(handsCmd5, .2, {radius: 5})
+        .to([handsCmd6, handsCmd7, handsCmd8], .2, {radius: 2})
+    ;
+
+    return [snakeTimeline, snakeContainer];
 }
 
 // Containers
