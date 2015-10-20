@@ -358,7 +358,7 @@ function renderMenu() {
 
 function renderAnim() {
     var status = document.getElementById('status');
-    status.innerHTML = '';
+    status.innerHTML += '<br/> renderAnim';
 
     if (!animationWrapper) {
         animationWrapper = new createjs.Container();
@@ -737,7 +737,10 @@ function renderAnim() {
         paused: true,
         autoRemoveChildren: true,
         onStart: function () {
+            var status = document.getElementById('status');
+            status.innerHTML += ' timelineOnStart';
             if (popCanPlay && pop) {
+                status.innerHTML += ' pop.play';
                 pop.play(START_TIME);
             }
         }
