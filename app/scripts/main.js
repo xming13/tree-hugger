@@ -296,6 +296,7 @@ function renderMenu() {
     btnFbWrapper.addChild(btnFb);
     btnFbWrapper.addEventListener('click', function () {
         alert('not implemented yet!');
+//        window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href, '_blank');
     });
     menuWrapper.addChild(btnFbWrapper);
 
