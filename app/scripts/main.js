@@ -127,7 +127,7 @@ function init() {
 
 function loadAudio() {
     pop = Popcorn("#audio");
-    pop.load();
+//    pop.load();
 
     var request = new XMLHttpRequest();
     request.open('GET', 'audio/Antsy_Pants_-_Tree_Hugger.txt', true);
@@ -345,7 +345,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getSnakeTimeline(LEFT_2, TOP_1);
+        var objs = getHugTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -701,6 +701,16 @@ function renderAnim() {
         .to([sharkContainer, sharkContainer2], .01, {alpha: 0}, 'transition14')
         .to(snakeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition14');
 
+    var hugObjs = getHugTimeline(LEFT_2, TOP_1);
+    var hugContainer = hugObjs[1];
+    hugContainer.scaleX = hugContainer.scaleY = 0;
+
+    var transitionTimeline15 = new TimelineMax();
+    transitionTimeline15
+        .add('transition15')
+        .set(hugContainer, {scaleX: 0, scaleY: 0})
+        .to(hugContainer, .5, {scaleX: 1, scaleY: 1});
+
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
     animationWrapper.addChild(catContainer);
@@ -732,6 +742,7 @@ function renderAnim() {
     animationWrapper.addChild(sharkContainer);
     animationWrapper.addChild(sharkContainer2);
     animationWrapper.addChild(snakeContainer);
+    animationWrapper.addChild(hugContainer);
 
     mainTimeline = new TimelineMax({
         paused: true,
@@ -786,6 +797,7 @@ function renderAnim() {
         .add(transitionTimeline13, '+=1.5')
         .add(transitionTimeline14, '+=2.2')
         .add(snakeTimeline)
+        .add(transitionTimeline15, '+=0.2')
     ;
 
     mainTimeline
@@ -882,6 +894,9 @@ function _renderGallery() {
         case 4:
             var snakeObjs = getSnakeTimeline(LEFT_1, TOP_1);
             _processTimelineObjs(snakeObjs);
+
+            var hugObjs = getHugTimeline(LEFT_2, TOP_1);
+            _processTimelineObjs(hugObjs);
 
             break;
         default:
@@ -2616,7 +2631,7 @@ function getSnakeTimeline(x, y) {
 
     var snakeEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
     snakeEyesTimeline
-        .to(eyes, .2, {scaleY: 0, y: -5})
+        .to(eyes, .2, {scaleY: 0, y: -7})
         .to(eyes, .2, {scaleY: 1, y: 0});
 
     snakeContainer.addChild(snakeWrapper);
@@ -2640,6 +2655,91 @@ function getSnakeTimeline(x, y) {
     ;
 
     return [snakeTimeline, snakeContainer];
+}
+
+function getHugTimeline(x, y) {
+    var hugTimeline = new TimelineMax();
+
+    var hugContainer = new createjs.Container();
+    hugContainer.x = x;
+    hugContainer.y = y;
+
+    var background = new createjs.Shape();
+    background.graphics.beginFill(COLOR_SKY)
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    hugContainer.addChild(background);
+
+    var startAngle = 50;
+    var endAngle = 75;
+    var tree = new createjs.Shape();
+    tree.graphics.beginFill(COLOR_JACKALOPE_HORN)
+        .arc(0, 0, CIRCLE_RADIUS, -endAngle * Math.PI / 180, -startAngle * Math.PI / 180)
+        .arc(0, 0, CIRCLE_RADIUS, startAngle * Math.PI / 180, endAngle * Math.PI / 180);
+    hugContainer.addChild(tree);
+
+    var COLOR_FACE = '#FFDA99';
+    var COLOR_HAIR = '#000000';
+    var COLOR_NOBITA_SHIRT = 'yellow';
+    var COLOR_NOBITA_PANTS = 'blue';
+
+    var nobitaWrapper = new createjs.Container();
+    var face = new createjs.Shape();
+    face.graphics.beginFill(COLOR_FACE)
+        .arc(0, 0, 20, -20 * Math.PI / 180, 200 * Math.PI / 180);
+    nobitaWrapper.addChild(face);
+
+    var ears = new createjs.Shape();
+    ears.graphics.beginFill(COLOR_FACE)
+        .arc(-20, 2, 4, 90 * Math.PI / 180, 270 * Math.PI / 180)
+        .arc(20, 2, 4, -90 * Math.PI / 180, 90 * Math.PI / 180);
+    nobitaWrapper.addChild(ears);
+
+    var hair = new createjs.Shape();
+    hair.graphics.beginFill(COLOR_HAIR)
+        .arc(0, 0, 20, 200 * Math.PI / 180, -20 * Math.PI / 180)
+        .endFill().beginFill(COLOR_HAIR)
+        .arc(0, 0, 20, -40 * Math.PI / 180, -2 * Math.PI / 180)
+        .lineTo(16, -2)
+        .lineTo(13, -10)
+        .endFill().beginFill(COLOR_HAIR)
+        .arc(0, 0, 20, 220 * Math.PI / 180, 182 * Math.PI / 180, true)
+        .lineTo(-16, -2)
+        .lineTo(-13, -10)
+    ;
+    nobitaWrapper.addChild(hair);
+
+    var eyes = new createjs.Shape();
+    eyes.graphics.beginFill('white')
+        .drawEllipse(-14, -5, 14, 16)
+        .drawEllipse(0, -5, 14, 16);
+    var eyeballs = new createjs.Shape();
+    eyeballs.graphics.beginFill('black')
+        .drawEllipse(-6, 2, 3, 3)
+        .drawEllipse(3, 2, 3, 3);
+    nobitaWrapper.addChild(eyes);
+    nobitaWrapper.addChild(eyeballs);
+
+    var shirt = new createjs.Shape();
+    shirt.graphics.beginFill(COLOR_NOBITA_SHIRT)
+        .rect(-12, 20, 24, 15);
+    nobitaWrapper.addChild(shirt);
+
+    var pants = new createjs.Shape();
+    pants.graphics.beginFill(COLOR_NOBITA_PANTS)
+        .rect(-12, 35, 24, 8);
+    nobitaWrapper.addChild(pants);
+
+    var limbs = new createjs.Shape();
+    limbs.graphics.beginFill(COLOR_FACE)
+        .rect(12, 22, 12, 5)
+        .rect(12, 37, 12, 5);
+    nobitaWrapper.addChild(limbs);
+
+    nobitaWrapper.x += 01;
+    nobitaWrapper.y -= 10;
+    hugContainer.addChild(nobitaWrapper);
+
+    return [hugTimeline, hugContainer];
 }
 
 // Containers
