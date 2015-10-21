@@ -74,7 +74,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 88 : 0;
+var START_TIME = DEBUG ? 95 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -127,7 +127,6 @@ function init() {
 
 function loadAudio() {
     pop = Popcorn("#audio");
-//    pop.load();
 
     var request = new XMLHttpRequest();
     request.open('GET', 'audio/Antsy_Pants_-_Tree_Hugger.txt', true);
@@ -345,7 +344,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getHugTimeline(LEFT_2, TOP_1);
+        var objs = getQuestionTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -709,7 +708,23 @@ function renderAnim() {
     transitionTimeline15
         .add('transition15')
         .set(hugContainer, {scaleX: 0, scaleY: 0})
-        .to(hugContainer, .5, {scaleX: 1, scaleY: 1});
+        .to(hugContainer, .7, {scaleX: 1, scaleY: 1, ease: Power1.easeOut});
+
+    var cactusObjs3 = getCactusTimeline(LEFT_4, TOP_2);
+    var cactusContainer3 = cactusObjs3[1];
+
+    var questionObjs = getQuestionTimeline(LEFT_3, TOP_1);
+    var questionTimeline = questionObjs[0];
+    var questionContainer = questionObjs[1];
+    questionContainer.scaleX = questionContainer.scaleY = 0;
+
+    var transitionTimeline16 = new TimelineMax();
+    transitionTimeline16
+        .add('transition16')
+        .to(snakeContainer, .5, {x: LEFT_1}, 'transition16')
+        .to(hugContainer, .5, {x: LEFT_1}, 'transition16')
+        .to(cactusContainer3, .5, {x: LEFT_3}, 'transition16')
+        .to(questionContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut}, '+=1.2')
 
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
@@ -743,6 +758,8 @@ function renderAnim() {
     animationWrapper.addChild(sharkContainer2);
     animationWrapper.addChild(snakeContainer);
     animationWrapper.addChild(hugContainer);
+    animationWrapper.addChild(cactusContainer3);
+    animationWrapper.addChild(questionContainer);
 
     mainTimeline = new TimelineMax({
         paused: true,
@@ -798,6 +815,8 @@ function renderAnim() {
         .add(transitionTimeline14, '+=2.2')
         .add(snakeTimeline)
         .add(transitionTimeline15, '+=0.2')
+        .add(transitionTimeline16, '+=1')
+        .add(questionTimeline)
     ;
 
     mainTimeline
@@ -897,6 +916,9 @@ function _renderGallery() {
 
             var hugObjs = getHugTimeline(LEFT_2, TOP_1);
             _processTimelineObjs(hugObjs);
+
+            var questionObjs = getQuestionTimeline(LEFT_3, TOP_1);
+            _processTimelineObjs(questionObjs);
 
             break;
         default:
@@ -2719,6 +2741,11 @@ function getHugTimeline(x, y) {
     nobitaWrapper.addChild(eyes);
     nobitaWrapper.addChild(eyeballs);
 
+    var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
+    eyesTimeline
+        .to(eyeballs, .2, {scaleY: 0, y: 3.5})
+        .to(eyeballs, .2, {scaleY: 1, y: 0});
+
     var shirt = new createjs.Shape();
     shirt.graphics.beginFill(COLOR_NOBITA_SHIRT)
         .rect(-12, 20, 24, 15);
@@ -2731,8 +2758,10 @@ function getHugTimeline(x, y) {
 
     var limbs = new createjs.Shape();
     limbs.graphics.beginFill(COLOR_FACE)
-        .rect(12, 22, 12, 5)
-        .rect(12, 37, 12, 5);
+        .rect(12, 22, 10, 5)
+        .arc(22, 24.5, 2.5, -90 * Math.PI / 180, 90 * Math.PI / 180)
+        .rect(12, 37, 10, 5)
+        .arc(22, 39.5, 2.5, -90 * Math.PI / 180, 90 * Math.PI / 180);
     nobitaWrapper.addChild(limbs);
 
     nobitaWrapper.x += 01;
@@ -2740,6 +2769,36 @@ function getHugTimeline(x, y) {
     hugContainer.addChild(nobitaWrapper);
 
     return [hugTimeline, hugContainer];
+}
+
+function getQuestionTimeline(x, y) {
+    var questionTimeline = new TimelineMax({repeat: 1, ease: Bounce.easeOut});
+
+    var questionContainer = new createjs.Container();
+    questionContainer.x = x;
+    questionContainer.y = y;
+
+    var background = new createjs.Shape();
+    background.graphics.beginFill(COLOR_DESERT_SKY)
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    questionContainer.addChild(background);
+
+    var questionMark = new createjs.Shape();
+    questionMark.graphics
+        .setStrokeStyle(4, 'round', 'round')
+        .beginStroke('red')
+        .arc(0, -10, 10, 180 * Math.PI / 180, 90 * Math.PI / 180)
+        .lineTo(0, 8)
+        .endStroke().beginStroke('red')
+        .drawCircle(0, 18, 1);
+
+    questionContainer.addChild(questionMark);
+
+    questionTimeline
+        .to(questionMark, .07, {rotation: 25, repeat: 1, yoyo: true})
+        .to(questionMark, .07, {rotation: -25, repeat: 1, yoyo: true});
+
+    return [questionTimeline, questionContainer];
 }
 
 // Containers
