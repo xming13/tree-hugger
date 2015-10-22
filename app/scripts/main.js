@@ -40,6 +40,8 @@ var COLOR_BALLOON_2 = '#9999FF';
 var COLOR_BALLOON_3 = '#FFFF99';
 
 var COLOR_FISH = '#FFE926';
+var COLOR_CACTUS = '#1D8232';
+var COLOR_CACTUS_STRIPE = 'greenyellow';
 var COLOR_JACKALOPE = '#FFDB89';
 var COLOR_JACKALOPE_HORN = '#996C4D';
 var COLOR_YETI = '#fff';
@@ -344,7 +346,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getQuestionTimeline(LEFT_2, TOP_1);
+        var objs = getSpikeTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -726,6 +728,16 @@ function renderAnim() {
         .to(cactusContainer3, .5, {x: LEFT_3}, 'transition16')
         .to(questionContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut}, '+=1.2')
 
+    var spikeObjs = getSpikeTimeline(LEFT_3, TOP_1);
+    var spikeTimeline = spikeObjs[0];
+    var spikeContainer = spikeObjs[1];
+    spikeContainer.scaleX = spikeContainer.scaleY = 0
+
+    var transitionTimeline17 = new TimelineMax();
+    transitionTimeline17
+        .add('transition17')
+        .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut});
+
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
     animationWrapper.addChild(catContainer);
@@ -760,6 +772,7 @@ function renderAnim() {
     animationWrapper.addChild(hugContainer);
     animationWrapper.addChild(cactusContainer3);
     animationWrapper.addChild(questionContainer);
+    animationWrapper.addChild(spikeContainer);
 
     mainTimeline = new TimelineMax({
         paused: true,
@@ -817,6 +830,8 @@ function renderAnim() {
         .add(transitionTimeline15, '+=0.2')
         .add(transitionTimeline16, '+=1')
         .add(questionTimeline)
+        .add(transitionTimeline17, '+=1.8')
+        .add(spikeTimeline, '+=0.1')
     ;
 
     mainTimeline
@@ -919,6 +934,9 @@ function _renderGallery() {
 
             var questionObjs = getQuestionTimeline(LEFT_3, TOP_1);
             _processTimelineObjs(questionObjs);
+
+            var spikeObjs = getSpikeTimeline(LEFT_1, TOP_2);
+            _processTimelineObjs(spikeObjs);
 
             break;
         default:
@@ -2088,9 +2106,6 @@ function getCactusTimeline(x, y) {
 
     var cactusWrapper = new createjs.Container();
 
-    var COLOR_CACTUS = '#1D8232';
-    var COLOR_CACTUS_STRIPE = 'greenyellow';
-
     var cactus = new createjs.Shape();
     cactus.graphics.beginFill(COLOR_CACTUS);
     var cactusCmd1 = cactus.graphics.rect(-15, 25, 30, 0).command;
@@ -2799,6 +2814,70 @@ function getQuestionTimeline(x, y) {
         .to(questionMark, .07, {rotation: -25, repeat: 1, yoyo: true});
 
     return [questionTimeline, questionContainer];
+}
+
+function getSpikeTimeline(x, y) {
+    var spikeTimeline = new TimelineMax();
+
+    var spikeContainer = new createjs.Container();
+    spikeContainer.x = x;
+    spikeContainer.y = y;
+
+    var background = new createjs.Shape();
+    background.graphics.beginFill(COLOR_DESERT_SKY)
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    spikeContainer.addChild(background);
+
+    var cactusWrapper = new createjs.Container();
+    var cactus = new createjs.Shape();
+    cactus.graphics.beginFill(COLOR_CACTUS)
+        .arc(0, 0, CIRCLE_RADIUS, -75 * Math.PI / 180, 75 * Math.PI / 180);
+    cactusWrapper.addChild(cactus);
+
+    var cactusStripe = new createjs.Shape();
+    var endAngle = 63;
+    var startAngle = 55;
+    var endAngle2 = 42;
+    var startAngle2 = 30;
+
+    cactusStripe.graphics
+        .beginFill(COLOR_CACTUS_STRIPE)
+        .arc(0, 0, CIRCLE_RADIUS, -endAngle * Math.PI / 180, -startAngle * Math.PI / 180)
+        .arc(0, 0, CIRCLE_RADIUS, startAngle * Math.PI / 180, endAngle * Math.PI / 180)
+        .endFill().beginFill(COLOR_CACTUS_STRIPE)
+        .arc(0, 0, CIRCLE_RADIUS, -endAngle2 * Math.PI / 180, -startAngle2 * Math.PI / 180)
+        .arc(0, 0, CIRCLE_RADIUS, startAngle2 * Math.PI / 180, endAngle2 * Math.PI / 180)
+    ;
+    cactusWrapper.addChild(cactusStripe);
+
+    var spike = new createjs.Shape();
+    spike.graphics.beginFill(COLOR_CACTUS)
+        .moveTo(13, -30)
+        .lineTo(-11, -36)
+        .lineTo(13, -42)
+        .moveTo(13, -12)
+        .lineTo(-11, -18)
+        .lineTo(13, -24)
+        .moveTo(13, 6)
+        .lineTo(-11, 0)
+        .lineTo(13, -6)
+        .moveTo(13, 24)
+        .lineTo(-11, 18)
+        .lineTo(13, 12)
+        .moveTo(13, 42)
+        .lineTo(-11, 36)
+        .lineTo(13, 30)
+
+    cactusWrapper.addChildAt(spike, 0);
+
+    spikeContainer.addChild(cactusWrapper);
+
+    spikeTimeline
+        .set(spike, {x: "+=17"})
+        .to(spike, 1, {x: "-=10", ease: Back.easeOut.config(4)})
+    ;
+
+    return [spikeTimeline, spikeContainer];
 }
 
 // Containers
