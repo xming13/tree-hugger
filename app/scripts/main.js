@@ -308,8 +308,17 @@ function renderMenu() {
     btnBrowseWrapper.cursor = 'pointer';
 
     var btnBrowse = new createjs.Shape();
-    btnBrowse.graphics.beginFill('pink')
-        .drawCircle(0, 0, CIRCLE_RADIUS_SMALL);
+    btnBrowse.graphics.beginFill(COLOR_BUTTON_ENABLED)
+        .drawCircle(0, 0, CIRCLE_RADIUS_SMALL)
+        .endFill().beginFill(COLOR_BUTTON_ENABLED_CONTENT)
+        .rect(-16, -2, 5, 5)
+        .rect(-8.5, -2, 24.5, 5)
+        .rect(-16, -12, 5, 5)
+        .rect(-8.5, -12, 24.5, 5)
+        .rect(-16, 8, 5, 5)
+        .rect(-8.5, 8, 24.5, 5)
+    ;
+
     btnBrowseWrapper.addChild(btnBrowse);
     btnBrowseWrapper.addEventListener('click', function () {
         stage.removeChild(menuWrapper);
