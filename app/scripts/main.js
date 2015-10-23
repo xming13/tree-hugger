@@ -76,7 +76,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 95 : 0;
+var START_TIME = DEBUG ? 55 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -626,8 +626,8 @@ function renderAnim() {
             overlayContainer.addChild(cactusFlowerWrapper2);
         })
         .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
-        .to(cactusFlowerWrapper2, .5, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
-        .add(new TimelineMax({delay: .8})
+        .to(cactusFlowerWrapper2, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
+        .add(new TimelineMax({delay: .6})
             .to(cactusFlowerWrapper2, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
             .to(cactusFlowerWrapper2, .26, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
             .to(cactusFlowerWrapper2, .22, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
@@ -636,8 +636,8 @@ function renderAnim() {
             .to(cactusFlowerWrapper2, .1, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
             .to(cactusFlowerWrapper2, .06, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
             .to(cactusFlowerWrapper2, .02, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2}))
-        .add('overlayend', '+=4')
-        .add('desert', '+=4.5')
+        .add('overlayend', '+=3.5')
+        .add('desert', '+=4')
         .to(hearts, 16, {y: "+=" + (CIRCLE_DIAMETER + CIRCLE_DIAMETER + CIRCLE_DIAMETER)})
         .to(hearts, 2, {alpha: 0}, '-=2')
         .to(overlay, .5, {alpha: 0}, 'overlayend')
@@ -2333,17 +2333,17 @@ function getDesertFaceTimeline(x, y) {
         .set(eyebrowsArcCmd, {x1: -18, y1: -13, x2: -28, y2: -3, radius: 20})
         .set(eyebrowsArcCmd2, {x1: 18, y1: -13, x2: 28, y2: -3, radius: 20})
         .add('desertFace', '+=1.2')
-        .add('happyFace', '+=5.7')
-        .to(eyebrowsArcCmd, .8, {x1: -13, y1: -8, x2: -28, y2: -3, radius: 20}, 'desertFace')
-        .to(eyebrowsArcCmd2, .8, {x1: 13, y1: -8, x2: 28, y2: -3, radius: 20}, 'desertFace')
-        .to(eyebrowsStartCmd, .6, {x: -6, y: -4}, 'happyFace')
-        .to(eyebrowsArcCmd, .6, {x1: -17, y1: -20, x2: -28, y2: 0, radius: 10}, 'happyFace')
-        .to(eyebrowsEndCmd, .6, {x: -28, y: 0}, 'happyFace')
-        .to(eyebrowsStartCmd2, .6, {x: 6, y: -4}, 'happyFace')
-        .to(eyebrowsArcCmd2, .6, {x1: 17, y1: -20, x2: 28, y2: 0, radius: 10}, 'happyFace')
-        .to(eyebrowsEndCmd2, .6, {x: 28, y: 0}, 'happyFace')
-        .to([eyesCmd, eyesCmd2], .6, {x: '+=2', y: '+=2', h: '0', w: '0'}, 'happyFace')
-        .to(pink, .6, {alpha: 1}, 'happyFace')
+        .add('happyFace', '+=6')
+        .to(eyebrowsArcCmd, 1.2, {x1: -13, y1: -8, x2: -28, y2: -3, radius: 20}, 'desertFace')
+        .to(eyebrowsArcCmd2, 1.2, {x1: 13, y1: -8, x2: 28, y2: -3, radius: 20}, 'desertFace')
+        .to(eyebrowsStartCmd, 1.0, {x: -6, y: -4}, 'happyFace')
+        .to(eyebrowsArcCmd, 1.0, {x1: -17, y1: -20, x2: -28, y2: 0, radius: 10}, 'happyFace')
+        .to(eyebrowsEndCmd, 1.0, {x: -28, y: 0}, 'happyFace')
+        .to(eyebrowsStartCmd2, 1.0, {x: 6, y: -4}, 'happyFace')
+        .to(eyebrowsArcCmd2, 1.0, {x1: 17, y1: -20, x2: 28, y2: 0, radius: 10}, 'happyFace')
+        .to(eyebrowsEndCmd2, 1.0, {x: 28, y: 0}, 'happyFace')
+        .to([eyesCmd, eyesCmd2], 1.0, {x: '+=2', y: '+=2', h: '0', w: '0'}, 'happyFace')
+        .to(pink, 1.0, {alpha: 1}, 'happyFace')
     ;
 
     return [desertFaceTimeline, desertFaceContainer];
@@ -2429,20 +2429,20 @@ function getJackalopeTimeline(x, y) {
     jackalopeWrapper.addChild(faceWrapper);
     jackalopeContainer.addChild(jackalopeWrapper);
 
-    var earTimeline = new TimelineMax({repeat: -1, yoyo: true, repeatDelay: 1});
+    var earTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.4});
     earTimeline
         .add('s1')
-        .to(ear, .4, {rotation: 55}, 's1')
-        .to(ear2, .4, {rotation: -55}, 's1')
+        .to(ear, .2, {rotation: 50}, 's1')
+        .to(ear2, .2, {rotation: -50}, 's1')
         .add('s2')
         .to(ear, .2, {rotation: 45}, 's2')
         .to(ear2, .2, {rotation: -45}, 's2')
         .add('s3')
-        .to(ear, .2, {rotation: 50}, 's3')
-        .to(ear2, .2, {rotation: -50}, 's3')
+        .to(ear, .2, {rotation: 55}, 's3')
+        .to(ear2, .2, {rotation: -55}, 's3')
         .add('s4')
-        .to(ear, .4, {rotation: 40}, 's4')
-        .to(ear2, .4, {rotation: -40}, 's4')
+        .to(ear, .2, {rotation: 40}, 's4')
+        .to(ear2, .2, {rotation: -40}, 's4');
 
     return [jackalopeTimeline, jackalopeContainer];
 }
