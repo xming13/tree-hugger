@@ -32,8 +32,8 @@ var COLOR_BEE_BODY = 'yellow';
 var COLOR_BEE_WING = '#ABCCB0';
 var COLOR_BEE_BODY_STRIPE = 'black'
 
-var COLOR_TURTLE_SHELL = '#25B325';
-var COLOR_TURTLE_BODY = '#FFBE00';
+var COLOR_TURTLE_SHELL = '#00cc00';
+var COLOR_TURTLE_BODY = '#FFDC00';
 var COLOR_BALLOON_STRING = 'white';
 var COLOR_BALLOON_1 = '#FF9999';
 var COLOR_BALLOON_2 = '#9999FF';
@@ -76,7 +76,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 55 : 0;
+var START_TIME = DEBUG ? 28 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -508,12 +508,26 @@ function renderAnim() {
     var cloudObjs2 = getCloudTimeline(LEFT_3, TOP_NEG1);
     var cloudContainer2 = cloudObjs2[1];
 
+    var turtleFloatTimeline = new TimelineMax();
+    turtleFloatTimeline
+        .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeOut})
+        .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeIn})
+        .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeOut})
+        .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeIn})
+        .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeOut})
+        .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeIn})
+        .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeOut})
+        .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeIn})
+        .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeOut})
+        .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeIn});
+
     var transitionTimeline4 = new TimelineMax();
     transitionTimeline4
         .add('transition4')
         .set(skyContainer, {alpha: 0}, 'transition4')
         .to(turtleContainer, 1, {y: TOP_4}, 'transition4')
         .to(turtleWrapper, 1, {y: -(TOP_4 - TOP_2)}, 'transition4')
+        .add(turtleFloatTimeline, 'transition4+1')
         .to(skyContainer, .01, {y: TOP_2, alpha: 1}, 'transition4')
         .to(cloudContainer1, 2, {y: TOP_5}, 'transition4')
         .to(cloudContainer2, 2.4, {y: TOP_4}, 'transition4');
@@ -719,7 +733,7 @@ function renderAnim() {
     transitionTimeline15
         .add('transition15')
         .set(hugContainer, {scaleX: 0, scaleY: 0})
-        .to(hugContainer, .7, {scaleX: 1, scaleY: 1, ease: Power1.easeOut});
+        .to(hugContainer, .7, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)});
 
     var cactusObjs3 = getCactusTimeline(LEFT_4, TOP_2);
     var cactusContainer3 = cactusObjs3[1];
@@ -812,8 +826,9 @@ function renderAnim() {
             .add(catTimeline, '-=0.3')
             .add(transitionTimeline3, '+=0')
             .add(turtleTimeline, '+=0.4')
+            .add('tran5', '+=2.5')
             .add(transitionTimeline4, '+=0.1')
-            .add(transitionTimeline5, '+=0.1')
+            .add(transitionTimeline5, 'tran5')
             .add(transitionTimeline6, '+=0')
             .add('fish', '+=0')
             .add('desert', '+=18.1')
@@ -1616,21 +1631,31 @@ function getTurtleTimeline(x, y) {
         .to(eyes, .2, {scaleY: 0, y: 21})
         .to(eyes, .2, {scaleY: 1, y: 0});
 
+    var hand1Wrapper = new createjs.Container();
+    hand1Wrapper.x = 13;
+    hand1Wrapper.y = 18;
+
     var hand1 = new createjs.Shape();
     hand1.graphics
         .beginFill(COLOR_TURTLE_BODY)
-        .moveTo(15, 25)
-        .lineTo(13, 18)
-        .lineTo(22, 25);
-    turtleWrapper.addChild(hand1);
+        .moveTo(2, 7)
+        .lineTo(0, 0)
+        .lineTo(9, 7);
+    hand1Wrapper.addChild(hand1);
+    turtleWrapper.addChild(hand1Wrapper);
+
+    var hand2Wrapper = new createjs.Container();
+    hand2Wrapper.x = -13;
+    hand2Wrapper.y = 18;
 
     var hand2 = new createjs.Shape();
     hand2.graphics
         .beginFill(COLOR_TURTLE_BODY)
-        .moveTo(-15, 25)
-        .lineTo(-13, 18)
-        .lineTo(-22, 25);
-    turtleWrapper.addChild(hand2);
+        .moveTo(-2, 7)
+        .lineTo(0, 0)
+        .lineTo(-9, 7);
+    hand2Wrapper.addChild(hand2);
+    turtleWrapper.addChild(hand2Wrapper);
 
     var balloonWrapper = new createjs.Container();
     var balloon1 = new createjs.Shape();
@@ -1697,8 +1722,8 @@ function getTurtleTimeline(x, y) {
     var flyTimeline = new TimelineMax();
     flyTimeline
         .add('hands')
-        .to(hand1, .5, {rotation: "-=4", startAt: {rotation: "+=2"}, repeat: -1, yoyo: true}, 'hands')
-        .to(hand2, .5, {rotation: "+=4", startAt: {rotation: "-=2"}, repeat: -1, yoyo: true}, 'hands')
+        .to(hand1Wrapper, .44, {rotation: "-=10", startAt: {rotation: "+=8"}, repeat: -1, yoyo: true}, 'hands')
+        .to(hand2Wrapper, .44, {rotation: "+=10", startAt: {rotation: "-=8"}, repeat: -1, yoyo: true}, 'hands')
     ;
 
     return [turtleTimeline, turtleContainer, turtleWrapper, balloonWrapper];
