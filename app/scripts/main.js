@@ -76,7 +76,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 100 : 0;
+var START_TIME = DEBUG ? 140 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -495,9 +495,9 @@ function renderAnim() {
         .to(turtleContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition3');
 
     var skyContainer = new createjs.Container();
-    skyContainer.x = LEFT_2;
-    skyContainer.y = TOP_NEG1;
-    skyContainer.alpha = 0;
+//    skyContainer.x = LEFT_2;
+//    skyContainer.y = TOP_NEG1;
+//    skyContainer.alpha = 0;
     var sky = new createjs.Shape();
     sky.graphics.beginFill('lightBlue')
         .drawCircle(0, 0, CIRCLE_RADIUS);
@@ -524,7 +524,9 @@ function renderAnim() {
     var transitionTimeline4 = new TimelineMax();
     transitionTimeline4
         .add('transition4')
-        .set(skyContainer, {alpha: 0}, 'transition4')
+        .set(turtleContainer, {x: LEFT_4, y: TOP_2})
+        .set(turtleWrapper, {y: 0})
+        .set(skyContainer, {alpha: 0, x: LEFT_2, y: TOP_NEG1}, 'transition4')
         .to(turtleContainer, 1, {y: TOP_4}, 'transition4')
         .to(turtleWrapper, 1, {y: -(TOP_4 - TOP_2)}, 'transition4')
         .add(turtleFloatTimeline, 'transition4+1')
@@ -588,7 +590,7 @@ function renderAnim() {
         .add(function () {
             // remove cactusTimeline from the timeline
             transitionTimeline7.remove(cactusTimeline);
-        })
+        }, 'removeCactus')
         .add('transition7b', '+=0.5')
         .to(fishContainer, 8.8, {x: LEFT_4, startAt: {x: LEFT_0, scaleX: -1}}, 'transition7b')
         .add(cactusTimeline, 'transition7+=5')
@@ -835,12 +837,45 @@ function renderAnim() {
         }
     });
 
-    function getFlowerToDesertTimeline() {
+    function getFlowerToDesertTimeline(revert) {
         var flowerToDesertTimeline = new TimelineMax({
             autoRemoveChildren: true
         });
 
         flowerToDesertTimeline
+            .add(function () {
+                if (revert) {
+                    transitionTimeline8.seek(0);
+                    transitionTimeline7.seek(0);
+                    transitionTimeline7.add(cactusTimeline, 'removeCactus');
+
+                    var cactusFlowerWrapper2 = overlayContainer.getChildAt(1);
+                    if (cactusFlowerWrapper2) {
+                        cactusCactusWrapper2.addChild(cactusFlowerWrapper2);
+                        cactusFlowerWrapper2.x -= LEFT_2;
+                        cactusFlowerWrapper2.y -= TOP_2;
+                        overlayContainer.removeChild(cactusFlowerWrapper2);
+                    }
+
+                    var balloonWrapper = skyContainer.getChildAt(1);
+                    if (balloonWrapper) {
+                        turtleWrapper.addChildAt(balloonWrapper, 0);
+                        skyContainer.removeChild(balloonWrapper);
+                    }
+
+                    transitionTimeline6.seek(0);
+                    transitionTimeline5.seek(0);
+                    transitionTimeline4.seek(0);
+                    turtleTimeline.seek(0);
+                    transitionTimeline3.seek(0);
+                    catTimeline.seek(0);
+                    transitionTimeline2.seek(0);
+                    transitionSeasonTimeline.seek(0);
+                    treeTimeline.seek(0);
+                    transitionTimeline.seek(0);
+                    flowerTimeline.seek(0);
+                }
+            })
             .add('flower')
             .add(flowerTimeline)
             .add(transitionTimeline, '+=0.4')
@@ -882,8 +917,8 @@ function renderAnim() {
         .add(transitionTimeline17, '+=1.8')
         .add(spikeTimeline, '+=0.1')
         .add(transitionTimeline18, '+=2.8')
-        .add(function() {
-            getFlowerToDesertTimeline().play(0);
+        .add(function () {
+            getFlowerToDesertTimeline(true).play(0);
         })
     ;
 
@@ -1099,7 +1134,9 @@ function _renderBtnHome() {
 
 // Timelines
 function getFlowerTimeline(x, y) {
-    var flowerTimeline = new TimelineMax();
+    var flowerTimeline = new TimelineMax({onStart: function () {
+        console.log('flowerTimeline onStart');
+    }});
 
     var container1 = new createjs.Container();
     container1.x = x;
@@ -1172,6 +1209,7 @@ function getFlowerTimeline(x, y) {
 
     flowerTimeline
         .add('initial')
+        .set(container1, {x: x, y: y})
         .set(segmentGroundCmd, {startAngle: 90 * Math.PI / 180, endAngle: 90 * Math.PI / 180}, 'initial')
         .set(segmentSky, {alpha: 0}, 'initial')
         .set(segmentSkyCmd, {startAngle: 30 * Math.PI / 180, endAngle: 150 * Math.PI / 180}, 'initial')
