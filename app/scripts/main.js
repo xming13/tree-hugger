@@ -76,7 +76,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 28 : 0;
+var START_TIME = DEBUG ? 100 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -727,6 +727,8 @@ function renderAnim() {
 
     var hugObjs = getHugTimeline(LEFT_2, TOP_1);
     var hugContainer = hugObjs[1];
+    var hugEyesWrapper = hugObjs[2];
+    var hugNobitaWrapper = hugObjs[3];
     hugContainer.scaleX = hugContainer.scaleY = 0;
 
     var transitionTimeline15 = new TimelineMax();
@@ -737,6 +739,8 @@ function renderAnim() {
 
     var cactusObjs3 = getCactusTimeline(LEFT_4, TOP_2);
     var cactusContainer3 = cactusObjs3[1];
+    var cactusFlowerWrapper3 = cactusObjs3[2];
+    var cactusCactusWrapper3 = cactusObjs3[3];
 
     var questionObjs = getQuestionTimeline(LEFT_3, TOP_1);
     var questionTimeline = questionObjs[0];
@@ -760,6 +764,26 @@ function renderAnim() {
     transitionTimeline17
         .add('transition17')
         .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut});
+
+    var flowerEyeContainer = new createjs.Container();
+    var transitionTimeline18 = new TimelineMax();
+    transitionTimeline18
+        .add('transition18')
+        .add(function () {
+            cactusCactusWrapper3.removeChild(cactusFlowerWrapper3);
+            cactusFlowerWrapper3.x += LEFT_3;
+            cactusFlowerWrapper3.y += TOP_2;
+            flowerEyeContainer.addChild(cactusFlowerWrapper3);
+
+            hugNobitaWrapper.removeChild(hugEyesWrapper);
+            hugEyesWrapper.x += LEFT_1 + hugNobitaWrapper.x;
+            hugEyesWrapper.y += TOP_1 + hugNobitaWrapper.y;
+            flowerEyeContainer.addChild(hugEyesWrapper);
+        })
+        .to(cactusFlowerWrapper3, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 5, scaleY: 5, ease: Power3.easeIn})
+        .to(hugEyesWrapper, 1, {x: LEFT_2 + hugNobitaWrapper.x, y: TOP_2 + hugNobitaWrapper.y, scaleX: 1.5, scaleY: 1.5, ease: Power1.easeIn})
+        .to([hugContainer, snakeContainer, spikeContainer, cactusContainer3, questionContainer, hugEyesWrapper, cactusFlowerWrapper3], .5, {
+            x: '-=' + (3 * (CIRCLE_DIAMETER + SPACING)), ease: Circ.easeOut}, '+=1')
 
     animationWrapper.addChild(flowerContainer);
     animationWrapper.addChild(treeContainer);
@@ -796,6 +820,7 @@ function renderAnim() {
     animationWrapper.addChild(cactusContainer3);
     animationWrapper.addChild(questionContainer);
     animationWrapper.addChild(spikeContainer);
+    animationWrapper.addChild(flowerEyeContainer);
 
     mainTimeline = new TimelineMax({
         paused: true,
@@ -856,10 +881,15 @@ function renderAnim() {
         .add(questionTimeline)
         .add(transitionTimeline17, '+=1.8')
         .add(spikeTimeline, '+=0.1')
+        .add(transitionTimeline18, '+=2.8')
+        .add(function() {
+            getFlowerToDesertTimeline().play(0);
+        })
     ;
 
+    var flowerToDesertTimeline = getFlowerToDesertTimeline();
     mainTimeline
-        .add(getFlowerToDesertTimeline(), '+=19')
+        .add(flowerToDesertTimeline, '+=19')
         .add(iceWorldTimeline);
 
     mainTimeline.play(START_TIME, false);
@@ -2779,6 +2809,7 @@ function getHugTimeline(x, y) {
     ;
     nobitaWrapper.addChild(hair);
 
+    var eyesWrapper = new createjs.Container();
     var eyes = new createjs.Shape();
     eyes.graphics.beginFill('white')
         .drawEllipse(-14, -5, 14, 16)
@@ -2787,8 +2818,9 @@ function getHugTimeline(x, y) {
     eyeballs.graphics.beginFill('black')
         .drawEllipse(-6, 2, 3, 3)
         .drawEllipse(3, 2, 3, 3);
-    nobitaWrapper.addChild(eyes);
-    nobitaWrapper.addChild(eyeballs);
+    eyesWrapper.addChild(eyes);
+    eyesWrapper.addChild(eyeballs);
+    nobitaWrapper.addChild(eyesWrapper);
 
     var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
     eyesTimeline
@@ -2817,7 +2849,7 @@ function getHugTimeline(x, y) {
     nobitaWrapper.y -= 10;
     hugContainer.addChild(nobitaWrapper);
 
-    return [hugTimeline, hugContainer];
+    return [hugTimeline, hugContainer, eyesWrapper, nobitaWrapper];
 }
 
 function getQuestionTimeline(x, y) {
