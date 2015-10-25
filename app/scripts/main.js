@@ -30,8 +30,8 @@ var COLOR_DESERT_SKY = '#FFFFA5';
 
 var COLOR_FLOWER_PETAL = 'hotpink';
 
-var COLOR_SPRING_SKY = '#AEE7FB';
-var COLOR_SPRING_GROUND = '#59AE6B';
+var COLOR_SPRING_SKY = 'powderblue';
+var COLOR_SPRING_GROUND = 'springgreen';
 var COLOR_SUMMER_SKY = '#C6FFEA';
 var COLOR_SUMMER_GROUND = '#FFFFB7';
 var COLOR_AUTUMN_SKY = '#fff04d';
@@ -461,7 +461,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getAutumnTimeline(LEFT_2, TOP_1);
+        var objs = getSummerTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -1491,19 +1491,15 @@ function getSpringTimeline(x, y) {
     springContainer.x = x;
     springContainer.y = y;
 
-    var groundFill = COLOR_SPRING_GROUND;
-    var skyFill = COLOR_SPRING_SKY;
-
     var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(groundFill)
+    segmentGround.graphics.beginFill(COLOR_SPRING_GROUND)
         .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
     springContainer.addChild(segmentGround);
 
     var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(skyFill)
+    segmentSky.graphics.beginFill(COLOR_SPRING_SKY)
         .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
     springContainer.addChild(segmentSky);
-
 
     return [springTimeline, springContainer];
 }
@@ -1515,18 +1511,62 @@ function getSummerTimeline(x, y) {
     summerContainer.x = x;
     summerContainer.y = y;
 
-    var groundFill = COLOR_SUMMER_GROUND;
-    var skyFill = COLOR_SUMMER_SKY;
-
     var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(groundFill)
+    segmentGround.graphics.beginFill(COLOR_SUMMER_GROUND)
         .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
     summerContainer.addChild(segmentGround);
 
     var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(skyFill)
+    segmentSky.graphics.beginFill(COLOR_SUMMER_SKY)
         .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
     summerContainer.addChild(segmentSky);
+
+    var COLOR_SUMMER_TRUNK = '#e68d45';
+    var COLOR_SUMMER_LEAF  = '#2b8050';
+    var COLOR_SUMMER_COCONUT = 'brown';
+
+    var treeWrapper = new createjs.Container();
+    var trunk = new createjs.Shape();
+    trunk.graphics.beginFill(COLOR_SUMMER_TRUNK)
+        .rect(-1.2, 25, 3, -45);
+    treeWrapper.addChild(trunk);
+
+    var leafWrapper = new createjs.Container();
+    leafWrapper.y = -20;
+
+    var numLeaves = 8;
+    for (var i = 0; i < numLeaves; i++) {
+        var leaf = new createjs.Shape();
+        leaf.graphics.beginStroke(COLOR_SUMMER_LEAF)
+            .arc(9, 5, 10, -150 * Math.PI / 180, -30 * Math.PI / 180)
+            .endStroke()
+            .setStrokeStyle(1).beginStroke(COLOR_SUMMER_LEAF)
+            .moveTo(3, 0).lineTo(3, -3)
+            .moveTo(5, 0).lineTo(5, -3)
+            .moveTo(7, 0).lineTo(7, -5)
+            .moveTo(9, 0).lineTo(9, -5)
+            .moveTo(11, 0).lineTo(11, -5)
+            .moveTo(13, 0).lineTo(13, -3)
+            .moveTo(15, 0).lineTo(15, -3)
+        ;
+        leaf.rotation = i < numLeaves / 2
+            ? (i * 360 / numLeaves - 75)
+            : ((i - numLeaves / 2) * 360 / numLeaves - 60);
+        leaf.scaleX = i < numLeaves / 2 ? -1 : 1;
+        leafWrapper.addChild(leaf);
+    }
+
+    treeWrapper.addChild(leafWrapper);
+
+    var coconuts = new createjs.Shape();
+    coconuts.graphics.beginFill(COLOR_SUMMER_COCONUT)
+        .drawCircle(0, -20, 1.5)
+        .drawCircle(2, -18, 1.5)
+        .drawCircle(-2, -18, 1.5)
+    ;
+    treeWrapper.addChild(coconuts);
+
+    summerContainer.addChild(treeWrapper);
 
     return [summerTimeline, summerContainer];
 }
@@ -1538,16 +1578,13 @@ function getAutumnTimeline(x, y) {
     autumnContainer.x = x;
     autumnContainer.y = y;
 
-    var groundFill = COLOR_AUTUMN_GROUND;
-    var skyFill = COLOR_AUTUMN_SKY;
-
     var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(groundFill)
+    segmentGround.graphics.beginFill(COLOR_AUTUMN_GROUND)
         .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
     autumnContainer.addChild(segmentGround);
 
     var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(skyFill)
+    segmentSky.graphics.beginFill(COLOR_AUTUMN_SKY)
         .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
     autumnContainer.addChild(segmentSky);
 
@@ -1876,7 +1913,7 @@ function getAutumnTimeline(x, y) {
     ];
     for (var i = 0;
 //         i < 10 &&
-             i < leaves.length; i++) {
+         i < leaves.length; i++) {
         var leafData = leaves[i];
         var leaf = new createjs.Shape();
 
@@ -1926,16 +1963,13 @@ function getWinterTimeline(x, y) {
     snowTreeContainer.x = x;
     snowTreeContainer.y = y;
 
-    var groundFill = COLOR_WINTER_GROUND;
-    var skyFill = COLOR_WINTER_SKY;
-
     var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(groundFill)
+    segmentGround.graphics.beginFill(COLOR_WINTER_GROUND)
         .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
     snowTreeContainer.addChild(segmentGround);
 
     var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(skyFill)
+    segmentSky.graphics.beginFill(COLOR_WINTER_SKY)
         .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
     snowTreeContainer.addChild(segmentSky);
 
