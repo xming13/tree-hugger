@@ -28,6 +28,8 @@ var COLOR_ICE_GROUND = '#F2F2F2';
 var COLOR_DESERT = '#FFD466';
 var COLOR_DESERT_SKY = '#FFFFA5';
 
+var COLOR_FLOWER_PETAL = 'hotpink';
+
 var COLOR_BEE_BODY = 'yellow';
 var COLOR_BEE_WING = '#ABCCB0';
 var COLOR_BEE_BODY_STRIPE = 'black'
@@ -57,6 +59,10 @@ var stage;
 var pop;
 var popCanPlay = false;
 
+// Loading
+var loadingWrapper;
+var loadingTimeline;
+
 // Menu
 var menuWrapper;
 
@@ -67,6 +73,7 @@ var mainTimeline;
 // Gallery Page
 var galleryPageWrapper;
 var galleryWrapper;
+var galleryTimelines = [];
 var COLOR_BUTTON_DISABLED = 'lightGrey';
 var COLOR_BUTTON_ENABLED = '#E2E2FF';
 var COLOR_BUTTON_DISABLED_CONTENT = 'darkGrey';
@@ -89,6 +96,7 @@ function init() {
     // Defaults
     TweenLite.defaultEase = Power0.easeNone;
 
+    renderLoading();
     loadAudio();
 
     var borders = new createjs.Shape();
@@ -101,8 +109,6 @@ function init() {
         .endFill().beginFill(COLOR_BORDER)
         .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
     stage.addChild(borders);
-
-    renderMenu();
 
     if (DEBUG) {
         var gridLinesColor = COLOR_BORDER;
@@ -130,15 +136,34 @@ function init() {
 function loadAudio() {
     pop = Popcorn("#audio");
 
-    var request = new XMLHttpRequest();
-    request.open('GET', 'audio/Antsy_Pants_-_Tree_Hugger.txt', true);
+    var requestMp3 = new XMLHttpRequest();
+    requestMp3.open('GET', 'audio/Antsy_Pants_-_Tree_Hugger.mp3', true);
+    requestMp3.responseType = 'blob';
+    requestMp3.onload = function (e) {
+        if (this.status == 200) {
+            var myBlob = this.response;
+            var audioSrc = URL.createObjectURL(myBlob);
+            var audio = document.getElementById("audio");
+            audio.src = audioSrc;
+        }
+        else {
+            console.log('requestMp3 reached server but error is returned.');
+        }
+    }
+    requestMp3.onerror = function () {
+        console.log('requestMp3 onerror: ' + e.message);
+    }
 
-    request.onload = function () {
-        if (request.status >= 200 && request.status < 400) {
+    requestMp3.send();
+
+    var requestLrc = new XMLHttpRequest();
+    requestLrc.open('GET', 'audio/Antsy_Pants_-_Tree_Hugger.txt', true);
+    requestLrc.onload = function () {
+        if (this.status == 200) {
             var status = document.getElementById('status');
-            status.innerHTML = 'loading';
+            status.innerHTML = 'loadingLrc';
 
-            var lrcArr = parseLrc(request.responseText);
+            var lrcArr = parseLrc(requestLrc.responseText);
 
             var lrc, lrcNext;
             for (var i = 0; i < lrcArr.length; i++) {
@@ -154,17 +179,27 @@ function loadAudio() {
                     });
                 }
             }
-            console.log(lrcArr);
 
-            status.innerHTML = status.innerHTML.replace('loading', 'loadedLyrics');
+            status.innerHTML = status.innerHTML.replace('loadingLrc', 'loadedLyrics');
+        } else {
+            console.log('requestLrc reached server but error is returned.');
+        }
+    };
+    requestLrc.onerror = function (e) {
+        console.log('requestLrc onerror: ' + e.message);
+    };
 
-            pop.on('canplayall', function () {
-                popCanPlay = true;
+    requestLrc.send();
 
-                var status = document.getElementById('status');
-                status.innerHTML += ' loadedAudio';
+    pop.on('canplayall', function () {
+        popCanPlay = true;
 
-                // hide #loading
+        var status = document.getElementById('status');
+        status.innerHTML += ' loadedAudio';
+
+        renderMenu();
+
+        // hide #loading
 //                var loading = document.getElementById('loading');
 //                loading.style.display = 'none';
 //
@@ -188,23 +223,13 @@ function loadAudio() {
 //                    // start
 //                    pop.play();
 //                });
-            });
-            pop.on('ended', function () {
-                setTimeout(function () {
-                    stage.removeChild(animationWrapper);
-                    renderMenu()
-                }, 200);
-            });
-        } else {
-            console.log('request reached server but error is returned.');
-        }
-    };
-
-    request.onerror = function () {
-        console.log('request.onerror');
-    };
-
-    request.send();
+    });
+    pop.on('ended', function () {
+        setTimeout(function () {
+            stage.removeChild(animationWrapper);
+            renderMenu()
+        }, 200);
+    });
 
     function parseLrc(rawLrc) {
         var lrcArr = [];
@@ -243,14 +268,86 @@ function loadAudio() {
 }
 
 // Render
+function renderLoading() {
+    if (!loadingWrapper) {
+        loadingWrapper = new createjs.Container();
+    }
+    if (loadingWrapper.parent != stage) {
+        stage.addChild(loadingWrapper);
+    }
+    loadingWrapper.removeAllChildren();
+
+    var loadingIconWrapper = new createjs.Container();
+    loadingIconWrapper.x = LEFT_2;
+    loadingIconWrapper.y = TOP_2;
+    loadingWrapper.addChild(loadingIconWrapper);
+
+    var loadingIcon = new createjs.Shape();
+    loadingIcon.graphics.beginFill(COLOR_HIGH_SKY)
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    loadingIconWrapper.addChild(loadingIcon);
+
+    var flower = new createjs.Shape();
+    flower.graphics.beginFill('yellow');
+    var flowerCmd = flower.graphics
+        .drawCircle(0, 0, 0)
+        .command;
+    loadingIconWrapper.addChild(flower);
+
+    var petalColor = COLOR_FLOWER_PETAL;
+    var petalRadius = 6;
+    var petalDuration = .25;
+
+    var petal1 = new createjs.Shape();
+    petal1.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+    loadingIconWrapper.addChildAt(petal1, 1); // add at index 1 as flowerStem should be at index 0
+
+    var petal2 = new createjs.Shape();
+    petal2.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+    loadingIconWrapper.addChildAt(petal2, 1);
+
+    var petal3 = new createjs.Shape();
+    petal3.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+    loadingIconWrapper.addChildAt(petal3, 1);
+
+    var petal4 = new createjs.Shape();
+    petal4.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+    loadingIconWrapper.addChildAt(petal4, 1);
+
+    var petal5 = new createjs.Shape();
+    petal5.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
+    loadingIconWrapper.addChildAt(petal5, 1);
+
+    loadingTimeline = new TimelineMax({repeat: -1, repeatDelay: .3});
+    loadingTimeline
+        .set([petal1, petal2, petal3, petal4, petal5], {alpha: 0})
+        .to(flowerCmd, .6, {
+            radius: 6,
+            ease: Back.easeOut.config(3)
+        })
+        .set([petal1, petal2, petal3, petal4, petal5], {alpha: 1})
+        .add('flowerCmdComplete')
+        .to(petal1, petalDuration, {x: 0, y: -11, ease: Back.easeOut.config(1)}, 'flowerCmdComplete')
+        .to(petal2, petalDuration, {x: 8, y: -4, delay: .5 * petalDuration, ease: Back.easeOut.config(1)}, 'flowerCmdComplete')
+        .to(petal3, petalDuration, {x: 6, y: 7, delay: 1.5 * petalDuration, ease: Back.easeOut.config(1)}, 'flowerCmdComplete')
+        .to(petal4, petalDuration, {x: -6, y: 7, delay: 2.5 * petalDuration, ease: Back.easeOut.config(1)}, 'flowerCmdComplete')
+        .to(petal5, petalDuration, {x: -8, y: -4, delay: 3.5 * petalDuration, ease: Back.easeOut.config(1)}, 'flowerCmdComplete');
+}
+
 function renderMenu() {
     if (!menuWrapper) {
         menuWrapper = new createjs.Container();
     }
-    if (!stage.getChildByName('menuWrapper')) {
+    if (menuWrapper.parent != stage) {
         stage.addChild(menuWrapper);
     }
     menuWrapper.removeAllChildren();
+
+    stage.removeChild(loadingWrapper);
+    loadingTimeline.remove();
+    galleryTimelines.forEach(function(timeline) {
+        timeline.remove();
+    });
 
     var btnPlayWrapper = new createjs.Container();
     btnPlayWrapper.x = LEFT_2;
@@ -373,7 +470,7 @@ function renderAnim() {
     if (!animationWrapper) {
         animationWrapper = new createjs.Container();
     }
-    if (!stage.getChildByName('animationWrapper')) {
+    if (animationWrapper.parent != stage) {
         stage.addChild(animationWrapper);
     }
     animationWrapper.removeAllChildren();
@@ -931,10 +1028,13 @@ function renderGalleryPage() {
     if (!galleryPageWrapper) {
         galleryPageWrapper = new createjs.Container();
     }
-    if (!stage.getChildByName('galleryPageWrapper')) {
+    if (galleryPageWrapper.parent != stage) {
         stage.addChild(galleryPageWrapper);
     }
     galleryPageWrapper.removeAllChildren();
+    galleryTimelines.forEach(function (timeline) {
+        timeline.remove();
+    });
 
     _renderGallery();
     _renderBtnPrev();
@@ -943,12 +1043,16 @@ function renderGalleryPage() {
 }
 
 function _renderGallery() {
-    galleryWrapper = galleryPageWrapper.getChildByName('galleryWrapper');
-
     if (!galleryWrapper) {
         galleryWrapper = new createjs.Container();
+    }
+    if (galleryWrapper.parent != galleryPageWrapper) {
         galleryPageWrapper.addChild(galleryWrapper);
     }
+    galleryWrapper.removeAllChildren();
+    galleryTimelines.forEach(function (timeline) {
+        timeline.remove();
+    });
 
     switch (currentPage) {
         case 1:
@@ -1040,6 +1144,7 @@ function _renderGallery() {
             }, 500);
         });
         timeline.play();
+        galleryTimelines.push(timeline);
     }
 }
 
@@ -1110,6 +1215,9 @@ function _renderBtnHome() {
         // reset to page 1
         currentPage = 1;
         renderMenu();
+        galleryTimelines.forEach(function (timeline) {
+            timeline.remove();
+        });
     });
 
     var btnHome = new createjs.Shape();
@@ -1180,7 +1288,7 @@ function getFlowerTimeline(x, y) {
         .drawCircle(4, 0, 2);
     flowerWrapper.addChild(flowerEyes);
 
-    var petalColor = 'hotpink';
+    var petalColor = COLOR_FLOWER_PETAL;
     var petalRadius = 6;
     var petalDuration = .15;
 
