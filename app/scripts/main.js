@@ -76,7 +76,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 140 : 0;
+var START_TIME = DEBUG ? 110 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -512,12 +512,12 @@ function renderAnim() {
     turtleFloatTimeline
         .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeOut})
         .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeIn})
-        .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeOut})
-        .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeIn})
+        .to(turtleWrapper, .44, {y: "+=2.5", ease: Sine.easeOut})
+        .to(turtleWrapper, .44, {y: "-=2.5", ease: Sine.easeIn})
         .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeOut})
         .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeIn})
-        .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeOut})
-        .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeIn})
+        .to(turtleWrapper, .44, {y: "+=2.5", ease: Sine.easeOut})
+        .to(turtleWrapper, .44, {y: "-=2.5", ease: Sine.easeIn})
         .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeOut})
         .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeIn});
 
@@ -587,10 +587,6 @@ function renderAnim() {
         .add('transition7')
         .to(fishContainer, 8.8, {x: LEFT_0, startAt: {x: LEFT_4}}, 'transition7')
         .to(cactusContainer, .5, {scaleX: 0, scaleY: 0, ease: Power2.easeOut })
-        .add(function () {
-            // remove cactusTimeline from the timeline
-            transitionTimeline7.remove(cactusTimeline);
-        }, 'removeCactus')
         .add('transition7b', '+=0.5')
         .to(fishContainer, 8.8, {x: LEFT_4, startAt: {x: LEFT_0, scaleX: -1}}, 'transition7b')
         .add(cactusTimeline, 'transition7+=5')
@@ -640,7 +636,7 @@ function renderAnim() {
             cactusFlowerWrapper2.x += LEFT_2;
             cactusFlowerWrapper2.y += TOP_2;
             overlayContainer.addChild(cactusFlowerWrapper2);
-        })
+        }, 'overlay')
         .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
         .to(cactusFlowerWrapper2, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
         .add(new TimelineMax({delay: .6})
@@ -826,7 +822,7 @@ function renderAnim() {
 
     mainTimeline = new TimelineMax({
         paused: true,
-        autoRemoveChildren: true,
+//        autoRemoveChildren: true,
         onStart: function () {
             var status = document.getElementById('status');
             status.innerHTML += ' timelineOnStart';
@@ -845,9 +841,9 @@ function renderAnim() {
         flowerToDesertTimeline
             .add(function () {
                 if (revert) {
+                    transitionTimeline9.seek(0);
                     transitionTimeline8.seek(0);
                     transitionTimeline7.seek(0);
-                    transitionTimeline7.add(cactusTimeline, 'removeCactus');
 
                     var cactusFlowerWrapper2 = overlayContainer.getChildAt(1);
                     if (cactusFlowerWrapper2) {
@@ -893,7 +889,9 @@ function renderAnim() {
             .add('fish', '+=0')
             .add('desert', '+=18.1')
             .add(transitionTimeline7, 'fish')
-            .add(transitionTimeline8, 'desert');
+            .add(transitionTimeline8, 'desert')
+            .add(transitionTimeline9, '+=0.4')
+        ;
 
         return flowerToDesertTimeline;
     }
@@ -903,7 +901,6 @@ function renderAnim() {
     });
     iceWorldTimeline
         .add('iceWorld')
-        .add(transitionTimeline9, '+=0.4')
         .add(transitionTimeline10, '+=1.5')
         .add(transitionTimeline11, '+=2')
         .add(transitionTimeline12, '+=2')
