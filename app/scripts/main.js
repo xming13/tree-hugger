@@ -1561,14 +1561,14 @@ function getAutumnTimeline(x, y) {
     var trunkCmd = trunk.graphics
         .moveTo(-8, 25)
         .lineTo(8, 25)
-        .lineTo(0, 20)
+        .lineTo(0, 22)
         .command;
     treeWrapper.addChild(trunk);
 
     var trunk2 = new createjs.Shape();
     trunk2.graphics.beginFill(COLOR_AUTUMN_TRUNK);
     var trunkCmd2 = trunk2.graphics
-        .rect(-3, 22, 6, -8)
+        .rect(-1.5, 24, 3, -8)
         .command;
     treeWrapper.addChild(trunk2);
 
