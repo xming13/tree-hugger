@@ -34,8 +34,12 @@ var COLOR_SPRING_SKY = 'powderblue';
 var COLOR_SPRING_GROUND = 'springgreen';
 var COLOR_SUMMER_SKY = '#C6FFEA';
 var COLOR_SUMMER_GROUND = '#FFFFB7';
+var COLOR_SUMMER_TRUNK = '#e68d45';
+var COLOR_SUMMER_LEAF = '#2b8050';
+var COLOR_SUMMER_COCONUT = 'brown';
 var COLOR_AUTUMN_SKY = '#fff04d';
 var COLOR_AUTUMN_GROUND = '#FF8533';
+var COLOR_AUTUMN_TRUNK = '#B30000';
 var COLOR_WINTER_SKY = '#322F40';
 var COLOR_WINTER_GROUND = '#E1F0EB';
 
@@ -53,6 +57,7 @@ var COLOR_BALLOON_3 = '#FFFF99';
 var COLOR_FISH = '#FFE926';
 var COLOR_CACTUS = '#1D8232';
 var COLOR_CACTUS_STRIPE = 'greenyellow';
+var COLOR_DESERT_FACE_TEAR = 'lightblue';
 var COLOR_JACKALOPE = '#FFDB89';
 var COLOR_JACKALOPE_HORN = '#996C4D';
 var COLOR_YETI = '#fff';
@@ -461,7 +466,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getSummerTimeline(LEFT_2, TOP_1);
+        var objs = getDesertFaceTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -1521,10 +1526,6 @@ function getSummerTimeline(x, y) {
         .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
     summerContainer.addChild(segmentSky);
 
-    var COLOR_SUMMER_TRUNK = '#e68d45';
-    var COLOR_SUMMER_LEAF  = '#2b8050';
-    var COLOR_SUMMER_COCONUT = 'brown';
-
     var treeWrapper = new createjs.Container();
     var trunk = new createjs.Shape();
     trunk.graphics.beginFill(COLOR_SUMMER_TRUNK)
@@ -1590,8 +1591,6 @@ function getAutumnTimeline(x, y) {
 
     var treeWrapper = new createjs.Container();
     autumnContainer.addChild(treeWrapper);
-
-    var COLOR_AUTUMN_TRUNK = '#B30000';
 
     var trunk = new createjs.Shape();
     trunk.graphics.beginFill(COLOR_AUTUMN_TRUNK);
@@ -2924,6 +2923,21 @@ function getDesertFaceTimeline(x, y) {
         .command;
     desertFace.addChild(eyebrows);
 
+    var tearWrapper = new createjs.Container();
+    var tear = new createjs.Shape();
+    tear.graphics.beginFill(COLOR_DESERT_FACE_TEAR)
+        .moveTo(0, 0)
+        .lineTo(-1, 7)
+        .lineTo(-7, 1)
+        .endFill().beginFill(COLOR_DESERT_FACE_TEAR)
+        .drawCircle(-7, 7, 6);
+    tear.rotation = -45;
+    tearWrapper.x = 11;
+    tearWrapper.y = 10;
+    tearWrapper.scaleX = tearWrapper.scaleY = 0;
+    tearWrapper.addChild(tear);
+    desertFace.addChild(tearWrapper);
+
     var pink = new createjs.Shape();
     pink.graphics.beginFill('#FF8097')
         .drawEllipse(-22, 12, 14, 5)
@@ -2941,6 +2955,8 @@ function getDesertFaceTimeline(x, y) {
         .add('happyFace', '+=6')
         .to(eyebrowsArcCmd, 1.2, {x1: -13, y1: -8, x2: -28, y2: -3, radius: 20}, 'desertFace')
         .to(eyebrowsArcCmd2, 1.2, {x1: 13, y1: -8, x2: 28, y2: -3, radius: 20}, 'desertFace')
+        .to(tearWrapper, 2, {scaleX: 1, scaleY: 1, ease: Power4.easeOut})
+        .set(tearWrapper, {alpha: 0}, 'happyFace')
         .to(eyebrowsStartCmd, 1.0, {x: -6, y: -4}, 'happyFace')
         .to(eyebrowsArcCmd, 1.0, {x1: -17, y1: -20, x2: -28, y2: 0, radius: 10}, 'happyFace')
         .to(eyebrowsEndCmd, 1.0, {x: -28, y: 0}, 'happyFace')
