@@ -99,7 +99,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 110 : 0;
+var START_TIME = DEBUG ? 68 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -468,7 +468,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getDesertFaceTimeline(LEFT_2, TOP_1);
+        var objs = getDesertGroundTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -714,8 +714,14 @@ function renderAnim() {
     overlay.graphics.beginFill('black').rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     overlayContainer.addChild(overlay);
 
-    var desertGroundContainer1 = getDesertGroundContainer(LEFT_1, TOP_2);
-    var desertGroundContainer2 = getDesertGroundContainer(LEFT_3, TOP_2);
+    var desertGroundObj1 = getDesertGroundTimeline(LEFT_1, TOP_2);
+    var desertGroundTimeline1 = desertGroundObj1[0];
+    var desertGroundContainer1 = desertGroundObj1[1];
+
+    var desertGroundObj2 = getDesertGroundTimeline(LEFT_3, TOP_2);
+    var desertGroundTimeline2 = desertGroundObj2[0];
+    var desertGroundContainer2 = desertGroundObj2[1];
+
     var desertContainer1 = getDesertContainer(LEFT_1, TOP_3);
     var desertContainer2 = getDesertContainer(LEFT_3, TOP_3);
 
@@ -769,6 +775,8 @@ function renderAnim() {
         .to([desertGroundContainer1, desertGroundContainer2], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert')
         .to([desertContainer1, desertContainer2, desertFaceContainer], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert+=1')
         .add(desertFaceTimeline, 'desert+=2')
+        .add(desertGroundTimeline1, 'desert+=7.3')
+        .add(desertGroundTimeline2, 'desert+=7.3')
     ;
 
     var jackalopeObjs = getJackalopeTimeline(LEFT_4, TOP_2);
@@ -1001,9 +1009,10 @@ function renderAnim() {
             .add(transitionTimeline6, '+=0')
             .add('fish', '+=0')
             .add('desert', '+=18.1')
+            .add('desertend', 'desert+=19.58')
             .add(transitionTimeline7, 'fish')
             .add(transitionTimeline8, 'desert')
-            .add(transitionTimeline9, '+=0.4')
+            .add(transitionTimeline9, 'desertend+=0.4')
         ;
 
         return flowerToDesertTimeline;
@@ -1118,30 +1127,33 @@ function _renderGallery() {
             var desertFaceObjs = getDesertFaceTimeline(LEFT_2, TOP_1);
             _processTimelineObjs(desertFaceObjs);
 
-            var jackalopeObjs = getJackalopeTimeline(LEFT_3, TOP_1);
+            var desertGroundObjs = getDesertGroundTimeline(LEFT_3, TOP_1);
+            _processTimelineObjs(desertGroundObjs);
+
+            var jackalopeObjs = getJackalopeTimeline(LEFT_1, TOP_2);
             _processTimelineObjs(jackalopeObjs);
 
-            var yetiObjs = getYetiTimeline(LEFT_1, TOP_2);
+            var yetiObjs = getYetiTimeline(LEFT_2, TOP_2);
             _processTimelineObjs(yetiObjs);
 
-            var seaMonsterObjs = getSeaMonsterTimeline(LEFT_2, TOP_2);
+            var seaMonsterObjs = getSeaMonsterTimeline(LEFT_3, TOP_2);
             _processTimelineObjs(seaMonsterObjs);
-
-            var sharkObjs = getSharkTimeline(LEFT_3, TOP_2);
-            _processTimelineObjs(sharkObjs);
 
             break;
         case 4:
-            var snakeObjs = getSnakeTimeline(LEFT_1, TOP_1);
+            var sharkObjs = getSharkTimeline(LEFT_1, TOP_1);
+            _processTimelineObjs(sharkObjs);
+
+            var snakeObjs = getSnakeTimeline(LEFT_2, TOP_1);
             _processTimelineObjs(snakeObjs);
 
-            var hugObjs = getHugTimeline(LEFT_2, TOP_1);
+            var hugObjs = getHugTimeline(LEFT_3, TOP_1);
             _processTimelineObjs(hugObjs);
 
-            var questionObjs = getQuestionTimeline(LEFT_3, TOP_1);
+            var questionObjs = getQuestionTimeline(LEFT_1, TOP_2);
             _processTimelineObjs(questionObjs);
 
-            var spikeObjs = getSpikeTimeline(LEFT_1, TOP_2);
+            var spikeObjs = getSpikeTimeline(LEFT_2, TOP_2);
             _processTimelineObjs(spikeObjs);
 
             break;
@@ -2970,6 +2982,111 @@ function getDesertFaceTimeline(x, y) {
     return [desertFaceTimeline, desertFaceContainer];
 }
 
+function getDesertGroundTimeline(x, y) {
+    var desertGroundTimeline = new TimelineMax();
+
+    var desertGroundContainer = new createjs.Container();
+    desertGroundContainer.x = x;
+    desertGroundContainer.y = y;
+
+    var segmentDesert = new createjs.Shape();
+    segmentDesert.graphics
+        .beginFill(COLOR_DESERT)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics
+        .beginFill(COLOR_DESERT_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, -90 * Math.PI / 180, 270 * Math.PI / 180);
+
+    desertGroundContainer.addChild(segmentSky);
+    desertGroundContainer.addChild(segmentDesert);
+
+    function getCreatureContainer() {
+        var creatureWrapper = new createjs.Container();
+        var creature = new createjs.Shape();
+        creature.graphics.beginFill('black')
+            .drawCircle(0, 0, 10);
+        creatureWrapper.addChild(creature);
+
+        for (var i = 0; i < 12; i++) {
+            var spike = new createjs.Shape();
+            spike.graphics.beginStroke('black')
+                .moveTo(0, i % 2 == 0 ? -13 : -12)
+                .lineTo(0, i % 2 == 0 ? 13 : 12);
+            spike.rotation = i * 360 / 24 + 15;
+            creatureWrapper.addChild(spike);
+        }
+
+        var eyes = new createjs.Shape();
+        eyes.graphics.beginFill('white')
+            .drawCircle(-4, -1, 3)
+            .drawCircle(4, -1, 3);
+
+        var eyeballs = new createjs.Shape();
+        eyeballs.graphics
+            .beginFill('black')
+            .drawCircle(-3, -1, 1)
+            .drawCircle(3, -1, 1);
+
+        creatureWrapper.addChild(eyes);
+        creatureWrapper.addChild(eyeballs);
+
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
+        eyesTimeline
+            .to(eyes, .1, {scaleY: 0})
+            .to(eyes, .1, {scaleY: 1});
+
+        return creatureWrapper;
+    }
+
+    var creatureWrapper1 = getCreatureContainer();
+    var creatureWrapper2 = getCreatureContainer();
+    var creatureWrapper3 = getCreatureContainer();
+
+    creatureWrapper1.scaleX = creatureWrapper1.scaleY
+        = creatureWrapper2.scaleX = creatureWrapper2.scaleY
+        = creatureWrapper3.scaleX = creatureWrapper3.scaleY
+        = 0;
+
+    creatureWrapper2.x -= 24;
+    desertGroundContainer.addChild(creatureWrapper1);
+    desertGroundContainer.addChild(creatureWrapper2);
+    desertGroundContainer.addChild(creatureWrapper3);
+
+    desertGroundTimeline
+        .set([creatureWrapper1, creatureWrapper2, creatureWrapper3], {scaleX: 0, scaleY: 0})
+        .to([creatureWrapper1, creatureWrapper2], .2, {scaleX: 1, scaleY: 1})
+        .to([creatureWrapper1, creatureWrapper2], .2, {y: '+=13'})
+        .add('drop')
+        .add(new TimelineMax({repeat: 3})
+            .to(creatureWrapper2, .6, {y: '-=19.5', rotation: '+=180'})
+            .to(creatureWrapper2, .6, {y: '+=19.5', rotation: '+=180'})
+            .to(creatureWrapper2, .03, {})
+            , 'drop')
+        .add(new TimelineMax()
+            .to(creatureWrapper1, .3, {x: '+=12', y: '-=13', rotation: '+=90'})
+            .to(creatureWrapper1, .3, {x: '+=12', y: '+=13', rotation: '+=90'})
+            .to(creatureWrapper1, .4, {y: '-=26', rotation: '+=90'})
+            .to(creatureWrapper1, .4, {y: '+=26', rotation: '+=90'})
+            .to(creatureWrapper1, .03, {})
+            .add(new TimelineMax({repeat: 2})
+                .to(creatureWrapper1, .6, {y: '-=15', rotation: '+=180'})
+                .to(creatureWrapper1, .6, {y: '+=15', rotation: '+=180'})
+                .to(creatureWrapper1, .03, {}))
+            , 'drop')
+        .add(new TimelineMax()
+            .to(creatureWrapper3, .3, {scaleX: 1, scaleY: 1})
+            .to(creatureWrapper3, .2, {y: '+=13'})
+            .add(new TimelineMax({repeat: 2})
+                .to(creatureWrapper3, .6, {y: '-=13', rotation: '+=180'})
+                .to(creatureWrapper3, .6, {y: '+=13', rotation: '+=180'})
+                .to(creatureWrapper3, .03, {}))
+            , 'drop+=0.5')
+    ;
+    return [desertGroundTimeline, desertGroundContainer];
+}
+
 function getJackalopeTimeline(x, y) {
     var jackalopeTimeline = new TimelineMax();
 
@@ -3552,27 +3669,6 @@ function getSeaWaveContainer(x, y) {
 //    seaWaveContainer.addChild(wave);
 
     return seaWaveContainer;
-}
-
-function getDesertGroundContainer(x, y) {
-    var desertGroundContainer = new createjs.Container();
-    desertGroundContainer.x = x;
-    desertGroundContainer.y = y;
-
-    var segmentDesert = new createjs.Shape();
-    segmentDesert.graphics
-        .beginFill(COLOR_DESERT)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics
-        .beginFill(COLOR_DESERT_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, -90 * Math.PI / 180, 270 * Math.PI / 180);
-
-    desertGroundContainer.addChild(segmentSky);
-    desertGroundContainer.addChild(segmentDesert);
-
-    return desertGroundContainer;
 }
 
 function getDesertContainer(x, y) {
