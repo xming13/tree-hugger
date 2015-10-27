@@ -115,16 +115,21 @@ function init() {
     renderLoading();
     loadAudio();
 
-    var borders = new createjs.Shape();
-    borders.graphics.beginFill(COLOR_BORDER)
-        .rect(0, 0, SPACING, CANVAS_HEIGHT)
-        .endFill().beginFill(COLOR_BORDER)
-        .rect(3 * (SPACING + CIRCLE_DIAMETER), 0, SPACING, CANVAS_HEIGHT)
-        .endFill().beginFill(COLOR_BORDER)
-        .rect(0, 0, CANVAS_WIDTH, SPACING)
-        .endFill().beginFill(COLOR_BORDER)
-        .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
-    stage.addChild(borders);
+    var bg = new createjs.Shape();
+    bg.graphics.beginFill('white')
+        .rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    stage.addChild(bg);
+
+//    var borders = new createjs.Shape();
+//    borders.graphics.beginFill(COLOR_BORDER)
+//        .rect(0, 0, SPACING, CANVAS_HEIGHT)
+//        .endFill().beginFill(COLOR_BORDER)
+//        .rect(3 * (SPACING + CIRCLE_DIAMETER), 0, SPACING, CANVAS_HEIGHT)
+//        .endFill().beginFill(COLOR_BORDER)
+//        .rect(0, 0, CANVAS_WIDTH, SPACING)
+//        .endFill().beginFill(COLOR_BORDER)
+//        .rect(0, 3 * (SPACING + CIRCLE_DIAMETER), CANVAS_WIDTH, SPACING);
+//    stage.addChild(borders);
 
     if (DEBUG) {
         var gridLinesColor = COLOR_BORDER;
