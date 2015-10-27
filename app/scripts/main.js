@@ -40,6 +40,8 @@ var COLOR_SUMMER_COCONUT = 'brown';
 var COLOR_AUTUMN_SKY = '#fff04d';
 var COLOR_AUTUMN_GROUND = '#FF8533';
 var COLOR_AUTUMN_TRUNK = '#B30000';
+var COLOR_AUTUMN_LEAF = 'red';
+var COLOR_AUTUMN_LEAF_2 = '#FF4500';
 var COLOR_WINTER_SKY = '#322F40';
 var COLOR_WINTER_GROUND = '#E1F0EB';
 
@@ -1593,8 +1595,7 @@ function getAutumnTimeline(x, y) {
     autumnContainer.addChild(treeWrapper);
 
     var trunk = new createjs.Shape();
-    trunk.graphics.beginFill(COLOR_AUTUMN_TRUNK);
-    var trunkCmd = trunk.graphics
+    trunk.graphics.beginFill(COLOR_AUTUMN_TRUNK)
         .moveTo(-8, 25)
         .lineTo(8, 25)
         .lineTo(0, 22)
@@ -1602,8 +1603,7 @@ function getAutumnTimeline(x, y) {
     treeWrapper.addChild(trunk);
 
     var trunk2 = new createjs.Shape();
-    trunk2.graphics.beginFill(COLOR_AUTUMN_TRUNK);
-    var trunkCmd2 = trunk2.graphics
+    trunk2.graphics.beginFill(COLOR_AUTUMN_TRUNK)
         .rect(-1.5, 24, 3, -8)
         .command;
     treeWrapper.addChild(trunk2);
@@ -1921,13 +1921,13 @@ function getAutumnTimeline(x, y) {
         leaf.rotation = leafData.rotation;
         leaf.alpha = leafData.alpha;
         if (leafData.rotation > 30 && leaf.rotation < 210) {
-            leaf.graphics.beginFill('red');
+            leaf.graphics.beginFill(COLOR_AUTUMN_LEAF);
         }
 //        else if (leafData.x == -7.5) {
 //            leaf.graphics.beginFill('green');
 //        }
         else {
-            leaf.graphics.beginFill('#FF4500');
+            leaf.graphics.beginFill(COLOR_AUTUMN_LEAF_2);
         }
 //        leaf.graphics.beginFill('#FF4500');
         leaf.graphics
