@@ -36,8 +36,9 @@ var COLOR_SPRING_FLOWER = 'pink';
 var COLOR_SUMMER_SKY = '#C6FFEA';
 var COLOR_SUMMER_GROUND = '#FFFFB7';
 var COLOR_SUMMER_TRUNK = '#e68d45';
+var COLOR_SUMMER_TRUNK_DARK = 'brown';
 var COLOR_SUMMER_LEAF = '#2b8050';
-var COLOR_SUMMER_COCONUT = 'brown';
+var COLOR_SUMMER_COCONUT = 'lightgreen';
 var COLOR_AUTUMN_SKY = '#fff04d';
 var COLOR_AUTUMN_GROUND = '#FF8533';
 var COLOR_AUTUMN_TRUNK = '#B30000';
@@ -474,7 +475,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getSpringTimeline(LEFT_2, TOP_1);
+        var objs = getSummerTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -1816,8 +1817,16 @@ function getSummerTimeline(x, y) {
 
     var treeWrapper = new createjs.Container();
     var trunk = new createjs.Shape();
-    trunk.graphics.beginFill(COLOR_SUMMER_TRUNK)
-        .rect(-1.2, 25, 3, -45);
+
+    for (var i = 0; i < 9; i++) {
+        trunk.graphics.beginFill(COLOR_SUMMER_TRUNK)
+            .rect(-1.5, 25 + (i * -5), 3, -4.5)
+            .endFill()
+            .beginFill(COLOR_SUMMER_TRUNK_DARK)
+            .rect(-1.5, 25 + (i * -5) - 4.5, 3, -.5)
+            .endFill();
+        ;
+    }
     treeWrapper.addChild(trunk);
 
     var leafWrapper = new createjs.Container();
