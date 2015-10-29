@@ -36,7 +36,7 @@ var COLOR_SPRING_FLOWER = 'pink';
 var COLOR_SUMMER_SKY = '#C6FFEA';
 var COLOR_SUMMER_GROUND = '#FFFFB7';
 var COLOR_SUMMER_TRUNK = '#e68d45';
-var COLOR_SUMMER_TRUNK_DARK = 'brown';
+var COLOR_SUMMER_TRUNK_STRIPE = '#ffc299';
 var COLOR_SUMMER_LEAF = '#2b8050';
 var COLOR_SUMMER_COCONUT = 'lightgreen';
 var COLOR_AUTUMN_SKY = '#fff04d';
@@ -1820,10 +1820,10 @@ function getSummerTimeline(x, y) {
 
     for (var i = 0; i < 9; i++) {
         trunk.graphics.beginFill(COLOR_SUMMER_TRUNK)
-            .rect(-1.5, 25 + (i * -5), 3, -4.5)
+            .rect(-1.5, 25 + (i * -5), 3, -4)
             .endFill()
-            .beginFill(COLOR_SUMMER_TRUNK_DARK)
-            .rect(-1.5, 25 + (i * -5) - 4.5, 3, -.5)
+            .beginFill(COLOR_SUMMER_TRUNK_STRIPE)
+            .rect(-1.5, 25 + (i * -5) - 4, 3, -1)
             .endFill();
         ;
     }
