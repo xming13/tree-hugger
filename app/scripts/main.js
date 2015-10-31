@@ -69,6 +69,7 @@ var COLOR_SEA_MONSTER = 'darkgreen';
 var COLOR_SHARK = '#CCCCCC';
 
 var COLOR_SNAKE = '#F4A460';
+var COLOR_KNIFE = 'grey';
 
 // Stage
 var stage;
@@ -101,7 +102,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 68 : 0;
+var START_TIME = DEBUG ? 104 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -855,6 +856,7 @@ function renderAnim() {
     var hugContainer = hugObjs[1];
     var hugEyesWrapper = hugObjs[2];
     var hugNobitaWrapper = hugObjs[3];
+    var hugDeadEyesWrapper = hugObjs[4];
     hugContainer.scaleX = hugContainer.scaleY = 0;
 
     var transitionTimeline15 = new TimelineMax();
@@ -884,12 +886,48 @@ function renderAnim() {
     var spikeObjs = getSpikeTimeline(LEFT_3, TOP_1);
     var spikeTimeline = spikeObjs[0];
     var spikeContainer = spikeObjs[1];
+    var knifeSets = spikeObjs[2];
+    var knifeSet1 = knifeSets[0];
+    var knifeSet2 = knifeSets[1];
+    var knifeSet3 = knifeSets[2];
+    var knifeSet4 = knifeSets[3];
+    var knifeSet5 = knifeSets[4];
+    var knifeSet6 = knifeSets[5];
+    var knifeSet7 = knifeSets[6];
     spikeContainer.scaleX = spikeContainer.scaleY = 0
 
     var transitionTimeline17 = new TimelineMax();
     transitionTimeline17
         .add('transition17')
-        .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut});
+        .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut})
+        .set(questionContainer, {alpha: 0})
+        .add(spikeTimeline, '+=0.1')
+        .add('knife')
+        .to(knifeSet1, 1, {x: '-=200'}, 'knife')
+        .set(knifeSet1, {alpha: 0})
+        .set(hugEyesWrapper, {alpha: 0})
+        .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+        .set(hugDeadEyesWrapper, {alpha: 1})
+        .to(knifeSet2, 1 / 200 * 212, {x: '-=212'}, 'knife+=.2')
+        .set(knifeSet2, {alpha: 0})
+        .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+        .to(knifeSet3, 1 / 200 * 224, {x: '-=224'}, 'knife+=.4')
+        .set(knifeSet3, {alpha: 0})
+        .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+        .to(knifeSet4, 1 / 200 * 236, {x: '-=236'}, 'knife+=.6')
+        .set(knifeSet4, {alpha: 0})
+        .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+        .to(knifeSet5, 1 / 200 * 248, {x: '-=248'}, 'knife+=.8')
+        .set(knifeSet5, {alpha: 0})
+        .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+        .to(knifeSet6, 1 / 200 * 260, {x: '-=260'}, 'knife+=1')
+        .set(knifeSet6, {alpha: 0})
+        .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+        .to(knifeSet7, 1 / 200 * 272, {x: '-=272'}, 'knife+=1.2')
+        .set(knifeSet7, {alpha: 0})
+        .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+        .to(spikeContainer, .5, {scaleX: 0, scaleY: 0, ease: Power1.easeOut})
+    ;
 
     var flowerEyeContainer = new createjs.Container();
     var transitionTimeline18 = new TimelineMax();
@@ -902,12 +940,18 @@ function renderAnim() {
             flowerEyeContainer.addChild(cactusFlowerWrapper3);
 
             hugNobitaWrapper.removeChild(hugEyesWrapper);
-            hugEyesWrapper.x += LEFT_1 + hugNobitaWrapper.x;
-            hugEyesWrapper.y += TOP_1 + hugNobitaWrapper.y;
+            hugEyesWrapper.x += LEFT_2 + hugNobitaWrapper.x;
+            hugEyesWrapper.y += TOP_2 + hugNobitaWrapper.y;
             flowerEyeContainer.addChild(hugEyesWrapper);
         })
         .to(cactusFlowerWrapper3, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 5, scaleY: 5, ease: Power3.easeIn})
-        .to(hugEyesWrapper, 1, {x: LEFT_2 + hugNobitaWrapper.x, y: TOP_2 + hugNobitaWrapper.y, scaleX: 1.5, scaleY: 1.5, ease: Power1.easeIn})
+        .set(hugEyesWrapper, {alpha: 0, scaleX: 3.5, scaleY: 3.5})
+        .to(hugEyesWrapper, 1, {x: LEFT_2 + hugNobitaWrapper.x,
+            y: TOP_2 + hugNobitaWrapper.y,
+            alpha: 1,
+            scaleX: 1.5,
+            scaleY: 1.5,
+            ease: Back.easeOut.config(1)}, '+=.4')
         .to([hugContainer, snakeContainer, spikeContainer, cactusContainer3, questionContainer, hugEyesWrapper, cactusFlowerWrapper3], .5, {
             x: '-=' + (3 * (CIRCLE_DIAMETER + SPACING)), ease: Circ.easeOut}, '+=1')
 
@@ -942,10 +986,10 @@ function renderAnim() {
     animationWrapper.addChild(sharkContainer);
     animationWrapper.addChild(sharkContainer2);
     animationWrapper.addChild(snakeContainer);
-    animationWrapper.addChild(hugContainer);
-    animationWrapper.addChild(cactusContainer3);
     animationWrapper.addChild(questionContainer);
     animationWrapper.addChild(spikeContainer);
+    animationWrapper.addChild(hugContainer);
+    animationWrapper.addChild(cactusContainer3);
     animationWrapper.addChild(flowerEyeContainer);
 
     mainTimeline = new TimelineMax({
@@ -1041,8 +1085,7 @@ function renderAnim() {
         .add(transitionTimeline16, '+=1')
         .add(questionTimeline)
         .add(transitionTimeline17, '+=1.8')
-        .add(spikeTimeline, '+=0.1')
-        .add(transitionTimeline18, '+=2.8')
+        .add(transitionTimeline18, '+=.24')
         .add(function () {
             getFlowerToDesertTimeline(true).play(0);
         })
@@ -1825,7 +1868,6 @@ function getSummerTimeline(x, y) {
             .beginFill(COLOR_SUMMER_TRUNK_STRIPE)
             .rect(-1.5, 25 + (i * -5) - 4, 3, -1)
             .endFill();
-        ;
     }
     treeWrapper.addChild(trunk);
 
@@ -3793,6 +3835,24 @@ function getHugTimeline(x, y) {
         .to(eyeballs, .2, {scaleY: 0, y: 3.5})
         .to(eyeballs, .2, {scaleY: 1, y: 0});
 
+    var deadEyesWrapper = new createjs.Container();
+    deadEyesWrapper.alpha = 0;
+    var deadEye = new createjs.Shape();
+    deadEye.graphics.beginStroke('black')
+        .moveTo(-11, -2)
+        .lineTo(-3, 8)
+        .moveTo(-11, 8)
+        .lineTo(-3, -2);
+    var deadEye2 = new createjs.Shape();
+    deadEye2.graphics.beginStroke('black')
+        .moveTo(3, -2)
+        .lineTo(11, 8)
+        .moveTo(3, 8)
+        .lineTo(11, -2);
+    deadEyesWrapper.addChild(deadEye);
+    deadEyesWrapper.addChild(deadEye2);
+    nobitaWrapper.addChild(deadEyesWrapper);
+
     var shirt = new createjs.Shape();
     shirt.graphics.beginFill(COLOR_NOBITA_SHIRT)
         .rect(-12, 20, 24, 15);
@@ -3815,7 +3875,7 @@ function getHugTimeline(x, y) {
     nobitaWrapper.y -= 10;
     hugContainer.addChild(nobitaWrapper);
 
-    return [hugTimeline, hugContainer, eyesWrapper, nobitaWrapper];
+    return [hugTimeline, hugContainer, eyesWrapper, nobitaWrapper, deadEyesWrapper];
 }
 
 function getQuestionTimeline(x, y) {
@@ -3898,9 +3958,30 @@ function getSpikeTimeline(x, y) {
         .lineTo(13, 12)
         .moveTo(13, 42)
         .lineTo(-11, 36)
-        .lineTo(13, 30)
-
+        .lineTo(13, 30);
     cactusWrapper.addChildAt(spike, 0);
+
+//    var knife1 = new createjs.Shape();
+//    knife1.graphics.beginFill(COLOR_KNIFE)
+//        .moveTo(20, -12)
+//        .lineTo(-4, -18)
+//        .lineTo(20, -24);
+//    cactusWrapper.addChildAt(knife1, 0);
+//
+//    var knife2 = new createjs.Shape();
+//    knife2.graphics.beginFill(COLOR_KNIFE)
+//        .moveTo(20, 6)
+//        .lineTo(-4, 0)
+//        .lineTo(20, -6);
+//    cactusWrapper.addChildAt(knife2, 0);
+//
+//    var knife3 = new createjs.Shape();
+//    knife3.graphics.beginFill(COLOR_KNIFE)
+//        .moveTo(20, 24)
+//        .lineTo(-4, 18)
+//        .lineTo(20, 12);
+//    cactusWrapper.addChildAt(knife3, 0);
+//    knife1.alpha = knife2.alpha = knife3.alpha = 0;
 
     spikeContainer.addChild(cactusWrapper);
 
@@ -3909,7 +3990,52 @@ function getSpikeTimeline(x, y) {
         .to(spike, 1, {x: "-=10", ease: Back.easeOut.config(4)})
     ;
 
-    return [spikeTimeline, spikeContainer];
+    var knifeSet1 = new createjs.Container();
+    var knifeSet2 = new createjs.Container();
+    var knifeSet3 = new createjs.Container();
+    var knifeSet4 = new createjs.Container();
+    var knifeSet5 = new createjs.Container();
+    var knifeSet6 = new createjs.Container();
+    var knifeSet7 = new createjs.Container();
+
+    for (var i = 0; i < 35; i++) {
+        var knife = new createjs.Shape();
+        knife.graphics.beginFill(COLOR_KNIFE)
+            .moveTo(25, ((i % 5) * 9) - 15)
+            .lineTo(13, ((i % 5) * 9) - 18)
+            .lineTo(25, ((i % 5) * 9) - 21);
+        if (i < 5) {
+            knifeSet1.addChild(knife);
+        }
+        else if (i < 10) {
+            knifeSet2.addChild(knife);
+        }
+        else if (i < 15) {
+            knifeSet3.addChild(knife);
+        }
+        else if (i < 20) {
+            knifeSet4.addChild(knife);
+        }
+        else if (i < 25) {
+            knifeSet5.addChild(knife);
+        }
+        else if (i < 30) {
+            knifeSet6.addChild(knife);
+        }
+        else {
+            knifeSet7.addChild(knife);
+        }
+    }
+
+    cactusWrapper.addChildAt(knifeSet1, 0);
+    cactusWrapper.addChildAt(knifeSet2, 0);
+    cactusWrapper.addChildAt(knifeSet3, 0);
+    cactusWrapper.addChildAt(knifeSet4, 0);
+    cactusWrapper.addChildAt(knifeSet5, 0);
+    cactusWrapper.addChildAt(knifeSet6, 0);
+    cactusWrapper.addChildAt(knifeSet7, 0);
+
+    return [spikeTimeline, spikeContainer, [knifeSet1, knifeSet2, knifeSet3, knifeSet4, knifeSet5, knifeSet6, knifeSet7]];
 }
 
 // Containers
