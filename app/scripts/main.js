@@ -545,7 +545,6 @@ function renderAnim() {
     }
     animationWrapper.removeAllChildren();
 
-
     var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
     var flowerTimeline = flowerObjs[0];
     var flowerContainer = flowerObjs[1];
@@ -1048,6 +1047,92 @@ function renderAnim() {
         }
     });
 
+    function getOpeningTimeline() {
+        var openingTimeline = new TimelineMax();
+
+        var defaultContainer = getDefaultContainer(LEFT_2, TOP_2);
+        var springContainer = getSpringContainer(LEFT_2, TOP_2);
+        var summerContainer = getSummerContainer(LEFT_2, TOP_2);
+        var autumnContainer = getAutumnContainer(LEFT_2, TOP_2);
+        var winterContainer = getWinterContainer(LEFT_2, TOP_2);
+        var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_2);
+        var seaContainer = getSeaContainer(LEFT_2, TOP_2);
+        var desertGroundContainer = getDesertGroundContainer(LEFT_2, TOP_2);
+        var iceContainer = getIceContainer(LEFT_2, TOP_2);
+
+        var defaultCreature = getCreatureContainer();
+        var springCreature = getCreatureContainer();
+        var summerCreature = getCreatureContainer();
+        var autumnCreature = getCreatureContainer();
+        var winterCreature = getCreatureContainer();
+        var seaWaveCreature = getCreatureContainer();
+        var seaCreature = getCreatureContainer();
+        var desertGroundCreature = getCreatureContainer();
+        var iceCreature = getCreatureContainer();
+
+        defaultContainer.addChild(defaultCreature);
+        springContainer.addChild(springCreature);
+        summerContainer.addChild(summerCreature);
+        autumnContainer.addChild(autumnCreature);
+        winterContainer.addChild(winterCreature);
+        seaWaveContainer.addChild(seaWaveCreature);
+        seaContainer.addChild(seaCreature);
+        desertGroundContainer.addChild(desertGroundCreature);
+        iceContainer.addChild(iceCreature);
+
+        var containers = [defaultContainer, springContainer, summerContainer, autumnContainer, winterContainer,
+            seaWaveContainer, seaContainer, desertGroundContainer, iceContainer];
+        var creatures = [defaultCreature, springCreature, summerCreature, autumnCreature, winterCreature,
+            seaWaveCreature, seaCreature, desertGroundCreature, iceCreature];
+
+        containers.forEach(function (container) {
+            container.scaleX = container.scaleY = 0;
+        });
+        creatures.forEach(function (creature) {
+            creature.y += 13;
+        });
+
+        new TimelineMax({repeat: -1})
+            .to(creatures, .6, {y: '-=19.5', rotation: '+=180'})
+            .to(creatures, .6, {y: '+=19.5', rotation: '+=180'})
+            .to(creatures, .03, {});
+
+        animationWrapper.addChild(iceContainer);
+        animationWrapper.addChild(desertGroundContainer);
+        animationWrapper.addChild(seaContainer);
+        animationWrapper.addChild(seaWaveContainer);
+        animationWrapper.addChild(winterContainer);
+        animationWrapper.addChild(autumnContainer);
+        animationWrapper.addChild(summerContainer);
+        animationWrapper.addChild(springContainer);
+        animationWrapper.addChild(defaultContainer);
+
+        var durationPosition = .6;
+        var durationAppear = .4;
+        var delay = '+=1';
+        openingTimeline
+            .to(defaultContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(defaultContainer, durationPosition, {x: LEFT_1, y: TOP_1, ease: Circ.easeOut}, delay)
+            .to(springContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(springContainer, durationPosition, {x: LEFT_2, y: TOP_1, ease: Circ.easeOut}, delay)
+            .to(summerContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(summerContainer, durationPosition, {x: LEFT_3, y: TOP_1, ease: Circ.easeOut}, delay)
+            .to(autumnContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(autumnContainer, durationPosition, {x: LEFT_1, y: TOP_2, ease: Circ.easeOut}, delay)
+            .to(winterContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(winterContainer, durationPosition, {x: LEFT_3, y: TOP_2, ease: Circ.easeOut}, delay)
+            .to(seaWaveContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(seaWaveContainer, durationPosition, {x: LEFT_1, y: TOP_3, ease: Circ.easeOut}, delay)
+            .to(seaContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(seaContainer, durationPosition, {x: LEFT_2, y: TOP_3, ease: Circ.easeOut}, delay)
+            .to(desertGroundContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(desertGroundContainer, durationPosition, {x: LEFT_3, y: TOP_3, ease: Circ.easeOut}, delay)
+            .to(iceContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(iceContainer, durationPosition, {x: LEFT_2, y: TOP_2, ease: Circ.easeOut}, delay)
+            .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.5')
+        return openingTimeline;
+    }
+
     function getFlowerToDesertTimeline(revert) {
         var flowerToDesertTimeline = new TimelineMax({
             autoRemoveChildren: true
@@ -1112,7 +1197,9 @@ function renderAnim() {
         return flowerToDesertTimeline;
     }
 
-    var openingTimeline = new TimelineMax();
+    var openingTimeline = getOpeningTimeline();
+
+    var flowerToDesertTimeline = getFlowerToDesertTimeline();
 
     var iceWorldTimeline = new TimelineMax({
         autoRemoveChildren: true
@@ -1136,10 +1223,10 @@ function renderAnim() {
         })
     ;
 
-    var flowerToDesertTimeline = getFlowerToDesertTimeline();
     mainTimeline
+        .add('start')
         .add(openingTimeline)
-        .add(flowerToDesertTimeline, '+=19')
+        .add(flowerToDesertTimeline, 'start+=19')
         .add(iceWorldTimeline);
 
     mainTimeline.play(START_TIME, false);
@@ -3253,44 +3340,6 @@ function getDesertGroundTimeline(x, y) {
 
     var desertGroundContainer = getDesertGroundContainer(x, y);
 
-    function getCreatureContainer() {
-        var creatureWrapper = new createjs.Container();
-        var creature = new createjs.Shape();
-        creature.graphics.beginFill('black')
-            .drawCircle(0, 0, 10);
-        creatureWrapper.addChild(creature);
-
-        for (var i = 0; i < 12; i++) {
-            var spike = new createjs.Shape();
-            spike.graphics.beginStroke('black')
-                .moveTo(0, i % 2 == 0 ? -13 : -12)
-                .lineTo(0, i % 2 == 0 ? 13 : 12);
-            spike.rotation = i * 360 / 24 + 15;
-            creatureWrapper.addChild(spike);
-        }
-
-        var eyes = new createjs.Shape();
-        eyes.graphics.beginFill('white')
-            .drawCircle(-4, -1, 3)
-            .drawCircle(4, -1, 3);
-
-        var eyeballs = new createjs.Shape();
-        eyeballs.graphics
-            .beginFill('black')
-            .drawCircle(-3, -1, 1)
-            .drawCircle(3, -1, 1);
-
-        creatureWrapper.addChild(eyes);
-        creatureWrapper.addChild(eyeballs);
-
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
-        eyesTimeline
-            .to(eyes, .1, {scaleY: 0})
-            .to(eyes, .1, {scaleY: 1});
-
-        return creatureWrapper;
-    }
-
     var creatureWrapper1 = getCreatureContainer();
     var creatureWrapper2 = getCreatureContainer();
     var creatureWrapper3 = getCreatureContainer();
@@ -4181,6 +4230,45 @@ function getIceContainer(x, y) {
     return _constructContainer(x, y, [segmentSky, segmentIce]);
 }
 
+// custom container
+function getCreatureContainer() {
+    var creatureWrapper = new createjs.Container();
+    var creature = new createjs.Shape();
+    creature.graphics.beginFill('black')
+        .drawCircle(0, 0, 10);
+    creatureWrapper.addChild(creature);
+
+    for (var i = 0; i < 12; i++) {
+        var spike = new createjs.Shape();
+        spike.graphics.beginStroke('black')
+            .moveTo(0, i % 2 == 0 ? -13 : -12)
+            .lineTo(0, i % 2 == 0 ? 13 : 12);
+        spike.rotation = i * 360 / 24 + 15;
+        creatureWrapper.addChild(spike);
+    }
+
+    var eyes = new createjs.Shape();
+    eyes.graphics.beginFill('white')
+        .drawCircle(-4, -1, 3)
+        .drawCircle(4, -1, 3);
+
+    var eyeballs = new createjs.Shape();
+    eyeballs.graphics
+        .beginFill('black')
+        .drawCircle(-3, -1, 1)
+        .drawCircle(3, -1, 1);
+
+    creatureWrapper.addChild(eyes);
+    creatureWrapper.addChild(eyeballs);
+
+    var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
+    eyesTimeline
+        .to(eyes, .1, {scaleY: 0})
+        .to(eyes, .1, {scaleY: 1});
+
+    return creatureWrapper;
+}
+
 function getDesertContainer(x, y) {
     var desertContainer = new createjs.Container();
     desertContainer.x = x;
@@ -4224,7 +4312,7 @@ function _constructContainer(x, y, segments) {
     container.x = x;
     container.y = y;
 
-    segments.forEach(function(segment) {
+    segments.forEach(function (segment) {
         container.addChild(segment);
     });
 
