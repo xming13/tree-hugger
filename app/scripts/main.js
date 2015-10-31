@@ -103,7 +103,7 @@ var PAGE_SIZE = 4;
 var currentPage = 1;
 
 // for debugging
-var DEBUG = false;
+var DEBUG = true;
 var START_TIME = DEBUG ? 18.5 : 0;
 
 function init() {
@@ -525,7 +525,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getYetiTimeline(LEFT_2, TOP_1);
+        var objs = getSummerTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -1973,6 +1973,8 @@ function getSummerTimeline(x, y) {
     leafWrapper.y = -20;
 
     var numLeaves = 8;
+    var leftLeaves = [];
+    var rightLeaves = [];
     for (var i = 0; i < numLeaves; i++) {
         var leaf = new createjs.Shape();
         leaf.graphics.beginStroke(COLOR_SUMMER_LEAF)
@@ -1992,6 +1994,12 @@ function getSummerTimeline(x, y) {
             : ((i - numLeaves / 2) * 360 / numLeaves - 60);
         leaf.scaleX = i < numLeaves / 2 ? -1 : 1;
         leafWrapper.addChild(leaf);
+        if (i < numLeaves / 2) {
+            leftLeaves.push(leaf);
+        }
+        else {
+            rightLeaves.push(leaf);
+        }
     }
 
     treeWrapper.addChild(leafWrapper);
@@ -2005,6 +2013,17 @@ function getSummerTimeline(x, y) {
     treeWrapper.addChild(coconuts);
 
     summerContainer.addChild(treeWrapper);
+
+    var rotation = 6;
+    var leavesTimeline = new TimelineMax({repeat: -1});
+    leavesTimeline
+        .add('leaves')
+        .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
+        .to(rightLeaves, 1, {rotation: '+=' + rotation}, 'leaves')
+        .add('leavesEnd')
+        .to(leftLeaves, 1, {rotation: '+=' + rotation}, 'leavesEnd')
+        .to(rightLeaves, 1, {rotation: '-=' + rotation}, 'leavesEnd')
+    ;
 
     return [summerTimeline, summerContainer];
 }
