@@ -998,10 +998,6 @@ function renderAnim() {
         onStart: function () {
             var status = document.getElementById('status');
             status.innerHTML += ' timelineOnStart';
-            if (popCanPlay && pop) {
-                status.innerHTML += ' pop.play';
-                pop.play(START_TIME);
-            }
         }
     });
 
@@ -1097,6 +1093,12 @@ function renderAnim() {
         .add(iceWorldTimeline);
 
     mainTimeline.play(START_TIME, false);
+    var status = document.getElementById('status');
+    status.innerHTML += ' timelineOnStart';
+    if (popCanPlay && pop) {
+        status.innerHTML += ' pop.play';
+        pop.play(START_TIME);
+    }
 }
 
 function renderGalleryPage() {
