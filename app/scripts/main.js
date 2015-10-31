@@ -104,7 +104,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 104 : 0;
+var START_TIME = DEBUG ? 18.5 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -544,6 +544,7 @@ function renderAnim() {
         stage.addChild(animationWrapper);
     }
     animationWrapper.removeAllChildren();
+
 
     var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
     var flowerTimeline = flowerObjs[0];
@@ -1111,6 +1112,8 @@ function renderAnim() {
         return flowerToDesertTimeline;
     }
 
+    var openingTimeline = new TimelineMax();
+
     var iceWorldTimeline = new TimelineMax({
         autoRemoveChildren: true
     });
@@ -1135,6 +1138,7 @@ function renderAnim() {
 
     var flowerToDesertTimeline = getFlowerToDesertTimeline();
     mainTimeline
+        .add(openingTimeline)
         .add(flowerToDesertTimeline, '+=19')
         .add(iceWorldTimeline);
 
@@ -1485,22 +1489,10 @@ function getFlowerTimeline(x, y) {
 function getTreeTimeline(x, y) {
     var treeTimeline = new TimelineMax();
 
-    var container2 = new createjs.Container();
-    container2.x = x;
-    container2.y = y;
-
-    var segmentGround2 = new createjs.Shape();
-    segmentGround2.graphics.beginFill(COLOR_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    container2.addChild(segmentGround2);
-
-    var segmentSky2 = new createjs.Shape();
-    segmentSky2.graphics.beginFill(COLOR_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    container2.addChild(segmentSky2);
+    var container = getDefaultContainer(x, y);
 
     var treeWrapper = new createjs.Container();
-    container2.addChild(treeWrapper);
+    container.addChild(treeWrapper);
 
     var trunk = new createjs.Shape();
     trunk.graphics.beginFill('#F4A71C');
@@ -1593,25 +1585,13 @@ function getTreeTimeline(x, y) {
             ease: Back.easeOut.config(2)
         });
 
-    return [treeTimeline, container2];
+    return [treeTimeline, container];
 }
 
 function getSpringTimeline(x, y) {
     var springTimeline = new TimelineMax();
 
-    var springContainer = new createjs.Container();
-    springContainer.x = x;
-    springContainer.y = y;
-
-    var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(COLOR_SPRING_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    springContainer.addChild(segmentGround);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_SPRING_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    springContainer.addChild(segmentSky);
+    var springContainer = getSpringContainer(x, y);
 
     var treeWrapper = new createjs.Container();
     var trunk = new createjs.Shape();
@@ -1887,19 +1867,7 @@ function getSpringTimeline(x, y) {
 function getSummerTimeline(x, y) {
     var summerTimeline = new TimelineMax();
 
-    var summerContainer = new createjs.Container();
-    summerContainer.x = x;
-    summerContainer.y = y;
-
-    var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(COLOR_SUMMER_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    summerContainer.addChild(segmentGround);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_SUMMER_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    summerContainer.addChild(segmentSky);
+    var summerContainer = getSummerContainer(x, y);
 
     var treeWrapper = new createjs.Container();
     var trunk = new createjs.Shape();
@@ -1957,19 +1925,7 @@ function getSummerTimeline(x, y) {
 function getAutumnTimeline(x, y) {
     var autumnTimeline = new TimelineMax();
 
-    var autumnContainer = new createjs.Container();
-    autumnContainer.x = x;
-    autumnContainer.y = y;
-
-    var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(COLOR_AUTUMN_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    autumnContainer.addChild(segmentGround);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_AUTUMN_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    autumnContainer.addChild(segmentSky);
+    var autumnContainer = getAutumnContainer(x, y);
 
     var treeWrapper = new createjs.Container();
     autumnContainer.addChild(treeWrapper);
@@ -2338,19 +2294,7 @@ function getWinterTimeline(x, y) {
     var snowTreeTimeline = new TimelineMax();
     snowTreeTimeline.add('snow');
 
-    var snowTreeContainer = new createjs.Container();
-    snowTreeContainer.x = x;
-    snowTreeContainer.y = y;
-
-    var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(COLOR_WINTER_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    snowTreeContainer.addChild(segmentGround);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_WINTER_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    snowTreeContainer.addChild(segmentSky);
+    var snowTreeContainer = getWinterContainer(x, y);
 
     var snowTreeWrapper = new createjs.Container();
     var snowTree = new createjs.Shape();
@@ -2444,19 +2388,7 @@ function getWinterTimeline(x, y) {
 function getCatTimeline(x, y) {
     var catTimeline = new TimelineMax();
 
-    var catContainer = new createjs.Container();
-    catContainer.x = x;
-    catContainer.y = y;
-
-    var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(COLOR_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    catContainer.addChild(segmentGround);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    catContainer.addChild(segmentSky);
+    var catContainer = getDefaultContainer(x, y);
 
     var catWrapper = new createjs.Container();
     var catHead = new createjs.Shape();
@@ -2552,19 +2484,7 @@ function getCatTimeline(x, y) {
 function getTurtleTimeline(x, y) {
     var turtleTimeline = new TimelineMax();
 
-    var turtleContainer = new createjs.Container();
-    turtleContainer.x = x;
-    turtleContainer.y = y;
-
-    var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(COLOR_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    turtleContainer.addChild(segmentGround);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    turtleContainer.addChild(segmentSky);
+    var turtleContainer = getDefaultContainer(x, y);
 
     var turtleWrapper = new createjs.Container();
     var turtle = new createjs.Shape();
@@ -2826,19 +2746,7 @@ function getRoofTopTimeline(x, y) {
 function getSeaTimeline(x, y) {
     var seaTimeline = new TimelineMax();
 
-    var seaContainer = new createjs.Container();
-    seaContainer.x = x;
-    seaContainer.y = y;
-
-    var segmentGround = new createjs.Shape();
-    segmentGround.graphics.beginFill(COLOR_SEA_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    seaContainer.addChild(segmentGround);
-
-    var segmentSea = new createjs.Shape();
-    segmentSea.graphics.beginFill(COLOR_SEA)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    seaContainer.addChild(segmentSea);
+    var seaContainer = getSeaContainer(x, y);
 
     var grass = new createjs.Shape();
     grass.graphics.beginFill('greenyellow');
@@ -2964,19 +2872,7 @@ function getSeaTimeline(x, y) {
 function getFishTimeline(x, y) {
     var fishTimeline = new TimelineMax();
 
-    var fishContainer = new createjs.Container();
-    fishContainer.x = x;
-    fishContainer.y = y;
-
-    var segmentSea = new createjs.Shape();
-    segmentSea.graphics.beginFill(COLOR_SEA)
-        .arc(0, 0, CIRCLE_RADIUS, -30 * Math.PI / 180, 210 * Math.PI / 180);
-    fishContainer.addChild(segmentSea);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_HIGH_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 210 * Math.PI / 180, -30 * Math.PI / 180);
-    fishContainer.addChild(segmentSky);
+    var fishContainer = getSeaWaveContainer(x, y);
 
 //    var wave = new createjs.Shape();
 //    var waveSize = 4;
@@ -3355,22 +3251,7 @@ function getDesertFaceTimeline(x, y) {
 function getDesertGroundTimeline(x, y) {
     var desertGroundTimeline = new TimelineMax();
 
-    var desertGroundContainer = new createjs.Container();
-    desertGroundContainer.x = x;
-    desertGroundContainer.y = y;
-
-    var segmentDesert = new createjs.Shape();
-    segmentDesert.graphics
-        .beginFill(COLOR_DESERT)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics
-        .beginFill(COLOR_DESERT_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, -90 * Math.PI / 180, 270 * Math.PI / 180);
-
-    desertGroundContainer.addChild(segmentSky);
-    desertGroundContainer.addChild(segmentDesert);
+    var desertGroundContainer = getDesertGroundContainer(x, y);
 
     function getCreatureContainer() {
         var creatureWrapper = new createjs.Container();
@@ -3460,19 +3341,7 @@ function getDesertGroundTimeline(x, y) {
 function getJackalopeTimeline(x, y) {
     var jackalopeTimeline = new TimelineMax();
 
-    var jackalopeContainer = new createjs.Container();
-    jackalopeContainer.x = x;
-    jackalopeContainer.y = y;
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    jackalopeContainer.addChild(segmentSky);
-
-    var segmentIce = new createjs.Shape();
-    segmentIce.graphics.beginFill(COLOR_ICE_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    jackalopeContainer.addChild(segmentIce);
+    var jackalopeContainer = getIceContainer(x, y);
 
     var jackalopeWrapper = new createjs.Container();
     var body = new createjs.Shape();
@@ -3558,19 +3427,7 @@ function getJackalopeTimeline(x, y) {
 function getYetiTimeline(x, y) {
     var yetiTimeline = new TimelineMax();
 
-    var yetiContainer = new createjs.Container();
-    yetiContainer.x = x;
-    yetiContainer.y = y;
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    yetiContainer.addChild(segmentSky);
-
-    var segmentIce = new createjs.Shape();
-    segmentIce.graphics.beginFill(COLOR_ICE_GROUND)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    yetiContainer.addChild(segmentIce);
+    var yetiContainer = getIceContainer(x, y);
 
     var yetiWrapper = new createjs.Container();
 
@@ -4193,20 +4050,74 @@ function getSpikeTimeline(x, y) {
 }
 
 // Containers
-function getSeaWaveContainer(x, y) {
-    var seaWaveContainer = new createjs.Container();
-    seaWaveContainer.x = x;
-    seaWaveContainer.y = y;
+function getDefaultContainer(x, y) {
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
 
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentGround, segmentSky]);
+}
+
+function getSpringContainer(x, y) {
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_SPRING_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_SPRING_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentGround, segmentSky]);
+}
+
+function getSummerContainer(x, y) {
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_SUMMER_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_SUMMER_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentGround, segmentSky]);
+}
+
+function getAutumnContainer(x, y) {
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_AUTUMN_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_AUTUMN_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentGround, segmentSky]);
+}
+
+function getWinterContainer(x, y) {
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_WINTER_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_WINTER_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentGround, segmentSky]);
+}
+
+function getSeaWaveContainer(x, y) {
     var segmentSea = new createjs.Shape();
     segmentSea.graphics.beginFill(COLOR_SEA)
         .arc(0, 0, CIRCLE_RADIUS, -30 * Math.PI / 180, 210 * Math.PI / 180);
-    seaWaveContainer.addChild(segmentSea);
 
     var segmentSky = new createjs.Shape();
     segmentSky.graphics.beginFill(COLOR_HIGH_SKY)
         .arc(0, 0, CIRCLE_RADIUS, 210 * Math.PI / 180, -30 * Math.PI / 180);
-    seaWaveContainer.addChild(segmentSky);
 
 //    var wave = new createjs.Shape();
 //    var waveSize = 4;
@@ -4231,7 +4142,43 @@ function getSeaWaveContainer(x, y) {
 //    ;
 //    seaWaveContainer.addChild(wave);
 
-    return seaWaveContainer;
+    return _constructContainer(x, y, [segmentSea, segmentSky]);
+}
+
+function getSeaContainer(x, y) {
+    var segmentGround = new createjs.Shape();
+    segmentGround.graphics.beginFill(COLOR_SEA_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSea = new createjs.Shape();
+    segmentSea.graphics.beginFill(COLOR_SEA)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentGround, segmentSea]);
+}
+
+function getDesertGroundContainer(x, y) {
+    var segmentDesert = new createjs.Shape();
+    segmentDesert.graphics.beginFill(COLOR_DESERT)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DESERT_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentDesert, segmentSky]);
+}
+
+function getIceContainer(x, y) {
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    var segmentIce = new createjs.Shape();
+    segmentIce.graphics.beginFill(COLOR_ICE_GROUND)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentSky, segmentIce]);
 }
 
 function getDesertContainer(x, y) {
@@ -4269,6 +4216,21 @@ function getHeartContainer(x, y) {
 }
 
 // Utilities
+/**
+ * Returns a createjs.Container instance with center (x, y) and segments as its children.
+ */
+function _constructContainer(x, y, segments) {
+    var container = new createjs.Container();
+    container.x = x;
+    container.y = y;
+
+    segments.forEach(function(segment) {
+        container.addChild(segment);
+    });
+
+    return container;
+}
+
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  */
