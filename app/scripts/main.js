@@ -1037,7 +1037,7 @@ function renderAnim() {
 
     mainTimeline = new TimelineMax({
         paused: true,
-//        autoRemoveChildren: true,
+        autoRemoveChildren: true,
         onStart: function () {
 //            var status = document.getElementById('status');
 //            status.innerHTML += ' mainTimelineOnStart';
@@ -3334,7 +3334,7 @@ function getDesertFaceTimeline(x, y) {
         .add('happyFace', '+=6')
         .to(eyebrowsArcCmd, 1.2, {x1: -13, y1: -8, x2: -28, y2: -3, radius: 20}, 'desertFace')
         .to(eyebrowsArcCmd2, 1.2, {x1: 13, y1: -8, x2: 28, y2: -3, radius: 20}, 'desertFace')
-        .to(tearWrapper, 2, {scaleX: 1, scaleY: 1, ease: Power4.easeOut})
+        .to(tearWrapper, 2, {scaleX: 1, scaleY: 1, ease: Power4.easeOut}, 'desertFace')
         .set(tearWrapper, {alpha: 0}, 'happyFace')
         .to(eyebrowsStartCmd, 1.0, {x: -6, y: -4}, 'happyFace')
         .to(eyebrowsArcCmd, 1.0, {x1: -17, y1: -20, x2: -28, y2: 0, radius: 10}, 'happyFace')
