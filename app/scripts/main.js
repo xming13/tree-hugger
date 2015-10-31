@@ -65,6 +65,8 @@ var COLOR_DESERT_FACE_TEAR = 'lightblue';
 var COLOR_JACKALOPE = '#FFDB89';
 var COLOR_JACKALOPE_HORN = '#996C4D';
 var COLOR_YETI = '#fff';
+var COLOR_YETI_BLUE = '#f0ffff';
+var COLOR_YETI_DARK_BLUE = '#B0E0E6';
 var COLOR_SEA_MONSTER = 'darkgreen';
 var COLOR_SHARK = '#CCCCCC';
 
@@ -302,6 +304,7 @@ function loadAudio() {
         var rawLrcArray = rawLrc.split(/[\r\n]/);
         return parseLrc(rawLrcArray);
     }
+
     function parseLrc(rawLrcArray) {
         var lrcArr = [];
 
@@ -522,7 +525,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getSummerTimeline(LEFT_2, TOP_1);
+        var objs = getYetiTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -3571,18 +3574,127 @@ function getYetiTimeline(x, y) {
 
     var yetiWrapper = new createjs.Container();
 
+    var head = new createjs.Shape();
+    head.graphics.beginFill(COLOR_YETI)
+        .drawCircle(0, -15, 15);
+
+    var face = new createjs.Shape();
+    face.graphics.beginFill(COLOR_YETI_DARK_BLUE)
+        .drawCircle(0, -15, 11);
+
+    var eyes = new createjs.Shape();
+    eyes.graphics.beginFill('black')
+        .drawEllipse(-6, -20, 3, 4)
+        .drawEllipse(4, -20, 3, 4)
+    ;
+    var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.5, yoyo: true});
+    eyesTimeline
+        .to(eyes, .2, {scaleY: 0, y: -18})
+        .to(eyes, .2, {scaleY: 1, y: 0});
+
+    var mouth = new createjs.Shape();
+    mouth.graphics.beginFill(COLOR_YETI)
+        .arc(0, -24, 21, 30 * Math.PI / 180, 150 * Math.PI / 180)
+    ;
+
+    var teeth = new createjs.Shape();
+    teeth.graphics.beginFill(COLOR_YETI_DARK_BLUE)
+        .arc(0, -21, 17, 35 * Math.PI / 180, 145 * Math.PI / 180)
+        .endFill()
+        .setStrokeStyle(4)
+        .beginStroke(COLOR_YETI_BLUE)
+        .moveTo(-4.7, -11)
+        .lineTo(-4.7, -8)
+        .moveTo(4.7, -11)
+        .lineTo(4.7, -8)
+    ;
+
     var body = new createjs.Shape();
     body.graphics
         .beginFill(COLOR_YETI)
-        .drawEllipse(-15, -15, 30, 40);
+        .drawCircle(0, 0, 24)
+    ;
 
-    yetiWrapper.addChild(body);
+    var tummy = new createjs.Shape();
+    tummy.graphics
+        .beginFill(COLOR_YETI_BLUE)
+        .drawCircle(0, 0, 18);
+
+    var leftHandWrapper = new createjs.Container();
+    leftHandWrapper.x = -22;
+    leftHandWrapper.y = -8;
+
+    var leftHand = new createjs.Shape();
+    leftHand.graphics
+        .setStrokeStyle(8, 'round', 'round')
+        .beginStroke(COLOR_YETI_DARK_BLUE)
+        .moveTo(0, 0)
+        .lineTo(0, 16);
+    leftHand.rotation = -20;
+    leftHandWrapper.addChild(leftHand);
+
+    var leftHandTimeline = new TimelineMax({repeat: -1, yoyo: true});
+    leftHandTimeline
+        .to(leftHand, .8, {rotation: "+=40", ease: Sine.easeOut})
+        .to(leftHand, .8, {rotation: "-=40", ease: Sine.easeIn})
+
+    var rightHandWrapper = new createjs.Container();
+    rightHandWrapper.x = 22;
+    rightHandWrapper.y = -8;
+
+    var rightHand = new createjs.Shape();
+    rightHand.graphics
+        .setStrokeStyle(8, 'round', 'round')
+        .beginStroke(COLOR_YETI_DARK_BLUE)
+        .moveTo(0, 0)
+        .lineTo(0, 16)
+    ;
+    rightHand.rotation = 20;
+    rightHandWrapper.addChild(rightHand);
+
+    var rightHandTimeline = new TimelineMax({repeat: -1, yoyo: true});
+    rightHandTimeline
+        .to(rightHand, .8, {rotation: "-=40", ease: Sine.easeOut})
+        .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn})
 
     var foot = new createjs.Shape();
     foot.graphics
         .beginFill(COLOR_YETI)
-        .drawEllipse(0, 16, 26, 10);
+        .setStrokeStyle(7, 'round', 'round')
+        .beginStroke(COLOR_YETI_DARK_BLUE)
+        .moveTo(-6, 22)
+        .lineTo(-20, 22)
+        .moveTo(6, 22)
+        .lineTo(20, 22)
+    ;
 
+    var hair = new createjs.Shape();
+    hair.graphics
+        .setStrokeStyle(2)
+        .beginStroke(COLOR_YETI)
+        .moveTo(0, -10)
+        .lineTo(0, -33)
+        .moveTo(0, -10)
+        .lineTo(-5, -32)
+        .moveTo(0, -10)
+        .lineTo(5, -32)
+
+    yetiWrapper.addChild(body);
+    yetiWrapper.addChild(tummy);
+    yetiWrapper.addChild(leftHandWrapper);
+    yetiWrapper.addChild(rightHandWrapper);
+
+    var headWrapper = new createjs.Container();
+    headWrapper.addChild(hair);
+    headWrapper.addChild(head);
+    headWrapper.addChild(face);
+    headWrapper.addChild(mouth);
+    headWrapper.addChild(teeth);
+    headWrapper.addChild(eyes);
+    headWrapper.scaleX = headWrapper.scaleY = 0.9;
+    headWrapper.y -= 6;
+
+    yetiWrapper.addChild(headWrapper);
     yetiWrapper.addChild(foot);
 
     yetiContainer.addChild(yetiWrapper);
