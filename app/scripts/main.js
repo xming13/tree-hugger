@@ -3219,6 +3219,7 @@ function getDesertFaceTimeline(x, y) {
 
     var desertFace = new createjs.Container();
     var eyes = new createjs.Shape();
+    eyes.alpha = 0;
     var eyesCmd = eyes.graphics
         .beginFill('black')
         .drawEllipse(-14, 0, 6, 10)
@@ -3236,6 +3237,7 @@ function getDesertFaceTimeline(x, y) {
     desertFace.addChild(eyes);
 
     var eyebrows = new createjs.Shape();
+    eyebrows.alpha = 0;
     var eyebrowsStartCmd = eyebrows.graphics
         .setStrokeStyle(2, 'round', 'round')
         .beginStroke('#000')
