@@ -423,6 +423,8 @@
     }
 
     function renderMenu() {
+        TweenMax.killAll();
+
         if (!menuWrapper) {
             menuWrapper = new createjs.Container();
         }
@@ -1305,6 +1307,8 @@
 
     function _renderGallery() {
         ga('send', 'event', 'Gallery', 'show', 'Show Gallery Page ' + currentPage);
+        TweenMax.killAll();
+
         if (!galleryWrapper) {
             galleryWrapper = new createjs.Container();
         }
@@ -4795,7 +4799,7 @@
         creatureWrapper.addChild(eyes);
         creatureWrapper.addChild(eyeballs);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: falset});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
         eyesTimeline
             .to(eyes, .1, {scaleY: 0})
             .to(eyes, .1, {scaleY: 1});
