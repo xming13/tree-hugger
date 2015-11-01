@@ -103,13 +103,14 @@ var COLOR_BUTTON_DISABLED = 'lightGrey';
 var COLOR_BUTTON_ENABLED = '#E2E2FF';
 var COLOR_BUTTON_DISABLED_CONTENT = 'darkGrey';
 var COLOR_BUTTON_ENABLED_CONTENT = '#9797FF';
-var PAGE_SIZE = 5;
+var PAGE_SIZE = 6;
 var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 95 : 0;
-var debugObjs = getEndSeaTimeline(LEFT_2, TOP_1);
+var START_TIME = DEBUG ? 168 : 0;
+var debugObjs = null;
+//getNContainer(LEFT_2, TOP_1);
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -1201,22 +1202,22 @@ function renderAnim() {
     function getEndingTimeline() {
         var endingTimeline = new TimelineMax();
 
-        var catObjs = getEndCatTimeline(LEFT_1, TOP_1);
+        var catObjs = getEndCatTimeline(LEFT_4, TOP_2);
         var catContainer = catObjs[1];
 
-        var balloonObjs = getEndBalloonTimeline(LEFT_2, TOP_1);
+        var balloonObjs = getEndBalloonTimeline(LEFT_4, TOP_2);
         var balloonContainer = balloonObjs[1];
 
-        var seaObjs = getEndSeaTimeline(LEFT_3, TOP_1);
+        var seaObjs = getEndSeaTimeline(LEFT_4, TOP_2);
         var seaContainer = seaObjs[1];
 
-        var endCactusObjs = getEndCactusTimeline(LEFT_1, TOP_2);
+        var endCactusObjs = getEndCactusTimeline(LEFT_4, TOP_2);
         var endCactusContainer = endCactusObjs[1];
 
-        var yetiObjs = getEndYetiTimeline(LEFT_2, TOP_2);
+        var yetiObjs = getEndYetiTimeline(LEFT_4, TOP_2);
         var yetiContainer = yetiObjs[1];
 
-        var seaMonsterObjs = getEndSeaMonsterTimeline(LEFT_3, TOP_2);
+        var seaMonsterObjs = getEndSeaMonsterTimeline(LEFT_4, TOP_2);
         var seaMonsterContainer = seaMonsterObjs[1];
 
         var containers = [catContainer, balloonContainer, seaContainer, endCactusContainer, yetiContainer, seaMonsterContainer];
@@ -1225,9 +1226,28 @@ function renderAnim() {
             animationWrapper.addChild(container);
         });
 
+        var tContainer = getTContainer(LEFT_1, TOP_1);
+        var hContainer = getHContainer(LEFT_2, TOP_1);
+        var eContainer = getEContainer(LEFT_3, TOP_1);
+        var eContainer2 = getEContainer(LEFT_1, TOP_3);
+        var nContainer = getNContainer(LEFT_2, TOP_3);
+        var dContainer = getDContainer(LEFT_3, TOP_3);
+        var theEndContainers = [tContainer, hContainer, eContainer, eContainer2, nContainer, dContainer];
+
+        theEndContainers.forEach(function (container) {
+            animationWrapper.addChild(container);
+        });
+
         endingTimeline
-            .set(containers, {scaleX: 0, scaleY: 0})
-            .to(containers, 1, {scaleX: 1, scaleY: 1});
+            .set(theEndContainers, {scaleX: 0, scaleY: 0})
+            .to(theEndContainers, 1, {scaleX: 1, scaleY: 1})
+        ;
+
+        for (var i = 0; i < containers.length; i++) {
+            var container = containers[i];
+            endingTimeline
+                .to(container, 2 * containers.length, {x: LEFT_0}, 'end+=' + (2 * containers.length / 4 * i));
+        }
 
         return endingTimeline;
     }
@@ -1378,6 +1398,28 @@ function _renderGallery() {
 
             var seaMonsterObjs = getEndSeaMonsterTimeline(LEFT_3, TOP_2);
             _processTimelineObjs(seaMonsterObjs);
+
+            break;
+        case 6:
+            var t = getTContainer(LEFT_1, TOP_1);
+            _processContainer(t);
+
+            var h = getHContainer(LEFT_2, TOP_1);
+            _processContainer(h);
+
+            var e = getEContainer(LEFT_3, TOP_1);
+            _processContainer(e);
+
+            var e = getEContainer(LEFT_1, TOP_2);
+            _processContainer(e);
+
+            var n = getNContainer(LEFT_2, TOP_2);
+            _processContainer(n);
+
+            var d = getDContainer(LEFT_3, TOP_2);
+            _processContainer(d);
+
+            break;
         default:
             break;
     }
@@ -1386,14 +1428,20 @@ function _renderGallery() {
         var timeline = objs[0];
         var container = objs[1];
         galleryWrapper.addChild(container);
-        timeline.eventCallback('onComplete', function () {
-            var self = this;
-            setTimeout(function () {
-                self.restart();
-            }, 500);
-        });
-        timeline.play();
-        galleryTimelines.push(timeline);
+        if (timeline) {
+            timeline.eventCallback('onComplete', function () {
+                var self = this;
+                setTimeout(function () {
+                    self.restart();
+                }, 500);
+            });
+            timeline.play();
+            galleryTimelines.push(timeline);
+        }
+    }
+
+    function _processContainer(container) {
+        _processTimelineObjs([null, container]);
     }
 }
 
@@ -4767,6 +4815,179 @@ function getHeartContainer(x, y) {
     heartContainer.addChild(heart);
 
     return heartContainer;
+}
+
+function getTContainer(x, y) {
+    var container = new createjs.Container();
+    container.x = x;
+    container.y = y;
+
+    var creature1 = getCreatureContainer();
+    var creature2 = getCreatureContainer();
+    var creature3 = getCreatureContainer();
+    var creature4 = getCreatureContainer();
+    var creature5 = getCreatureContainer();
+
+    var unitLength = 26;
+    creature1.x -= unitLength;
+    creature1.y -= unitLength;
+    creature2.y -= unitLength;
+    creature3.x += unitLength;
+    creature3.y -= unitLength;
+    creature5.y += unitLength;
+
+    container.addChild(creature1);
+    container.addChild(creature2);
+    container.addChild(creature3);
+    container.addChild(creature4);
+    container.addChild(creature5);
+
+    return container;
+}
+
+function getHContainer(x, y) {
+    var container = new createjs.Container();
+    container.x = x;
+    container.y = y;
+
+    var creature1 = getCreatureContainer();
+    var creature2 = getCreatureContainer();
+    var creature3 = getCreatureContainer();
+    var creature4 = getCreatureContainer();
+    var creature5 = getCreatureContainer();
+    var creature6 = getCreatureContainer();
+    var creature7 = getCreatureContainer();
+
+    var unitLength = 26;
+    creature1.x -= unitLength;
+    creature1.y -= unitLength;
+    creature2.x -= unitLength;
+    creature3.x -= unitLength;
+    creature3.y += unitLength;
+    creature5.x += unitLength;
+    creature5.y -= unitLength;
+    creature6.x += unitLength;
+    creature7.x += unitLength;
+    creature7.y += unitLength;
+
+    container.addChild(creature1);
+    container.addChild(creature2);
+    container.addChild(creature3);
+    container.addChild(creature4);
+    container.addChild(creature5);
+    container.addChild(creature6);
+    container.addChild(creature7);
+
+    return container;
+}
+
+function getEContainer(x, y) {
+    var container = new createjs.Container();
+    container.x = x;
+    container.y = y;
+
+    var creature1 = getCreatureContainer();
+    var creature2 = getCreatureContainer();
+    var creature3 = getCreatureContainer();
+    var creature4 = getCreatureContainer();
+    var creature5 = getCreatureContainer();
+    var creature6 = getCreatureContainer();
+    var creature7 = getCreatureContainer();
+    var creature8 = getCreatureContainer();
+
+    var unitLength = 26;
+    creature1.x -= unitLength;
+    creature1.y -= unitLength;
+    creature2.y -= unitLength;
+    creature3.x += unitLength;
+    creature3.y -= unitLength;
+    creature4.x -= unitLength;
+    creature6.x -= unitLength;
+    creature6.y += unitLength;
+    creature7.y += unitLength;
+    creature8.x += unitLength;
+    creature8.y += unitLength;
+
+    creature5.scaleY = .6;
+    container.addChild(creature1);
+    container.addChild(creature2);
+    container.addChild(creature3);
+    container.addChild(creature4);
+    container.addChild(creature5);
+    container.addChild(creature6);
+    container.addChild(creature7);
+    container.addChild(creature8);
+
+    return container;
+}
+
+function getNContainer(x, y) {
+    var container = new createjs.Container();
+    container.x = x;
+    container.y = y;
+
+    var creature1 = getCreatureContainer();
+    var creature2 = getCreatureContainer();
+    var creature3 = getCreatureContainer();
+    var creature4 = getCreatureContainer();
+    var creature5 = getCreatureContainer();
+    var creature6 = getCreatureContainer();
+
+    var unitLength = 26;
+    creature1.x -= unitLength;
+    creature2.x -= unitLength;
+    creature2.y += unitLength;
+    creature3.x += unitLength / 2;
+    creature3.y -= unitLength;
+    creature4.x += unitLength;
+    creature5.x += unitLength;
+    creature5.y += unitLength;
+    creature6.x -= unitLength / 2;
+    creature6.y -= unitLength;
+
+    container.addChild(creature1);
+    container.addChild(creature2);
+    container.addChild(creature3);
+    container.addChild(creature4);
+    container.addChild(creature5);
+    container.addChild(creature6);
+
+    return container;
+}
+
+function getDContainer(x, y) {
+    var container = new createjs.Container();
+    container.x = x;
+    container.y = y;
+
+    var creature1 = getCreatureContainer();
+    var creature2 = getCreatureContainer();
+    var creature3 = getCreatureContainer();
+    var creature4 = getCreatureContainer();
+    var creature5 = getCreatureContainer();
+    var creature6 = getCreatureContainer();
+
+    var unitLength = 26;
+    creature1.x -= unitLength / 2;
+    creature1.y -= unitLength;
+    creature2.x += unitLength / 2;
+    creature2.y -= unitLength;
+    creature3.x -= unitLength / 2;
+    creature4.x += unitLength;
+    creature5.x -= unitLength / 2;
+    creature5.y += unitLength;
+    creature6.x += unitLength / 2;
+    creature6.y += unitLength;
+
+    creature4.scaleX = .75;
+    container.addChild(creature1);
+    container.addChild(creature2);
+    container.addChild(creature3);
+    container.addChild(creature4);
+    container.addChild(creature5);
+    container.addChild(creature6);
+
+    return container;
 }
 
 // Utilities
