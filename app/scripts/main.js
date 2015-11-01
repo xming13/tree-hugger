@@ -618,11 +618,11 @@ function renderAnim() {
         animationWrapper.addChild(springContainer);
         animationWrapper.addChild(defaultContainer);
 
-        var durationPosition = .6;
+        var durationPosition = .5;
         var durationAppear = .4;
         var delay = '+=1';
         openingTimeline
-            .to(defaultContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+            .to(defaultContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut}, '+=1')
             .to(defaultContainer, durationPosition, {x: LEFT_1, y: TOP_1, ease: Circ.easeOut}, delay)
             .to(springContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
             .to(springContainer, durationPosition, {x: LEFT_2, y: TOP_1, ease: Circ.easeOut}, delay)
@@ -640,7 +640,8 @@ function renderAnim() {
             .to(desertGroundContainer, durationPosition, {x: LEFT_3, y: TOP_3, ease: Circ.easeOut}, delay)
             .to(iceContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
             .to(iceContainer, durationPosition, {x: LEFT_2, y: TOP_2, ease: Circ.easeOut}, delay)
-            .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.5')
+            .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.4')
+
         return openingTimeline;
     }
 
@@ -1235,9 +1236,8 @@ function renderAnim() {
     var endingTimeline = getEndingTimeline();
 
     mainTimeline
-        .add('start')
         .add(openingTimeline)
-        .add(flowerToDesertTimeline, 'start+=19')
+        .add(flowerToDesertTimeline)
         .add('flowerToDesertEnd')
         .add(iceWorldTimeline, 'flowerToDesertEnd-=.5')
         .add(flowerToDesertTimeline2)
