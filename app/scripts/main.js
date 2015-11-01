@@ -104,7 +104,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 18.5 : 0;
+var START_TIME = DEBUG ? 110 : 0;
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -525,7 +525,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getEndBalloonTimeline(LEFT_2, TOP_1);
+        var objs = getEndYetiTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -1206,9 +1206,12 @@ function renderAnim() {
         var balloonObjs = getEndBalloonTimeline(LEFT_2, TOP_1);
         var balloonContainer = balloonObjs[1];
 
-        var containers = [endCactusContainer, balloonContainer];
+        var yetiObjs = getEndYetiTimeline(LEFT_3, TOP_1);
+        var yetiContainer = yetiObjs[1];
 
-        containers.forEach(function(container) {
+        var containers = [endCactusContainer, balloonContainer, yetiContainer];
+
+        containers.forEach(function (container) {
             animationWrapper.addChild(container);
         });
 
@@ -3653,7 +3656,7 @@ function getYetiTimeline(x, y) {
 
     yetiContainer.addChild(yetiWrapper);
 
-    return [yetiTimeline, yetiContainer];
+    return [yetiTimeline, yetiContainer, leftHandTimeline, rightHandTimeline, leftHand, rightHand];
 }
 
 function getSeaMonsterTimeline(x, y) {
@@ -4146,6 +4149,7 @@ function getSpikeTimeline(x, y) {
     return [spikeTimeline, spikeContainer, [knifeSet1, knifeSet2, knifeSet3, knifeSet4, knifeSet5, knifeSet6, knifeSet7]];
 }
 
+// End timelines
 function getEndCactusTimeline(x, y) {
     var cactusContainer = getDesertGroundContainer(x, y);
     var cactusWrapper = new createjs.Container();
@@ -4351,6 +4355,38 @@ function getEndBalloonTimeline(x, y) {
         .to(creature, 1.5, {})
 
     return [balloonTimeline, balloonContainer];
+}
+
+function getEndYetiTimeline(x, y) {
+    var yetiObjs = getYetiTimeline(x, y);
+    var yetiTimeline = yetiObjs[0];
+    var yetiContainer = yetiObjs[1];
+    var leftHandTimeline = yetiObjs[2];
+    var rightHandTimeline = yetiObjs[3];
+    leftHandTimeline.remove();
+    rightHandTimeline.remove();
+
+    var leftHand = yetiObjs[4];
+    var rightHand = yetiObjs[5];
+
+    var creature = getCreatureContainer();
+    yetiContainer.addChild(creature);
+    creature.y += 5;
+
+    var endYetiTimeline = new TimelineMax({repeat: -1});
+    endYetiTimeline
+        .add('hands')
+        .to(leftHand, .8, {rotation: "+=40", ease: Sine.easeOut}, 'hands')
+        .to(leftHand, .8, {rotation: "-=40", ease: Sine.easeIn}, 'hands+=.8')
+        .to(rightHand, .8, {rotation: "-=40", ease: Sine.easeOut}, 'hands')
+        .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn}, 'hands+=.8')
+        .to(creature, 1.6, {rotation: '+=360'}, 'hands')
+        .to(creature, .4, {y: '-=10'}, 'hands')
+        .to(creature, .8, {y: '+=20'}, 'hands+=.4')
+        .to(creature, .4, {y: '-=10'}, 'hands+=1.2')
+        .to(creature, .6, {})
+
+    return [yetiTimeline, yetiContainer];
 }
 
 // Containers
