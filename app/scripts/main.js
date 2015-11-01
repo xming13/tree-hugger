@@ -30,6 +30,10 @@ var COLOR_DESERT_SKY = '#FFFFA5';
 
 var COLOR_FLOWER_PETAL = 'hotpink';
 
+var COLOR_TREE_TRUNK = '#F4A71C';
+var COLOR_TREE_LEAVES = '#12e627';
+var COLOR_TREE_FRUIT = '#FF6666';
+
 var COLOR_SPRING_SKY = '#F0FFFF';
 var COLOR_SPRING_GROUND = 'springgreen';
 var COLOR_SPRING_FLOWER = 'pink';
@@ -105,7 +109,7 @@ var currentPage = 1;
 // for debugging
 var DEBUG = false;
 var START_TIME = DEBUG ? 110 : 0;
-var debugObjs = getEndSeaMonsterTimeline(LEFT_2, TOP_1);
+var debugObjs = getTreeTimeline(LEFT_2, TOP_1);
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -1607,7 +1611,7 @@ function getTreeTimeline(x, y) {
     container.addChild(treeWrapper);
 
     var trunk = new createjs.Shape();
-    trunk.graphics.beginFill('#F4A71C');
+    trunk.graphics.beginFill(COLOR_TREE_TRUNK);
     var trunkCmd = trunk.graphics
         .moveTo(-8, 25)
         .lineTo(8, 25)
@@ -1616,53 +1620,51 @@ function getTreeTimeline(x, y) {
     treeWrapper.addChild(trunk);
 
     var trunk2 = new createjs.Shape();
-    trunk2.graphics.beginFill('#F4A71C');
+    trunk2.graphics.beginFill(COLOR_TREE_TRUNK);
     var trunkCmd2 = trunk2.graphics
         .rect(-3, 22, 6, 0)
         .command;
     treeWrapper.addChild(trunk2);
 
     var tree = new createjs.Shape();
-    tree.graphics.beginFill('#10CA23');
+    tree.graphics.beginFill(COLOR_TREE_LEAVES);
     var treeCmd = tree.graphics
         .drawEllipse(0, 0, 0, 0).command;
 
     treeWrapper.addChildAt(tree, 0);
 
-    var fruitColor = '#FF6969';
-
     var fruit1 = new createjs.Shape();
-    fruit1.graphics.beginFill(fruitColor);
+    fruit1.graphics.beginFill(COLOR_TREE_FRUIT);
     var fruitCmd1 = fruit1.graphics
-        .drawCircle(-10, 7, 0)
+        .drawCircle(-10, 8, 0)
         .command;
     treeWrapper.addChild(fruit1);
 
     var fruit2 = new createjs.Shape();
-    fruit2.graphics.beginFill(fruitColor);
+    fruit2.graphics.beginFill(COLOR_TREE_FRUIT);
     var fruitCmd2 = fruit2.graphics
-        .drawCircle(-3, 1, 0)
+        .drawCircle(-5, 0, 0)
         .command;
     treeWrapper.addChild(fruit2);
 
     var fruit3 = new createjs.Shape();
-    fruit3.graphics.beginFill(fruitColor);
+    fruit3.graphics.beginFill(COLOR_TREE_FRUIT);
     var fruitCmd3 = fruit3.graphics
-        .drawCircle(3, 8, 0)
+        .drawCircle(0, 7, 0)
         .command;
     treeWrapper.addChild(fruit3);
 
     var fruit4 = new createjs.Shape();
-    fruit4.graphics.beginFill(fruitColor);
+    fruit4.graphics.beginFill(COLOR_TREE_FRUIT);
     var fruitCmd4 = fruit4.graphics
-        .drawCircle(8, 1, 0)
+        .drawCircle(5, 0, 0)
         .command;
     treeWrapper.addChild(fruit4);
 
     var fruit5 = new createjs.Shape();
-    fruit5.graphics.beginFill(fruitColor);
+    fruit5.graphics.beginFill(COLOR_TREE_FRUIT);
     var fruitCmd5 = fruit5.graphics
-        .drawCircle(12, 6, 0)
+        .drawCircle(10, 8, 0)
         .command;
     treeWrapper.addChild(fruit5);
 
