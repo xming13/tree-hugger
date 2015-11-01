@@ -109,7 +109,7 @@ var currentPage = 1;
 // for debugging
 var DEBUG = false;
 var START_TIME = DEBUG ? 95 : 0;
-var debugObjs = getTreeTimeline(LEFT_2, TOP_1);
+var debugObjs = getEndYetiTimeline(LEFT_2, TOP_1);
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -4352,9 +4352,9 @@ function getEndYetiTimeline(x, y) {
         .to(rightHand, .8, {rotation: "-=40", ease: Sine.easeOut}, 'hands')
         .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn}, 'hands+=.8')
         .to(creature, 1.6, {rotation: '+=360'}, 'hands')
-        .to(creature, .4, {y: '-=10'}, 'hands')
-        .to(creature, .8, {y: '+=20'}, 'hands+=.4')
-        .to(creature, .4, {y: '-=10'}, 'hands+=1.2')
+        .to(creature, .4, {y: '+=8'}, 'hands')
+        .to(creature, .8, {y: '-=16'}, 'hands+=.4')
+        .to(creature, .4, {y: '+=8'}, 'hands+=1.2')
         .to(creature, .6, {})
 
     return [yetiTimeline, yetiContainer];
