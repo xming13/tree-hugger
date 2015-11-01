@@ -525,7 +525,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getEndCactusTimeline(LEFT_2, TOP_1);
+        var objs = getEndBalloonTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -1201,15 +1201,20 @@ function renderAnim() {
         var endingTimeline = new TimelineMax();
 
         var endCactusObjs = getEndCactusTimeline(LEFT_1, TOP_1);
-        var endCactusTimeline = endCactusObjs[0];
         var endCactusContainer = endCactusObjs[1];
 
-        endCactusContainer.scaleX = endCactusContainer.scaleY = 0;
+        var balloonObjs = getEndBalloonTimeline(LEFT_2, TOP_1);
+        var balloonContainer = balloonObjs[1];
 
-        animationWrapper.addChild(endCactusContainer);
+        var containers = [endCactusContainer, balloonContainer];
+
+        containers.forEach(function(container) {
+            animationWrapper.addChild(container);
+        });
 
         endingTimeline
-            .to(endCactusContainer, 1, {scaleX: 1, scaleY: 1});
+            .set(containers, {scaleX: 0, scaleY: 0})
+            .to(containers, 1, {scaleX: 1, scaleY: 1});
 
         return endingTimeline;
     }
@@ -4142,7 +4147,6 @@ function getSpikeTimeline(x, y) {
 }
 
 function getEndCactusTimeline(x, y) {
-
     var cactusContainer = getDesertGroundContainer(x, y);
     var cactusWrapper = new createjs.Container();
 
@@ -4269,6 +4273,84 @@ function getEndCactusTimeline(x, y) {
         .to([rightHandCmd, rightStripeCmd], .5, {y: '-=5'}, 'start2+=.5')
 
     return [cactusTimeline, cactusContainer];
+}
+
+function getEndBalloonTimeline(x, y) {
+    var balloonTimeline = new TimelineMax();
+
+    var balloonContainer = new createjs.Container();
+    balloonContainer.x = x;
+    balloonContainer.y = y;
+
+    var background = new createjs.Shape();
+    background.graphics
+        .beginFill(COLOR_HIGH_SKY)
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    balloonContainer.addChild(background);
+
+    var balloonWrapper = new createjs.Container();
+    var balloon1 = new createjs.Shape();
+    var balloon1StringCmd = balloon1.graphics
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(-6, 24)
+        .lineTo(-11, -11)
+        .command;
+    var balloon1Cmd = balloon1.graphics
+        .endStroke()
+        .endFill().beginFill(COLOR_BALLOON_1)
+        .drawEllipse(-18, -20, 14, 18)
+        .command;
+    balloon1.rotation = -12;
+    balloonWrapper.addChild(balloon1);
+
+    var balloon2 = new createjs.Shape();
+    var balloon2StringCmd = balloon2.graphics
+        .setStrokeStyle(1)
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(0, 24)
+        .lineTo(0, -11)
+        .command;
+    var balloon2Cmd = balloon2.graphics
+        .endStroke()
+        .beginFill(COLOR_BALLOON_2)
+        .drawEllipse(-7, -24, 14, 18)
+        .command;
+    balloon2.rotation = 0;
+    balloonWrapper.addChild(balloon2);
+
+    var balloon3 = new createjs.Shape();
+    var balloon3StringCmd = balloon3.graphics
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(6, 24)
+        .lineTo(11, -11)
+        .command;
+    var balloon3Cmd = balloon3.graphics
+        .endStroke()
+        .endFill().beginFill(COLOR_BALLOON_3)
+        .drawEllipse(4, -20, 14, 18)
+        .command;
+    balloon3.rotation = 12;
+    balloonWrapper.addChild(balloon3);
+
+    var creature = getCreatureContainer();
+    creature.addChildAt(balloonWrapper, 0);
+    balloonContainer.addChild(creature);
+
+    balloonWrapper.y -= 20;
+    creature.y += 10;
+    creature.rotation = 10;
+
+    var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true});
+    creatureTimeline.to(creature, 1, {y: '+=4'});
+
+    var creatureTimeline2 = new TimelineMax({repeat: -1});
+    creatureTimeline2
+        .to(creature, 2, {rotation: '-=20'})
+        .to(creature, 1.5, {})
+        .to(creature, 2, {rotation: '+=20'})
+        .to(creature, 1.5, {})
+
+    return [balloonTimeline, balloonContainer];
 }
 
 // Containers
