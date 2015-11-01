@@ -108,7 +108,7 @@ var currentPage = 1;
 
 // for debugging
 var DEBUG = false;
-var START_TIME = DEBUG ? 110 : 0;
+var START_TIME = DEBUG ? 95 : 0;
 var debugObjs = getTreeTimeline(LEFT_2, TOP_1);
 
 function init() {
@@ -1068,7 +1068,7 @@ function renderAnim() {
         transitionTimeline15
             .add('transition15')
             .set(hugContainer, {scaleX: 0, scaleY: 0})
-            .to(hugContainer, .7, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)});
+            .to(hugContainer, 1, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)});
 
         var cactusObjs3 = getCactusTimeline(LEFT_4, TOP_2);
         var cactusContainer3 = cactusObjs3[1];
@@ -1187,7 +1187,7 @@ function renderAnim() {
             .add(transitionTimeline13, '+=1.5')
             .add(transitionTimeline14, '+=2.2')
             .add(snakeTimeline)
-            .add(transitionTimeline15, '+=0.2')
+            .add(transitionTimeline15, '+=.4')
             .add(transitionTimeline16, '+=1')
             .add(questionTimeline)
             .add(transitionTimeline17, '+=1.8')
@@ -3839,7 +3839,7 @@ function getSnakeTimeline(x, y) {
         .to(snakeCmd4, .3, {h: -16})
         .to(headCmd, .3, {w: 14})
         .set(eyes, {alpha: 1})
-        .to(handsCmd1, .2, {radius: 5}, '+=.65')
+        .to(handsCmd1, .2, {radius: 5}, '+=.15')
         .to([handsCmd2, handsCmd3, handsCmd4], .2, {radius: 2})
         .to(handsCmd5, .2, {radius: 5})
         .to([handsCmd6, handsCmd7, handsCmd8], .2, {radius: 2})
