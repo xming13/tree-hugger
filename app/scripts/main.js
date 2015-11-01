@@ -105,7 +105,7 @@ var currentPage = 1;
 // for debugging
 var DEBUG = false;
 var START_TIME = DEBUG ? 110 : 0;
-var debugObjs = getEndCatTimeline(LEFT_2, TOP_1);
+var debugObjs = getEndSeaMonsterTimeline(LEFT_2, TOP_1);
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -1212,7 +1212,10 @@ function renderAnim() {
         var catObjs = getEndCatTimeline(LEFT_1, TOP_2);
         var catContainer = catObjs[1];
 
-        var containers = [endCactusContainer, balloonContainer, yetiContainer, catContainer];
+        var seaMonsterObjs = getEndSeaMonsterTimeline(LEFT_3, TOP_2);
+        var seaMonsterContainer = seaMonsterObjs[1];
+
+        var containers = [endCactusContainer, balloonContainer, yetiContainer, catContainer, seaMonsterContainer];
 
         containers.forEach(function (container) {
             animationWrapper.addChild(container);
@@ -3665,19 +3668,7 @@ function getYetiTimeline(x, y) {
 function getSeaMonsterTimeline(x, y) {
     var seaMonsterTimeline = new TimelineMax();
 
-    var seaMonsterContainer = new createjs.Container();
-    seaMonsterContainer.x = x;
-    seaMonsterContainer.y = y;
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    seaMonsterContainer.addChild(segmentSky);
-
-    var segmentSea = new createjs.Shape();
-    segmentSea.graphics.beginFill(COLOR_DARK_SEA)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    seaMonsterContainer.addChild(segmentSea);
+    var seaMonsterContainer = getIceSeaContainer(x, y);
 
     var seaMonsterWrapper = new createjs.Container();
 
@@ -3734,19 +3725,7 @@ function getSeaMonsterTimeline(x, y) {
 function getSharkTimeline(x, y) {
     var sharkTimeline = new TimelineMax({repeat: -1});
 
-    var sharkContainer = new createjs.Container();
-    sharkContainer.x = x;
-    sharkContainer.y = y;
-
-    var segmentSky = new createjs.Shape();
-    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
-        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
-    sharkContainer.addChild(segmentSky);
-
-    var segmentSea = new createjs.Shape();
-    segmentSea.graphics.beginFill(COLOR_DARK_SEA)
-        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
-    sharkContainer.addChild(segmentSea);
+    var sharkContainer = getIceSeaContainer(x, y);
 
     var shark = new createjs.Shape();
     shark.graphics.beginFill(COLOR_SHARK)
@@ -4444,6 +4423,73 @@ function getEndCatTimeline(x, y) {
     return [catTimeline, catContainer];
 }
 
+function getEndSeaMonsterTimeline(x, y) {
+
+    var seaMonsterContainer = getIceSeaContainer(x, y);
+
+    var seaMonsterWrapper = new createjs.Container();
+
+    var seaMonster = new createjs.Shape();
+    seaMonster.graphics
+        .beginFill(COLOR_SEA_MONSTER)
+        .arc(-10, 25, 20, 180 * Math.PI / 180, 0 * Math.PI / 180);
+
+    seaMonster.graphics
+        .endFill().beginFill(COLOR_SEA_MONSTER)
+        .rect(10, 25, 8, -40);
+
+    seaMonster.graphics
+        .endFill().beginFill(COLOR_SEA_MONSTER)
+        .drawEllipse(10, -22, 20, 12);
+    seaMonsterWrapper.addChild(seaMonster);
+
+    var eye = new createjs.Shape();
+    eye.graphics
+        .beginFill('black')
+        .drawCircle(0, 2, 2);
+    var eyeWrapper = new createjs.Container();
+    eyeWrapper.x = 23;
+    eyeWrapper.y = -19;
+    eyeWrapper.addChild(eye);
+    seaMonsterWrapper.addChild(eyeWrapper);
+
+    var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
+    eyeTimeline
+        .to(eye, .2, {scaleY: 0, y: 2})
+        .to(eye, .2, {scaleY: 1, y: 0});
+
+    seaMonsterContainer.addChildAt(seaMonsterWrapper, 1);
+
+    var creature = getCreatureContainer();
+    creature.x = -10;
+    seaMonsterContainer.addChild(creature);
+
+    seaMonsterWrapper.y += 10;
+
+    var seaMonsterTimeline = new TimelineMax({repeat: -1});
+    seaMonsterTimeline
+        .add('bounce')
+        .add('bounce2', 'bounce+=.9')
+        .to(seaMonsterWrapper, .3, {y: '-=10'}, 'bounce')
+        .to(creature, 1.2, {x: '+=30', ease: Sine.easeIn}, 'bounce')
+        .to(creature, 1.2, {rotation: '+=360'}, 'bounce')
+        .to(creature, .9, {y: '-=36'}, 'bounce')
+        .to(creature, .3, {y: '+=12'}, 'bounce2')
+        .to(seaMonsterWrapper, .3, {y: '+=10'}, 'bounce2')
+        .to(creature, .6, {})
+        .add('bounce3')
+        .to(seaMonsterWrapper, .3, {y: '-=10'}, 'bounce3')
+        .to(creature, .3, {y: '-=12'}, 'bounce3')
+        .add('bounce4')
+        .to(creature, .9, {y: '+=36'}, 'bounce4')
+        .to(creature, 1.2, {x: '-=30', ease: Sine.easeOut}, 'bounce4-=.3')
+        .to(creature, 1.2, {rotation: '-=360'}, 'bounce4-=.3')
+        .to(seaMonsterWrapper, .3, {y: '+=10'}, 'bounce4+=.6')
+        .to(creature, .6, {})
+
+    return [seaMonsterTimeline, seaMonsterContainer];
+}
+
 // Containers
 function getDefaultContainer(x, y) {
     var segmentGround = new createjs.Shape();
@@ -4574,6 +4620,18 @@ function getIceContainer(x, y) {
         .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
 
     return _constructContainer(x, y, [segmentSky, segmentIce]);
+}
+
+function getIceSeaContainer(x, y) {
+    var segmentSky = new createjs.Shape();
+    segmentSky.graphics.beginFill(COLOR_DARK_SKY)
+        .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+    var segmentSea = new createjs.Shape();
+    segmentSea.graphics.beginFill(COLOR_DARK_SEA)
+        .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+    return _constructContainer(x, y, [segmentSky, segmentSea]);
 }
 
 // Custom containers
