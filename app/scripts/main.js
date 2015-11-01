@@ -109,7 +109,7 @@ var currentPage = 1;
 // for debugging
 var DEBUG = false;
 var START_TIME = DEBUG ? 95 : 0;
-var debugObjs = getEndYetiTimeline(LEFT_2, TOP_1);
+var debugObjs = getEndSeaTimeline(LEFT_2, TOP_1);
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -1201,22 +1201,25 @@ function renderAnim() {
     function getEndingTimeline() {
         var endingTimeline = new TimelineMax();
 
-        var endCactusObjs = getEndCactusTimeline(LEFT_1, TOP_1);
-        var endCactusContainer = endCactusObjs[1];
+        var catObjs = getEndCatTimeline(LEFT_1, TOP_1);
+        var catContainer = catObjs[1];
 
         var balloonObjs = getEndBalloonTimeline(LEFT_2, TOP_1);
         var balloonContainer = balloonObjs[1];
 
-        var yetiObjs = getEndYetiTimeline(LEFT_3, TOP_1);
-        var yetiContainer = yetiObjs[1];
+        var seaObjs = getEndSeaTimeline(LEFT_3, TOP_1);
+        var seaContainer = seaObjs[1];
 
-        var catObjs = getEndCatTimeline(LEFT_1, TOP_2);
-        var catContainer = catObjs[1];
+        var endCactusObjs = getEndCactusTimeline(LEFT_1, TOP_2);
+        var endCactusContainer = endCactusObjs[1];
+
+        var yetiObjs = getEndYetiTimeline(LEFT_2, TOP_2);
+        var yetiContainer = yetiObjs[1];
 
         var seaMonsterObjs = getEndSeaMonsterTimeline(LEFT_3, TOP_2);
         var seaMonsterContainer = seaMonsterObjs[1];
 
-        var containers = [endCactusContainer, balloonContainer, yetiContainer, catContainer, seaMonsterContainer];
+        var containers = [catContainer, balloonContainer, seaContainer, endCactusContainer, yetiContainer, seaMonsterContainer];
 
         containers.forEach(function (container) {
             animationWrapper.addChild(container);
@@ -1364,10 +1367,13 @@ function _renderGallery() {
             var balloonObjs = getEndBalloonTimeline(LEFT_2, TOP_1);
             _processTimelineObjs(balloonObjs);
 
-            var endCactusObjs = getEndCactusTimeline(LEFT_3, TOP_1);
+            var seaObjs = getEndSeaTimeline(LEFT_3, TOP_1);
+            _processTimelineObjs(seaObjs);
+
+            var endCactusObjs = getEndCactusTimeline(LEFT_1, TOP_2);
             _processTimelineObjs(endCactusObjs);
 
-            var yetiObjs = getEndYetiTimeline(LEFT_1, TOP_2);
+            var yetiObjs = getEndYetiTimeline(LEFT_2, TOP_2);
             _processTimelineObjs(yetiObjs);
 
             var seaMonsterObjs = getEndSeaMonsterTimeline(LEFT_3, TOP_2);
@@ -2881,6 +2887,7 @@ function getSeaTimeline(x, y) {
 
     var seaContainer = getSeaContainer(x, y);
 
+    var grassWrapper = new createjs.Container();
     var grass = new createjs.Shape();
     grass.graphics.beginFill('greenyellow');
     grass.graphics
@@ -2895,7 +2902,7 @@ function getSeaTimeline(x, y) {
         .endFill().beginFill('greenyellow')
         .drawEllipse(-10, -17, 3, 42);
     ;
-    seaContainer.addChild(grass);
+    grassWrapper.addChild(grass);
 
     var grass2 = new createjs.Shape();
     grass2.graphics.beginFill('green');
@@ -2911,49 +2918,51 @@ function getSeaTimeline(x, y) {
         .endFill().beginFill('green')
         .drawEllipse(6, -20, 3, 45);
     ;
-    seaContainer.addChild(grass2);
+    grassWrapper.addChild(grass2);
 
     var bubble = new createjs.Shape();
     var bubbleCmd = bubble.graphics.setStrokeStyle(1, 'round')
         .beginStroke('white')
         .drawCircle(-10, -19, 0)
         .command;
-    seaContainer.addChild(bubble);
+    grassWrapper.addChild(bubble);
 
     var bubble2 = new createjs.Shape();
     var bubbleCmd2 = bubble2.graphics.setStrokeStyle(1, 'round')
         .beginStroke('white')
         .drawCircle(-10, -19, 0)
         .command;
-    seaContainer.addChild(bubble2);
+    grassWrapper.addChild(bubble2);
 
     var bubble3 = new createjs.Shape();
     var bubbleCmd3 = bubble3.graphics.setStrokeStyle(1, 'round')
         .beginStroke('white')
         .drawCircle(-10, -19, 0)
         .command;
-    seaContainer.addChild(bubble3);
+    grassWrapper.addChild(bubble3);
 
     var bubble4 = new createjs.Shape();
     var bubbleCmd4 = bubble4.graphics.setStrokeStyle(1, 'round')
         .beginStroke('white')
         .drawCircle(7, -19, 0)
         .command;
-    seaContainer.addChild(bubble4);
+    grassWrapper.addChild(bubble4);
 
     var bubble5 = new createjs.Shape();
     var bubbleCmd5 = bubble5.graphics.setStrokeStyle(1, 'round')
         .beginStroke('white')
         .drawCircle(7, -19, 0)
         .command;
-    seaContainer.addChild(bubble5);
+    grassWrapper.addChild(bubble5);
 
     var bubble6 = new createjs.Shape();
     var bubbleCmd6 = bubble6.graphics.setStrokeStyle(1, 'round')
         .beginStroke('white')
         .drawCircle(7, -19, 0)
         .command;
-    seaContainer.addChild(bubble6);
+    grassWrapper.addChild(bubble6);
+
+    seaContainer.addChild(grassWrapper);
 
     seaTimeline
         .to(bubbleCmd, 4, {
@@ -2999,7 +3008,7 @@ function getSeaTimeline(x, y) {
             repeat: -1
         }, 3.1)
     ;
-    return [seaTimeline, seaContainer];
+    return [seaTimeline, seaContainer, grassWrapper];
 }
 
 function getFishTimeline(x, y) {
@@ -4121,6 +4130,200 @@ function getSpikeTimeline(x, y) {
 }
 
 // End timelines
+function getEndCatTimeline(x, y) {
+    var catTimeline = new TimelineMax();
+
+    var catContainer = getDefaultContainer(x, y);
+
+    var catWrapper = new createjs.Container();
+    var catHead = new createjs.Shape();
+    catHead.graphics.beginFill('#fff').drawEllipse(-15, 5, 30, 25);
+    catWrapper.addChild(catHead);
+
+    var catEyes = new createjs.Shape();
+    catEyes.graphics.beginFill('black')
+        .drawCircle(-10, 14, 2)
+        .drawCircle(2, 14, 2)
+        .beginFill('pink')
+        .drawEllipse(-13, 17, 5, 2)
+        .drawEllipse(-1, 17, 5, 2);
+    catWrapper.addChild(catEyes);
+
+    var catEars = new createjs.Shape();
+    catEars.graphics
+        .beginFill('#fff')
+        .moveTo(-15, 14)
+        .lineTo(-10, 0)
+        .lineTo(-1, 7)
+        .closePath()
+        .moveTo(15, 14)
+        .lineTo(10, 0)
+        .lineTo(1, 7)
+        .closePath();
+    catWrapper.addChild(catEars);
+    catWrapper.x += 18;
+    catContainer.addChild(catWrapper);
+
+    var creature = getCreatureContainer();
+    catContainer.addChild(creature);
+    creature.x -= 18;
+    creature.y += 13;
+
+    catEyes.y = 1;
+
+    var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut});
+    creatureTimeline
+        .add('start')
+        .to(creature, .6, {y: '-=19.5', rotation: '+=180'}, 'start')
+        .to(catEyes, .6, {y: -1}, 'start')
+        .to(creature, .6, {y: '+=19.5', rotation: '+=180'}, 'start+=.6')
+        .to(catEyes, .6, {y: 1}, 'start+=.6')
+
+    return [catTimeline, catContainer];
+}
+
+function getEndBalloonTimeline(x, y) {
+    var balloonTimeline = new TimelineMax();
+
+    var balloonContainer = new createjs.Container();
+    balloonContainer.x = x;
+    balloonContainer.y = y;
+
+    var background = new createjs.Shape();
+    background.graphics
+        .beginFill(COLOR_HIGH_SKY)
+        .drawCircle(0, 0, CIRCLE_RADIUS);
+    balloonContainer.addChild(background);
+
+    var balloonWrapper = new createjs.Container();
+    var balloon1 = new createjs.Shape();
+    var balloon1StringCmd = balloon1.graphics
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(-6, 24)
+        .lineTo(-11, -11)
+        .command;
+    var balloon1Cmd = balloon1.graphics
+        .endStroke()
+        .endFill().beginFill(COLOR_BALLOON_1)
+        .drawEllipse(-18, -20, 14, 18)
+        .command;
+    balloon1.rotation = -12;
+    balloonWrapper.addChild(balloon1);
+
+    var balloon2 = new createjs.Shape();
+    var balloon2StringCmd = balloon2.graphics
+        .setStrokeStyle(1)
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(0, 24)
+        .lineTo(0, -11)
+        .command;
+    var balloon2Cmd = balloon2.graphics
+        .endStroke()
+        .beginFill(COLOR_BALLOON_2)
+        .drawEllipse(-7, -24, 14, 18)
+        .command;
+    balloon2.rotation = 0;
+    balloonWrapper.addChild(balloon2);
+
+    var balloon3 = new createjs.Shape();
+    var balloon3StringCmd = balloon3.graphics
+        .beginStroke(COLOR_BALLOON_STRING)
+        .moveTo(6, 24)
+        .lineTo(11, -11)
+        .command;
+    var balloon3Cmd = balloon3.graphics
+        .endStroke()
+        .endFill().beginFill(COLOR_BALLOON_3)
+        .drawEllipse(4, -20, 14, 18)
+        .command;
+    balloon3.rotation = 12;
+    balloonWrapper.addChild(balloon3);
+
+    var creature = getCreatureContainer();
+    creature.addChildAt(balloonWrapper, 0);
+    balloonContainer.addChild(creature);
+
+    balloonWrapper.y -= 20;
+    creature.y += 10;
+    creature.rotation = 10;
+
+    var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true});
+    creatureTimeline.to(creature, 1, {y: '+=4'});
+
+    var creatureTimeline2 = new TimelineMax({repeat: -1});
+    creatureTimeline2
+        .to(creature, 2, {rotation: '-=20'})
+        .to(creature, 1.5, {})
+        .to(creature, 2, {rotation: '+=20'})
+        .to(creature, 1.5, {})
+
+    return [balloonTimeline, balloonContainer];
+}
+
+function getEndSeaTimeline(x, y) {
+    var seaObjs = getSeaTimeline(x, y);
+    var seaTimeline = seaObjs[0];
+    var seaContainer = seaObjs[1];
+    var grassWrapper = seaObjs[2];
+
+    var creature = getCreatureContainer();
+    seaContainer.addChild(creature);
+    creature.x = 25;
+    creature.y = 12;
+
+    grassWrapper.x -= 10;
+
+    var bubble = new createjs.Shape();
+    var bubbleCmd = bubble.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(2, -19, 0)
+        .command;
+    creature.addChild(bubble);
+
+    var bubble2 = new createjs.Shape();
+    var bubbleCmd2 = bubble2.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(2, -19, 0)
+        .command;
+    creature.addChild(bubble2);
+
+    var bubble3 = new createjs.Shape();
+    var bubbleCmd3 = bubble3.graphics.setStrokeStyle(1, 'round')
+        .beginStroke('white')
+        .drawCircle(2, -19, 0)
+        .command;
+    creature.addChild(bubble3);
+
+    seaTimeline
+        .to(bubbleCmd, 4, {
+            x: 10,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 0.5)
+        .to(bubbleCmd2, 4, {
+            x: 10,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 1.8)
+        .to(bubbleCmd3, 4, {
+            x: 10,
+            y: -40,
+            radius: 3,
+            ease: Power1.easeIn,
+            repeat: -1
+        }, 3.1)
+    ;
+
+    var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true});
+    creatureTimeline
+        .to(creature, .5, {y: '-=3'})
+    return [seaTimeline, seaContainer];
+}
+
 function getEndCactusTimeline(x, y) {
     var cactusContainer = getDesertGroundContainer(x, y);
     var cactusWrapper = new createjs.Container();
@@ -4250,84 +4453,6 @@ function getEndCactusTimeline(x, y) {
     return [cactusTimeline, cactusContainer];
 }
 
-function getEndBalloonTimeline(x, y) {
-    var balloonTimeline = new TimelineMax();
-
-    var balloonContainer = new createjs.Container();
-    balloonContainer.x = x;
-    balloonContainer.y = y;
-
-    var background = new createjs.Shape();
-    background.graphics
-        .beginFill(COLOR_HIGH_SKY)
-        .drawCircle(0, 0, CIRCLE_RADIUS);
-    balloonContainer.addChild(background);
-
-    var balloonWrapper = new createjs.Container();
-    var balloon1 = new createjs.Shape();
-    var balloon1StringCmd = balloon1.graphics
-        .beginStroke(COLOR_BALLOON_STRING)
-        .moveTo(-6, 24)
-        .lineTo(-11, -11)
-        .command;
-    var balloon1Cmd = balloon1.graphics
-        .endStroke()
-        .endFill().beginFill(COLOR_BALLOON_1)
-        .drawEllipse(-18, -20, 14, 18)
-        .command;
-    balloon1.rotation = -12;
-    balloonWrapper.addChild(balloon1);
-
-    var balloon2 = new createjs.Shape();
-    var balloon2StringCmd = balloon2.graphics
-        .setStrokeStyle(1)
-        .beginStroke(COLOR_BALLOON_STRING)
-        .moveTo(0, 24)
-        .lineTo(0, -11)
-        .command;
-    var balloon2Cmd = balloon2.graphics
-        .endStroke()
-        .beginFill(COLOR_BALLOON_2)
-        .drawEllipse(-7, -24, 14, 18)
-        .command;
-    balloon2.rotation = 0;
-    balloonWrapper.addChild(balloon2);
-
-    var balloon3 = new createjs.Shape();
-    var balloon3StringCmd = balloon3.graphics
-        .beginStroke(COLOR_BALLOON_STRING)
-        .moveTo(6, 24)
-        .lineTo(11, -11)
-        .command;
-    var balloon3Cmd = balloon3.graphics
-        .endStroke()
-        .endFill().beginFill(COLOR_BALLOON_3)
-        .drawEllipse(4, -20, 14, 18)
-        .command;
-    balloon3.rotation = 12;
-    balloonWrapper.addChild(balloon3);
-
-    var creature = getCreatureContainer();
-    creature.addChildAt(balloonWrapper, 0);
-    balloonContainer.addChild(creature);
-
-    balloonWrapper.y -= 20;
-    creature.y += 10;
-    creature.rotation = 10;
-
-    var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true});
-    creatureTimeline.to(creature, 1, {y: '+=4'});
-
-    var creatureTimeline2 = new TimelineMax({repeat: -1});
-    creatureTimeline2
-        .to(creature, 2, {rotation: '-=20'})
-        .to(creature, 1.5, {})
-        .to(creature, 2, {rotation: '+=20'})
-        .to(creature, 1.5, {})
-
-    return [balloonTimeline, balloonContainer];
-}
-
 function getEndYetiTimeline(x, y) {
     var yetiObjs = getYetiTimeline(x, y);
     var yetiTimeline = yetiObjs[0];
@@ -4358,58 +4483,6 @@ function getEndYetiTimeline(x, y) {
         .to(creature, .6, {})
 
     return [yetiTimeline, yetiContainer];
-}
-
-function getEndCatTimeline(x, y) {
-    var catTimeline = new TimelineMax();
-
-    var catContainer = getDefaultContainer(x, y);
-
-    var catWrapper = new createjs.Container();
-    var catHead = new createjs.Shape();
-    catHead.graphics.beginFill('#fff').drawEllipse(-15, 5, 30, 25);
-    catWrapper.addChild(catHead);
-
-    var catEyes = new createjs.Shape();
-    catEyes.graphics.beginFill('black')
-        .drawCircle(-10, 14, 2)
-        .drawCircle(2, 14, 2)
-        .beginFill('pink')
-        .drawEllipse(-13, 17, 5, 2)
-        .drawEllipse(-1, 17, 5, 2);
-    catWrapper.addChild(catEyes);
-
-    var catEars = new createjs.Shape();
-    catEars.graphics
-        .beginFill('#fff')
-        .moveTo(-15, 14)
-        .lineTo(-10, 0)
-        .lineTo(-1, 7)
-        .closePath()
-        .moveTo(15, 14)
-        .lineTo(10, 0)
-        .lineTo(1, 7)
-        .closePath();
-    catWrapper.addChild(catEars);
-    catWrapper.x += 18;
-    catContainer.addChild(catWrapper);
-
-    var creature = getCreatureContainer();
-    catContainer.addChild(creature);
-    creature.x -= 18;
-    creature.y += 13;
-
-    catEyes.y = 1;
-
-    var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut});
-    creatureTimeline
-        .add('start')
-        .to(creature, .6, {y: '-=19.5', rotation: '+=180'}, 'start')
-        .to(catEyes, .6, {y: -1}, 'start')
-        .to(creature, .6, {y: '+=19.5', rotation: '+=180'}, 'start+=.6')
-        .to(catEyes, .6, {y: 1}, 'start+=.6')
-
-    return [catTimeline, catContainer];
 }
 
 function getEndSeaMonsterTimeline(x, y) {
