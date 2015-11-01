@@ -554,6 +554,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         });
         pop.on('ended', function () {
             setTimeout(function () {
+                ga('send', 'event', 'Ending', 'finish', 'Ending Finish', {
+                    nonInteraction: true
+                });
                 stage.removeChild(animationWrapper);
                 renderMenu()
             }, 200);
@@ -700,6 +703,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         btnPlayWrapper.addChild(btnPlay);
         btnPlayWrapper.addEventListener('click', function () {
+            ga('send', 'event', 'Animation', 'start', 'Start Animation');
             stage.removeChild(menuWrapper);
             renderAnim();
         });
@@ -1449,7 +1453,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         }
 
         function getEndingTimeline() {
-            var endingTimeline = new TimelineMax();
+            var endingTimeline = new TimelineMax({
+                onStart: function () {
+                    ga('send', 'event', 'Ending', 'start', 'Ending Start', {
+                        nonInteraction: true
+                    });
+                }
+            });
 
             var catObjs = getEndCatTimeline(LEFT_4, TOP_2);
             var catContainer = catObjs[1];
@@ -1540,6 +1550,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function _renderGallery() {
+        ga('send', 'event', 'Gallery', 'show', 'Show Gallery Page ' + currentPage);
         if (!galleryWrapper) {
             galleryWrapper = new createjs.Container();
         }
