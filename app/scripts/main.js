@@ -103,7 +103,7 @@ var PAGE_SIZE = 4;
 var currentPage = 1;
 
 // for debugging
-var DEBUG = true;
+var DEBUG = false;
 var START_TIME = DEBUG ? 18.5 : 0;
 
 function init() {
@@ -525,7 +525,7 @@ function renderMenu() {
     menuWrapper.addChild(btnInfoWrapper);
 
     if (DEBUG) {
-        var objs = getSummerTimeline(LEFT_2, TOP_1);
+        var objs = getEndCactusTimeline(LEFT_2, TOP_1);
         var timeline = objs[0];
         var container = objs[1];
         menuWrapper.addChild(container);
@@ -1197,6 +1197,23 @@ function renderAnim() {
         return flowerToDesertTimeline;
     }
 
+    function getEndingTimeline() {
+        var endingTimeline = new TimelineMax();
+
+        var endCactusObjs = getEndCactusTimeline(LEFT_1, TOP_1);
+        var endCactusTimeline = endCactusObjs[0];
+        var endCactusContainer = endCactusObjs[1];
+
+        endCactusContainer.scaleX = endCactusContainer.scaleY = 0;
+
+        animationWrapper.addChild(endCactusContainer);
+
+        endingTimeline
+            .to(endCactusContainer, 1, {scaleX: 1, scaleY: 1});
+
+        return endingTimeline;
+    }
+
     var openingTimeline = getOpeningTimeline();
 
     var flowerToDesertTimeline = getFlowerToDesertTimeline();
@@ -1219,7 +1236,14 @@ function renderAnim() {
         .add(transitionTimeline17, '+=1.8')
         .add(transitionTimeline18, '+=.24')
         .add(function () {
-            getFlowerToDesertTimeline(true).play(0);
+            var replayTimeline = getFlowerToDesertTimeline(true);
+            replayTimeline.eventCallback(
+                'onComplete', function () {
+                    var endingTimeline = getEndingTimeline();
+                    endingTimeline.play();
+                }
+            );
+            replayTimeline.play(0);
         })
     ;
 
@@ -4117,6 +4141,136 @@ function getSpikeTimeline(x, y) {
     return [spikeTimeline, spikeContainer, [knifeSet1, knifeSet2, knifeSet3, knifeSet4, knifeSet5, knifeSet6, knifeSet7]];
 }
 
+function getEndCactusTimeline(x, y) {
+
+    var cactusContainer = getDesertGroundContainer(x, y);
+    var cactusWrapper = new createjs.Container();
+
+    var cactus = new createjs.Shape();
+    cactus.graphics.beginFill(COLOR_CACTUS)
+        .rect(-15, 25, 30, -35)
+        .endFill().beginFill(COLOR_CACTUS)
+        .arc(0, -10, 15, -90 * Math.PI / 180, 270 * Math.PI / 180).command;
+    cactusWrapper.addChild(cactus);
+
+    var leftHand = new createjs.Shape();
+    leftHand.graphics.setStrokeStyle(10, 'round', 'round')
+        .beginStroke(COLOR_CACTUS)
+        .moveTo(-15, 10);
+    leftHand.graphics.arcTo(-22, 10, -22, 10, 5);
+    var leftHandCmd = leftHand.graphics.lineTo(-22, -5).command;
+    cactusWrapper.addChild(leftHand);
+
+    var rightHand = new createjs.Shape();
+    rightHand.graphics
+        .setStrokeStyle(10, 'round', 'round')
+        .beginStroke(COLOR_CACTUS)
+        .moveTo(15, 10);
+    rightHand.graphics.arcTo(22, 10, 22, 10, 5);
+    var rightHandCmd = rightHand.graphics.lineTo(22, -10).command;
+    cactusWrapper.addChild(rightHand);
+
+    var stripe = new createjs.Shape();
+    stripe.graphics.setStrokeStyle(1, 'round', 'round')
+        .beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(0, 25)
+        .lineTo(0, -20)
+        .endStroke().beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(-8, 25)
+        .lineTo(-8, -16)
+        .endStroke().beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(8, 25)
+        .lineTo(8, -16);
+
+    cactusWrapper.addChild(stripe);
+    var leftStripe = new createjs.Shape();
+    leftStripe.graphics
+        .setStrokeStyle(1, 'round', 'round')
+        .beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(-15, 10);
+    leftStripe.graphics.arcTo(-22, 10, -22, 10, 5).command;
+    var leftStripeCmd = leftStripe.graphics.lineTo(-22, -5).command;
+    cactusWrapper.addChild(leftStripe);
+
+    var rightStripe = new createjs.Shape();
+    rightStripe.graphics
+        .setStrokeStyle(1, 'round', 'round')
+        .beginStroke(COLOR_CACTUS_STRIPE)
+        .moveTo(15, 10);
+    rightStripe.graphics.arcTo(22, 10, 22, 10, 5).command;
+    var rightStripeCmd = rightStripe.graphics.lineTo(22, -10).command;
+    cactusWrapper.addChild(rightStripe);
+
+    var eyes = new createjs.Shape();
+    eyes.graphics.beginFill('black')
+        .drawEllipse(-9, -9, 5, 8)
+        .endFill().beginFill('black')
+        .drawEllipse(4, -9, 5, 8);
+
+    var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
+    cactusEyesTimeline
+        .to(eyes, .2, {scaleY: 0, y: -5})
+        .to(eyes, .2, {scaleY: 1, y: 0});
+
+    cactusWrapper.addChild(eyes);
+
+    var flowerWrapper = new createjs.Container();
+    flowerWrapper.x = 12;
+    flowerWrapper.y = -19;
+
+    var flower = new createjs.Shape();
+    flower.graphics
+        .beginFill('yellow')
+        .drawCircle(0, 0, 3)
+    flowerWrapper.addChild(flower);
+
+    var petalColor = 'hotpink';
+    var petalRadius = 3;
+
+    var petal1 = new createjs.Shape();
+    petal1.graphics.beginFill(petalColor).drawCircle(0, -5.5, petalRadius);
+    flowerWrapper.addChildAt(petal1, 0);
+
+    var petal2 = new createjs.Shape();
+    petal2.graphics.beginFill(petalColor).drawCircle(4, -2, petalRadius);
+    flowerWrapper.addChildAt(petal2, 0);
+
+    var petal3 = new createjs.Shape();
+    petal3.graphics.beginFill(petalColor).drawCircle(3, 3.5, petalRadius);
+    flowerWrapper.addChildAt(petal3, 0);
+
+    var petal4 = new createjs.Shape();
+    petal4.graphics.beginFill(petalColor).drawCircle(-3, 3.5, petalRadius);
+    flowerWrapper.addChildAt(petal4, 0);
+
+    var petal5 = new createjs.Shape();
+    petal5.graphics.beginFill(petalColor).drawCircle(-4, -2, petalRadius);
+    flowerWrapper.addChildAt(petal5, 0);
+
+    var creature = getCreatureContainer();
+    creature.x = 22;
+    creature.y = -24;
+
+    cactusWrapper.addChild(flowerWrapper);
+    cactusContainer.addChild(cactusWrapper);
+    cactusContainer.addChild(creature);
+
+    var cactusTimeline = new TimelineMax({ease: Sine.easeInOut, repeat: -1});
+    cactusTimeline
+        .add('start')
+        .to(creature, .5, {x: '-=22', y: '-=16', rotation: '-=180'})
+        .to(creature, .5, {x: '-=22', y: '+=16', rotation: '-=180'})
+        .to([leftHandCmd, leftStripeCmd], .5, {y: '-=5'}, 'start+=.5')
+        .to([rightHandCmd, rightStripeCmd], .5, {y: '+=5'}, 'start+=.5')
+        .add('start2')
+        .to(creature, .5, {x: '+=22', y: '-=16', rotation: '-=180'})
+        .to(creature, .5, {x: '+=22', y: '+=16', rotation: '-=180'})
+        .to([leftHandCmd, leftStripeCmd], .5, {y: '+=5'}, 'start2+=.5')
+        .to([rightHandCmd, rightStripeCmd], .5, {y: '-=5'}, 'start2+=.5')
+
+    return [cactusTimeline, cactusContainer];
+}
+
 // Containers
 function getDefaultContainer(x, y) {
     var segmentGround = new createjs.Shape();
@@ -4249,7 +4403,7 @@ function getIceContainer(x, y) {
     return _constructContainer(x, y, [segmentSky, segmentIce]);
 }
 
-// custom container
+// Custom containers
 function getCreatureContainer() {
     var creatureWrapper = new createjs.Container();
     var creature = new createjs.Shape();
