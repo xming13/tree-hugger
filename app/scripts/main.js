@@ -105,6 +105,7 @@ var currentPage = 1;
 // for debugging
 var DEBUG = false;
 var START_TIME = DEBUG ? 110 : 0;
+var debugObjs = getEndCatTimeline(LEFT_2, TOP_1);
 
 function init() {
     stage = new createjs.Stage('canvas');
@@ -524,10 +525,9 @@ function renderMenu() {
     });
     menuWrapper.addChild(btnInfoWrapper);
 
-    if (DEBUG) {
-        var objs = getEndYetiTimeline(LEFT_2, TOP_1);
-        var timeline = objs[0];
-        var container = objs[1];
+    if (DEBUG && debugObjs) {
+        var timeline = debugObjs[0];
+        var container = debugObjs[1];
         menuWrapper.addChild(container);
         timeline.eventCallback('onComplete', function () {
             this.restart();
@@ -1209,7 +1209,10 @@ function renderAnim() {
         var yetiObjs = getEndYetiTimeline(LEFT_3, TOP_1);
         var yetiContainer = yetiObjs[1];
 
-        var containers = [endCactusContainer, balloonContainer, yetiContainer];
+        var catObjs = getEndCatTimeline(LEFT_1, TOP_2);
+        var catContainer = catObjs[1];
+
+        var containers = [endCactusContainer, balloonContainer, yetiContainer, catContainer];
 
         containers.forEach(function (container) {
             animationWrapper.addChild(container);
@@ -2611,9 +2614,9 @@ function getCatTimeline(x, y) {
         .to(catEyes, beeDuration, {y: -1, ease: Sine.easeOut}, 0)
         .to(catEyes, beeDuration, {y: 0, ease: Sine.easeIn}, beeDuration)
         .to(catEyes, beeDuration, {y: 1, ease: Sine.easeOut}, 2 * beeDuration)
-        .to(catEyes, beeDuration, {y: 0, ease: Sine.easeOut}, 3 * beeDuration)
+        .to(catEyes, beeDuration, {y: 0, ease: Sine.easeIn}, 3 * beeDuration)
         .to(catEyes, beeDuration, {y: -1, ease: Sine.easeOut}, 4 * beeDuration)
-        .to(catEyes, beeDuration, {y: 0, ease: Sine.easeOut}, 5 * beeDuration)
+        .to(catEyes, beeDuration, {y: 0, ease: Sine.easeIn}, 5 * beeDuration)
     ;
 
     return [catTimeline, catContainer];
@@ -4387,6 +4390,58 @@ function getEndYetiTimeline(x, y) {
         .to(creature, .6, {})
 
     return [yetiTimeline, yetiContainer];
+}
+
+function getEndCatTimeline(x, y) {
+    var catTimeline = new TimelineMax();
+
+    var catContainer = getDefaultContainer(x, y);
+
+    var catWrapper = new createjs.Container();
+    var catHead = new createjs.Shape();
+    catHead.graphics.beginFill('#fff').drawEllipse(-15, 5, 30, 25);
+    catWrapper.addChild(catHead);
+
+    var catEyes = new createjs.Shape();
+    catEyes.graphics.beginFill('black')
+        .drawCircle(-10, 14, 2)
+        .drawCircle(2, 14, 2)
+        .beginFill('pink')
+        .drawEllipse(-13, 17, 5, 2)
+        .drawEllipse(-1, 17, 5, 2);
+    catWrapper.addChild(catEyes);
+
+    var catEars = new createjs.Shape();
+    catEars.graphics
+        .beginFill('#fff')
+        .moveTo(-15, 14)
+        .lineTo(-10, 0)
+        .lineTo(-1, 7)
+        .closePath()
+        .moveTo(15, 14)
+        .lineTo(10, 0)
+        .lineTo(1, 7)
+        .closePath();
+    catWrapper.addChild(catEars);
+    catWrapper.x += 18;
+    catContainer.addChild(catWrapper);
+
+    var creature = getCreatureContainer();
+    catContainer.addChild(creature);
+    creature.x -= 18;
+    creature.y += 13;
+
+    catEyes.y = 1;
+
+    var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut});
+    creatureTimeline
+        .add('start')
+        .to(creature, .6, {y: '-=19.5', rotation: '+=180'}, 'start')
+        .to(catEyes, .6, {y: -1}, 'start')
+        .to(creature, .6, {y: '+=19.5', rotation: '+=180'}, 'start+=.6')
+        .to(catEyes, .6, {y: 1}, 'start+=.6')
+
+    return [catTimeline, catContainer];
 }
 
 // Containers
