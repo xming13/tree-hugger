@@ -99,7 +99,7 @@ var COLOR_BUTTON_DISABLED = 'lightGrey';
 var COLOR_BUTTON_ENABLED = '#E2E2FF';
 var COLOR_BUTTON_DISABLED_CONTENT = 'darkGrey';
 var COLOR_BUTTON_ENABLED_CONTENT = '#9797FF';
-var PAGE_SIZE = 4;
+var PAGE_SIZE = 5;
 var currentPage = 1;
 
 // for debugging
@@ -1381,6 +1381,21 @@ function _renderGallery() {
             _processTimelineObjs(spikeObjs);
 
             break;
+        case 5:
+            var catObjs = getEndCatTimeline(LEFT_1, TOP_1);
+            _processTimelineObjs(catObjs);
+
+            var balloonObjs = getEndBalloonTimeline(LEFT_2, TOP_1);
+            _processTimelineObjs(balloonObjs);
+
+            var endCactusObjs = getEndCactusTimeline(LEFT_3, TOP_1);
+            _processTimelineObjs(endCactusObjs);
+
+            var yetiObjs = getEndYetiTimeline(LEFT_1, TOP_2);
+            _processTimelineObjs(yetiObjs);
+
+            var seaMonsterObjs = getEndSeaMonsterTimeline(LEFT_3, TOP_2);
+            _processTimelineObjs(seaMonsterObjs);
         default:
             break;
     }
@@ -4248,13 +4263,13 @@ function getEndCactusTimeline(x, y) {
     var cactusTimeline = new TimelineMax({ease: Sine.easeInOut, repeat: -1});
     cactusTimeline
         .add('start')
-        .to(creature, .5, {x: '-=22', y: '-=16', rotation: '-=180'})
-        .to(creature, .5, {x: '-=22', y: '+=16', rotation: '-=180'})
+        .to(creature, .5, {x: '-=22', y: '-=14', rotation: '-=180'})
+        .to(creature, .5, {x: '-=22', y: '+=14', rotation: '-=180'})
         .to([leftHandCmd, leftStripeCmd], .5, {y: '-=5'}, 'start+=.5')
         .to([rightHandCmd, rightStripeCmd], .5, {y: '+=5'}, 'start+=.5')
         .add('start2')
-        .to(creature, .5, {x: '+=22', y: '-=16', rotation: '-=180'})
-        .to(creature, .5, {x: '+=22', y: '+=16', rotation: '-=180'})
+        .to(creature, .5, {x: '+=22', y: '-=14', rotation: '-=180'})
+        .to(creature, .5, {x: '+=22', y: '+=14', rotation: '-=180'})
         .to([leftHandCmd, leftStripeCmd], .5, {y: '+=5'}, 'start2+=.5')
         .to([rightHandCmd, rightStripeCmd], .5, {y: '-=5'}, 'start2+=.5')
 
