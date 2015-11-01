@@ -653,7 +653,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         petal5.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
         loadingIconWrapper.addChildAt(petal5, 1);
 
-        loadingTimeline = new TimelineMax({repeat: -1, repeatDelay: .3, autoRemoveChildren: true});
+        loadingTimeline = new TimelineMax({repeat: -1, repeatDelay: .3, autoRemoveChildren: false});
         loadingTimeline
             .set([petal1, petal2, petal3, petal4, petal5], {alpha: 0})
             .to(flowerCmd, .6, {
@@ -809,11 +809,11 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         mainTimeline = new TimelineMax({
             paused: true,
-            autoRemoveChildren: true
+            autoRemoveChildren: false
         });
 
         function getOpeningTimeline() {
-            var openingTimeline = new Timelinemax({autoRemoveChildren: true});
+            var openingTimeline = new TimelineMax({autoRemoveChildren: false});
 
             var defaultContainer = getDefaultContainer(LEFT_2, TOP_2);
             var springContainer = getSpringContainer(LEFT_2, TOP_2);
@@ -857,7 +857,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 creature.y += 13;
             });
 
-            new TimelineMax({repeat: -1, autoRemoveChildren: true})
+            new TimelineMax({repeat: -1, autoRemoveChildren: false})
                 .to(creatures, .6, {y: '-=19.5', rotation: '+=180'})
                 .to(creatures, .6, {y: '+=19.5', rotation: '+=180'})
                 .to(creatures, .03, {});
@@ -901,7 +901,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         function getFlowerToDesertTimeline() {
             var flowerToDesertTimeline = new TimelineMax({
-                autoRemoveChildren: true
+                autoRemoveChildren: false
             });
 
             var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
@@ -912,7 +912,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var treeTimeline = treeObjs[0];
             var treeContainer = treeObjs[1];
 
-            var transitionTimeline = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline
                 .add('transition')
                 .to(flowerContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
@@ -942,7 +942,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var dist = 1.5 * CIRCLE_RADIUS;
             var subContainerDuration = .7;
 
-            var transitionSeasonTimeline = new Timelinemax({autoRemoveChildren: true});
+            var transitionSeasonTimeline = new TimelineMax({autoRemoveChildren: false});
             transitionSeasonTimeline
                 .add('transition1', '+=1')
                 .to(springContainer, subContainerDuration, {
@@ -1003,7 +1003,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var catTimeline = catObjs[0];
             var catContainer = catObjs[1];
 
-            var transitionTimeline2 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline2 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline2
                 .add('transition')
                 .to(treeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
@@ -1014,7 +1014,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var turtleContainer = turtleObjs[1];
             var turtleWrapper = turtleObjs[2];
 
-            var transitionTimeline3 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline3 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline3
                 .add('transition3')
                 .to(catContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition3')
@@ -1034,7 +1034,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var cloudObjs2 = getCloudTimeline(LEFT_3, TOP_NEG1);
             var cloudContainer2 = cloudObjs2[1];
 
-            var turtleFloatTimeline = new Timelinemax({autoRemoveChildren: true});
+            var turtleFloatTimeline = new TimelineMax({autoRemoveChildren: false});
             turtleFloatTimeline
                 .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeOut})
                 .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeIn})
@@ -1047,7 +1047,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 .to(turtleWrapper, .44, {y: "-=5", ease: Sine.easeOut})
                 .to(turtleWrapper, .44, {y: "+=5", ease: Sine.easeIn});
 
-            var transitionTimeline4 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline4 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline4
                 .add('transition4')
                 .set(turtleContainer, {x: LEFT_4, y: TOP_2})
@@ -1066,7 +1066,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var cloudObjs3 = getCloudTimeline(LEFT_4, TOP_1);
             var cloudContainer3 = cloudObjs3[1];
 
-            var transitionTimeline5 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline5 = new TimelineMax({autoRemoveChildren: false});
 
             transitionTimeline5
                 .add('transition5')
@@ -1078,7 +1078,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var seaObjs = getSeaTimeline(LEFT_1, TOP_5);
             var seaContainer = seaObjs[1];
 
-            var transitionTimeline6 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline6 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline6
                 .add('transition6')
                 .to(cloudContainer3, .5, {y: TOP_NEG1, ease: Circ.easeOut}, 'transition6')
@@ -1108,7 +1108,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var cactusFlowerWrapper2 = cactusObjs2[2];
             var cactusCactusWrapper2 = cactusObjs2[3];
 
-            var transitionTimeline7 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline7 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline7
                 .add('transition7')
                 .to(fishContainer, 8.8, {x: LEFT_0, startAt: {x: LEFT_4}}, 'transition7')
@@ -1156,7 +1156,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 hearts.push(heartContainer);
             }
 
-            var transitionTimeline8 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline8 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline8
                 .add('transition8')
                 .set([desertGroundContainer1, desertGroundContainer2, desertContainer1, desertContainer2, desertFaceContainer], {scaleX: 0, scaleY: 0})
@@ -1171,7 +1171,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 }, 'overlay')
                 .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
                 .to(cactusFlowerWrapper2, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
-                .add(new TimelineMax({delay: .6, autoRemoveChildren: true})
+                .add(new TimelineMax({delay: .6, autoRemoveChildren: false})
                     .to(cactusFlowerWrapper2, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
                     .to(cactusFlowerWrapper2, .26, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
                     .to(cactusFlowerWrapper2, .22, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
@@ -1192,7 +1192,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 .add(desertGroundTimeline2, 'desert+=7.3')
             ;
 
-            var transitionTimeline9 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline9 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline9
                 .add('transition9')
                 .to([desertGroundContainer1, desertGroundContainer2, cactusContainer2, desertContainer1, desertContainer2, desertFaceContainer],
@@ -1252,7 +1252,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var jackalopeObjs = getJackalopeTimeline(LEFT_4, TOP_2);
             var jackalopeContainer = jackalopeObjs[1];
 
-            var transitionTimeline9b = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline9b = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline9b
                 .add('transition9b')
                 .to(jackalopeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition9b');
@@ -1262,13 +1262,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var yetiObjs2 = getYetiTimeline(LEFT_0, TOP_2);
             var yetiContainer2 = yetiObjs2[1];
 
-            var transitionTimeline10 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline10 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline10
                 .add('transition10')
                 .to(jackalopeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition10')
                 .to(yetiContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition10');
 
-            var transitionTimeline11 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline11 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline11
                 .add('transition11')
                 .to(yetiContainer, 3, {x: LEFT_4}, 'transition11')
@@ -1281,7 +1281,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var seaMonsterObjs2 = getSeaMonsterTimeline(LEFT_0, TOP_2);
             var seaMonsterContainer2 = seaMonsterObjs2[1];
 
-            var transitionTimeline12 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline12 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline12
                 .add('transition12')
                 .to(yetiContainer2, .5, {x: LEFT_0}, 'transition12')
@@ -1292,7 +1292,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var sharkObjs2 = getSharkTimeline(LEFT_1, TOP_2);
             var sharkContainer2 = sharkObjs2[1];
 
-            var transitionTimeline13 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline13 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline13
                 .add('transition13')
                 .set([sharkContainer, sharkContainer2], {scaleX: 0, scaleY: 0})
@@ -1305,7 +1305,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var snakeTimeline = snakeObjs[0];
             var snakeContainer = snakeObjs[1];
 
-            var transitionTimeline14 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline14 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline14
                 .add('transition14')
                 .to(seaMonsterContainer2, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition14')
@@ -1319,7 +1319,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var hugDeadEyesWrapper = hugObjs[4];
             hugContainer.scaleX = hugContainer.scaleY = 0;
 
-            var transitionTimeline15 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline15 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline15
                 .add('transition15')
                 .set(hugContainer, {scaleX: 0, scaleY: 0})
@@ -1335,7 +1335,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var questionContainer = questionObjs[1];
             questionContainer.scaleX = questionContainer.scaleY = 0;
 
-            var transitionTimeline16 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline16 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline16
                 .add('transition16')
                 .to(snakeContainer, .5, {x: LEFT_1}, 'transition16')
@@ -1356,7 +1356,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var knifeSet7 = knifeSets[6];
             spikeContainer.scaleX = spikeContainer.scaleY = 0
 
-            var transitionTimeline17 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline17 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline17
                 .add('transition17')
                 .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut})
@@ -1390,7 +1390,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             ;
 
             var flowerEyeContainer = new createjs.Container();
-            var transitionTimeline18 = new Timelinemax({autoRemoveChildren: true});
+            var transitionTimeline18 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline18
                 .add('transition18')
                 .add(function () {
@@ -1430,7 +1430,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             animationWrapper.addChild(flowerEyeContainer);
 
             var iceWorldTimeline = new TimelineMax({
-                autoRemoveChildren: true
+                autoRemoveChildren: false
             });
             iceWorldTimeline
                 .add('iceWorld')
@@ -1454,7 +1454,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         function getEndingTimeline() {
             var endingTimeline = new TimelineMax({
-                autoRemoveChildren: true,
+                autoRemoveChildren: false,
                 onStart: function () {
                     ga('send', 'event', 'Ending', 'start', 'Ending Start', {
                         nonInteraction: true
@@ -1797,7 +1797,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
     // Timelines
     function getFlowerTimeline(x, y) {
-        var flowerTimeline = new Timelinemax({autoRemoveChildren: true});
+        var flowerTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var container1 = new createjs.Container();
         container1.x = x;
@@ -1918,7 +1918,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getTreeTimeline(x, y) {
-        var treeTimeline = new Timelinemax({autoRemoveChildren: true});
+        var treeTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var container = getDefaultContainer(x, y);
 
@@ -2018,7 +2018,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSpringTimeline(x, y) {
-        var springTimeline = new Timelinemax({autoRemoveChildren: true});
+        var springTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var springContainer = getSpringContainer(x, y);
 
@@ -2294,7 +2294,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSummerTimeline(x, y) {
-        var summerTimeline = new Timelinemax({autoRemoveChildren: true});
+        var summerTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var summerContainer = getSummerContainer(x, y);
 
@@ -2357,21 +2357,27 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         summerContainer.addChild(treeWrapper);
 
         var rotation = 6;
-        var leavesTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: true});
-        leavesTimeline
-            .add('leaves')
-            .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
-            .to(rightLeaves, 1, {rotation: '+=' + rotation}, 'leaves')
-            .add('leavesEnd')
-            .to(leftLeaves, 1, {rotation: '+=' + rotation}, 'leavesEnd')
-            .to(rightLeaves, 1, {rotation: '-=' + rotation}, 'leavesEnd')
-        ;
+        var leavesTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+
+        summerTimeline.eventCallback('onStart', function () {
+            leavesTimeline
+                .add('leaves')
+                .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
+                .to(rightLeaves, 1, {rotation: '+=' + rotation}, 'leaves')
+                .add('leavesEnd')
+                .to(leftLeaves, 1, {rotation: '+=' + rotation}, 'leavesEnd')
+                .to(rightLeaves, 1, {rotation: '-=' + rotation}, 'leavesEnd')
+            ;
+        });
+        summerTimeline.eventCallback('onComplete', function () {
+            leavesTimeline.remove();
+        });
 
         return [summerTimeline, summerContainer];
     }
 
     function getAutumnTimeline(x, y) {
-        var autumnTimeline = new Timelinemax({autoRemoveChildren: true});
+        var autumnTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var autumnContainer = getAutumnContainer(x, y);
 
@@ -2739,7 +2745,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getWinterTimeline(x, y) {
-        var snowTreeTimeline = new Timelinemax({autoRemoveChildren: true});
+        var snowTreeTimeline = new TimelineMax({autoRemoveChildren: false});
         snowTreeTimeline.add('snow');
 
         var snowTreeContainer = getWinterContainer(x, y);
@@ -2834,7 +2840,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getCatTimeline(x, y) {
-        var catTimeline = new Timelinemax({autoRemoveChildren: true});
+        var catTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var catContainer = getDefaultContainer(x, y);
 
@@ -2930,7 +2936,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getTurtleTimeline(x, y) {
-        var turtleTimeline = new Timelinemax({autoRemoveChildren: true});
+        var turtleTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var turtleContainer = getDefaultContainer(x, y);
 
@@ -2953,7 +2959,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .drawEllipse(2, 20, 2, 2);
         turtleWrapper.addChild(eyes);
 
-        var turtleEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: true});
+        var turtleEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
         turtleEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 21})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3046,18 +3052,18 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(balloon2Cmd, .4, {x: -7, y: -24, w: 14, h: 18}, 'balloon+=0.4')
             .to(balloon3Cmd, .4, {x: 4, y: -20, w: 14, h: 18}, 'balloon+=0.6')
         ;
-        var flyTimeline = new Timelinemax({autoRemoveChildren: true});
+
+        var flyTimeline = new TimelineMax({autoRemoveChildren: false});
         flyTimeline
             .add('hands')
             .to(hand1Wrapper, .44, {rotation: "-=10", startAt: {rotation: "+=8"}, repeat: -1, yoyo: true}, 'hands')
-            .to(hand2Wrapper, .44, {rotation: "+=10", startAt: {rotation: "-=8"}, repeat: -1, yoyo: true}, 'hands')
-        ;
+            .to(hand2Wrapper, .44, {rotation: "+=10", startAt: {rotation: "-=8"}, repeat: -1, yoyo: true}, 'hands');
 
         return [turtleTimeline, turtleContainer, turtleWrapper, balloonWrapper];
     }
 
     function getCloudTimeline(x, y) {
-        var cloudTimeline = new Timelinemax({autoRemoveChildren: true});
+        var cloudTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var cloudContainer = new createjs.Container();
         cloudContainer.x = x;
@@ -3101,7 +3107,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyes.graphics.endFill().beginFill('black');
         eyes.graphics.drawEllipse(4, -6, 5, 8);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: true});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -2})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3110,7 +3116,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         cloudContainer.addChild(cloudWrapper);
 
         cloudWrapper.x += 6;
-        var movingCloudTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true, autoRemoveChildren: true});
+        var movingCloudTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true, autoRemoveChildren: false});
         movingCloudTimeline.to(cloudWrapper, 2, {x: "-=12", ease: Power2.easeInOut });
 
         cloudTimeline
@@ -3121,7 +3127,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getRoofTopTimeline(x, y) {
-        var roofTopTimeline = new Timelinemax({autoRemoveChildren: true});
+        var roofTopTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var roofTopContainer = new createjs.Container();
         roofTopContainer.x = x;
@@ -3192,7 +3198,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSeaTimeline(x, y) {
-        var seaTimeline = new Timelinemax({autoRemoveChildren: true});
+        var seaTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var seaContainer = getSeaContainer(x, y);
 
@@ -3321,7 +3327,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getFishTimeline(x, y) {
-        var fishTimeline = new Timelinemax({autoRemoveChildren: true});
+        var fishTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var fishContainer = getSeaWaveContainer(x, y);
 
@@ -3400,7 +3406,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         fishContainer.addChild(fishWrapper);
 
-        var bubbleTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.2, autoRemoveChildren: true});
+        var bubbleTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.2, autoRemoveChildren: false});
         bubbleTimeline.to(bubbleCmd, 2, {
             x: -10,
             y: -24,
@@ -3425,7 +3431,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getCactusTimeline(x, y) {
-        var cactusTimeline = new Timelinemax({autoRemoveChildren: true});
+        var cactusTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var cactusContainer = new createjs.Container();
         cactusContainer.x = x;
@@ -3511,7 +3517,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyes.graphics.endFill().beginFill('black');
         eyes.graphics.drawEllipse(4, -9, 5, 8);
 
-        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: true});
+        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
         cactusEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3595,7 +3601,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getDesertFaceTimeline(x, y) {
-        var desertFaceTimeline = new Timelinemax({autoRemoveChildren: true});
+        var desertFaceTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var desertFaceContainer = new createjs.Container();
         desertFaceContainer.x = x;
@@ -3619,7 +3625,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .drawEllipse(8, 0, 6, 10)
             .command;
 
-        var desertFaceEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: true});
+        var desertFaceEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
         desertFaceEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3700,7 +3706,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getDesertGroundTimeline(x, y) {
-        var desertGroundTimeline = new Timelinemax({autoRemoveChildren: true});
+        var desertGroundTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var desertGroundContainer = getDesertGroundContainer(x, y);
 
@@ -3723,23 +3729,23 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to([creatureWrapper1, creatureWrapper2], .2, {scaleX: 1, scaleY: 1})
             .to([creatureWrapper1, creatureWrapper2], .2, {y: '+=13'})
             .add('drop')
-            .add(new TimelineMax({repeat: 3, autoRemoveChildren: true})
+            .add(new TimelineMax({repeat: 3, autoRemoveChildren: false})
                 .to(creatureWrapper2, .6, {y: '-=19.5', rotation: '+=180'})
                 .to(creatureWrapper2, .6, {y: '+=19.5', rotation: '+=180'})
                 .to(creatureWrapper2, .03, {})
                 , 'drop')
-            .add(new Timelinemax({autoRemoveChildren: true})
+            .add(new TimelineMax({autoRemoveChildren: false})
                 .to(creatureWrapper1, .3, {x: '+=12', y: '-=13', rotation: '+=90'})
                 .to(creatureWrapper1, .3, {x: '+=12', y: '+=13', rotation: '+=90'})
                 .to(creatureWrapper1, .4, {y: '-=26', rotation: '+=90'})
                 .to(creatureWrapper1, .4, {y: '+=26', rotation: '+=90'})
                 .to(creatureWrapper1, .03, {})
-                .add(new TimelineMax({repeat: 2, autoRemoveChildren: true})
+                .add(new TimelineMax({repeat: 2, autoRemoveChildren: false})
                     .to(creatureWrapper1, .6, {y: '-=15', rotation: '+=180'})
                     .to(creatureWrapper1, .6, {y: '+=15', rotation: '+=180'})
                     .to(creatureWrapper1, .03, {}))
                 , 'drop')
-            .add(new Timelinemax({autoRemoveChildren: true})
+            .add(new TimelineMax({autoRemoveChildren: false})
                 .to(creatureWrapper3, .3, {scaleX: 1, scaleY: 1})
                 .to(creatureWrapper3, .2, {y: '+=13'})
                 .add(new TimelineMax({repeat: 2})
@@ -3752,7 +3758,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getJackalopeTimeline(x, y) {
-        var jackalopeTimeline = new Timelinemax({autoRemoveChildren: true});
+        var jackalopeTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var jackalopeContainer = getIceContainer(x, y);
 
@@ -3778,7 +3784,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .drawCircle(3, 7, 1.5);
         faceWrapper.addChild(eyes);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true, autoRemoveChildren: true});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true, autoRemoveChildren: false});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 7})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3819,7 +3825,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         jackalopeWrapper.addChild(faceWrapper);
         jackalopeContainer.addChild(jackalopeWrapper);
 
-        var earTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.4, autoRemoveChildren: true});
+        var earTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.4, autoRemoveChildren: false});
         earTimeline
             .add('s1')
             .to(ear, .2, {rotation: 50}, 's1')
@@ -3838,7 +3844,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getYetiTimeline(x, y) {
-        var yetiTimeline = new Timelinemax({autoRemoveChildren: true});
+        var yetiTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var yetiContainer = getIceContainer(x, y);
 
@@ -3857,7 +3863,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .drawEllipse(-6, -20, 3, 4)
             .drawEllipse(4, -20, 3, 4)
         ;
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.5, yoyo: true, autoRemoveChildren: true});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.5, yoyo: true, autoRemoveChildren: false});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -18})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3903,7 +3909,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         leftHand.rotation = -20;
         leftHandWrapper.addChild(leftHand);
 
-        var leftHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: true});
+        var leftHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
         leftHandTimeline
             .to(leftHand, .8, {rotation: "+=40", ease: Sine.easeOut})
             .to(leftHand, .8, {rotation: "-=40", ease: Sine.easeIn})
@@ -3922,7 +3928,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         rightHand.rotation = 20;
         rightHandWrapper.addChild(rightHand);
 
-        var rightHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: true});
+        var rightHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
         rightHandTimeline
             .to(rightHand, .8, {rotation: "-=40", ease: Sine.easeOut})
             .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn})
@@ -3973,7 +3979,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSeaMonsterTimeline(x, y) {
-        var seaMonsterTimeline = new Timelinemax({autoRemoveChildren: true});
+        var seaMonsterTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var seaMonsterContainer = getIceSeaContainer(x, y);
 
@@ -4005,7 +4011,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyeWrapper.addChild(eye);
         seaMonsterWrapper.addChild(eyeWrapper);
 
-        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: true});
+        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
         eyeTimeline
             .to(eye, .2, {scaleY: 0, y: 2})
             .to(eye, .2, {scaleY: 1, y: 0});
@@ -4030,7 +4036,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSharkTimeline(x, y) {
-        var sharkTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: true});
+        var sharkTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
 
         var sharkContainer = getIceSeaContainer(x, y);
 
@@ -4054,7 +4060,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSnakeTimeline(x, y) {
-        var snakeTimeline = new Timelinemax({autoRemoveChildren: true});
+        var snakeTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var snakeContainer = new createjs.Container();
         snakeContainer.x = x;
@@ -4138,7 +4144,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         snakeWrapper.addChild(hands);
 
-        var snakeEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: true});
+        var snakeEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
         snakeEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -7})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -4167,7 +4173,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getHugTimeline(x, y) {
-        var hugTimeline = new Timelinemax({autoRemoveChildren: true});
+        var hugTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var hugContainer = new createjs.Container();
         hugContainer.x = x;
@@ -4230,7 +4236,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyesWrapper.addChild(eyeballs);
         nobitaWrapper.addChild(eyesWrapper);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: true});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
         eyesTimeline
             .to(eyeballs, .2, {scaleY: 0, y: 3.5})
             .to(eyeballs, .2, {scaleY: 1, y: 0});
@@ -4279,7 +4285,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getQuestionTimeline(x, y) {
-        var questionTimeline = new TimelineMax({repeat: 1, ease: Bounce.easeOut, autoRemoveChildren: true});
+        var questionTimeline = new TimelineMax({repeat: 1, ease: Bounce.easeOut, autoRemoveChildren: false});
 
         var questionContainer = new createjs.Container();
         questionContainer.x = x;
@@ -4309,7 +4315,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSpikeTimeline(x, y) {
-        var spikeTimeline = new Timelinemax({autoRemoveChildren: true});
+        var spikeTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var spikeContainer = new createjs.Container();
         spikeContainer.x = x;
@@ -4440,7 +4446,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
     // End timelines
     function getEndCatTimeline(x, y) {
-        var catTimeline = new Timelinemax({autoRemoveChildren: true});
+        var catTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var catContainer = getDefaultContainer(x, y);
 
@@ -4480,7 +4486,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         catEyes.y = 1;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut, autoRemoveChildren: true});
+        var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut, autoRemoveChildren: false});
         creatureTimeline
             .add('start')
             .to(creature, .6, {y: '-=19.5', rotation: '+=180'}, 'start')
@@ -4492,7 +4498,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getEndBalloonTimeline(x, y) {
-        var balloonTimeline = new Timelinemax({autoRemoveChildren: true});
+        var balloonTimeline = new TimelineMax({autoRemoveChildren: false});
 
         var balloonContainer = new createjs.Container();
         balloonContainer.x = x;
@@ -4556,10 +4562,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         creature.y += 10;
         creature.rotation = 10;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: true});
+        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
         creatureTimeline.to(creature, 1, {y: '+=4'});
 
-        var creatureTimeline2 = new TimelineMax({repeat: -1, autoRemoveChildren: true});
+        var creatureTimeline2 = new TimelineMax({repeat: -1, autoRemoveChildren: false});
         creatureTimeline2
             .to(creature, 2, {rotation: '-=20'})
             .to(creature, 1.5, {})
@@ -4627,7 +4633,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             }, 3.1)
         ;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: true});
+        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
         creatureTimeline
             .to(creature, .5, {y: '-=3'})
         return [seaTimeline, seaContainer];
@@ -4698,7 +4704,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .endFill().beginFill('black')
             .drawEllipse(4, -9, 5, 8);
 
-        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: true});
+        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
         cactusEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -4746,7 +4752,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         cactusContainer.addChild(cactusWrapper);
         cactusContainer.addChild(creature);
 
-        var cactusTimeline = new TimelineMax({ease: Sine.easeInOut, repeat: -1, autoRemoveChildren: true});
+        var cactusTimeline = new TimelineMax({ease: Sine.easeInOut, repeat: -1, autoRemoveChildren: false});
         cactusTimeline
             .add('start')
             .to(creature, .5, {x: '-=22', y: '-=14', rotation: '-=180'})
@@ -4778,7 +4784,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         yetiContainer.addChild(creature);
         creature.y += 5;
 
-        var endYetiTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: true});
+        var endYetiTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
         endYetiTimeline
             .add('hands')
             .to(leftHand, .8, {rotation: "+=40", ease: Sine.easeOut}, 'hands')
@@ -4824,7 +4830,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyeWrapper.addChild(eye);
         seaMonsterWrapper.addChild(eyeWrapper);
 
-        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: true});
+        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
         eyeTimeline
             .to(eye, .2, {scaleY: 0, y: 2})
             .to(eye, .2, {scaleY: 1, y: 0});
@@ -4837,7 +4843,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         seaMonsterWrapper.y += 10;
 
-        var seaMonsterTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: true});
+        var seaMonsterTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
         seaMonsterTimeline
             .add('bounce')
             .add('bounce2', 'bounce+=.9')
@@ -5036,7 +5042,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         creatureWrapper.addChild(eyes);
         creatureWrapper.addChild(eyeballs);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: true});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: falset});
         eyesTimeline
             .to(eyes, .1, {scaleY: 0})
             .to(eyes, .1, {scaleY: 1});
