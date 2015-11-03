@@ -18,6 +18,15 @@ body {
     transform: translate(-50%, -50%);
 }
 
+#profile-pic {
+    position: absolute;
+    bottom: 100px;
+    right: 30px;
+    border-radius: 50%;
+    border: 5px solid blueviolet;
+    display: none;
+}
+
 #canvas,
 #canvas:focus {
     display: block;

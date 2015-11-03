@@ -359,6 +359,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     var PAGE_SIZE = 6;
     var currentPage = 1;
 
+    // Info
+    var infoWrapper;
+
     // for debugging
     var DEBUG = false;
     var START_TIME = DEBUG ? 168 : 0;
@@ -785,7 +788,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         btnInfoWrapper.addChild(btnInfo);
         btnInfoWrapper.addEventListener('click', function () {
-            alert('not implemented yet!')
+            ga('send', 'event', 'Info', 'view', 'View Info');
+            renderInfo();
         });
         menuWrapper.addChild(btnInfoWrapper);
 
@@ -1550,6 +1554,61 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         _renderBtnPrev();
         _renderBtnHome();
         _renderBtnNext();
+    }
+
+    function renderInfo() {
+        var profilePic = document.getElementById('profile-pic');
+        profilePic.style.display = 'block';
+
+        if (!infoWrapper) {
+            infoWrapper = new createjs.Container();
+            infoWrapper.setBounds(100, 100, CANVAS_WIDTH - 30, CANVAS_HEIGHT - 30);
+            infoWrapper.cursor = 'auto';
+        }
+        if (infoWrapper.parent != stage) {
+            stage.addChild(infoWrapper);
+        }
+        infoWrapper.removeAllChildren();
+
+        var background = new createjs.Shape();
+        var outerSize = 15;
+        background.graphics.beginFill('#BBE3FA').drawRoundRect(outerSize, outerSize, CANVAS_WIDTH - 2 * outerSize, CANVAS_HEIGHT - 2 * outerSize, outerSize, outerSize, outerSize, outerSize);
+        infoWrapper.addChild(background);
+
+        var btnCloseWrapper = new createjs.Container();
+        var btnClose = new createjs.Shape();
+        btnClose.rotation = 45;
+        btnClose.graphics.beginFill('#999999')
+            .drawRoundRect(0, 0 + 28 / 2 - 6 / 2, 28, 6, 3, 3, 3, 3)
+            .drawRoundRect(0 + 28 / 2 - 6 / 2, 0, 6, 28, 3, 3, 3, 3);
+        btnCloseWrapper.addChild(btnClose);
+        btnCloseWrapper.x = 275;
+        btnCloseWrapper.y = 20;
+        btnCloseWrapper.cursor = 'pointer';
+        btnCloseWrapper.addEventListener('click', function () {
+            stage.removeChild(infoWrapper);
+            profilePic.style.display = 'none';
+        });
+        infoWrapper.addChild(btnCloseWrapper);
+
+        var mainText = new createjs.Text('This is a short animation based on the song Tree Hugger.\nThe song is performed by Kimya Dawson And Antsy Pants and appears on the album Juno (2008).', '16px Happy Monkey', '#000');
+        mainText.x = CANVAS_WIDTH / 2;
+        mainText.y = 60;
+        mainText.lineWidth = CANVAS_WIDTH - 4 * outerSize;
+        mainText.lineHeight = 24
+        mainText.textAlign = 'center'
+        infoWrapper.addChild(mainText);
+
+        var footerText = new createjs.Text('Made with \'\'\nby Wei Seng', '14px Happy Monkey', '#000');
+        footerText.x = CANVAS_WIDTH / 2;
+        footerText.y = 239.5;
+        footerText.lineWidth = CANVAS_WIDTH - 4 * outerSize;
+        footerText.lineHeight = 20
+        footerText.textAlign = 'center'
+        infoWrapper.addChild(footerText);
+
+        var heart = getHeartContainer(202, 248);
+        infoWrapper.addChild(heart);
     }
 
     function _renderGallery() {
