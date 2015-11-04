@@ -59,7 +59,7 @@
 
     var COLOR_BEE_BODY = 'yellow';
     var COLOR_BEE_WING = '#ABCCB0';
-    var COLOR_BEE_BODY_STRIPE = 'black'
+    var COLOR_BEE_BODY_STRIPE = 'black';
 
     var COLOR_TURTLE_SHELL = '#00cc00';
     var COLOR_TURTLE_BODY = '#FFDC00';
@@ -179,10 +179,10 @@
             else {
                 console.log('requestMp3 reached server but error is returned.');
             }
-        }
+        };
         requestMp3.onerror = function () {
             console.log('requestMp3 onerror: ' + e.message);
-        }
+        };
 
         requestMp3.send();
 
@@ -341,13 +341,9 @@
                         if (time && time[0]) {
                             lrcArr.push({ "starttime": parseInt(time[1], 10) * 60 + parseFloat(time[2]), "line": lrc[2] });
                         }
-                        ;
                     }
-                    ;
                 }
-                ;
             }
-            ;
 
             //sort lrcArr
             lrcArr.sort(function (a, b) {
@@ -653,7 +649,7 @@
                 .to(desertGroundContainer, durationPosition, {x: LEFT_3, y: TOP_3, ease: Circ.easeOut}, delay)
                 .to(iceContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
                 .to(iceContainer, durationPosition, {x: LEFT_2, y: TOP_2, ease: Circ.easeOut}, delay)
-                .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.4')
+                .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.4');
 
             return openingTimeline;
         }
@@ -955,7 +951,7 @@
             transitionTimeline9
                 .add('transition9')
                 .to([desertGroundContainer1, desertGroundContainer2, cactusContainer2, desertContainer1, desertContainer2, desertFaceContainer],
-                .5, {x: "-=" + ((CIRCLE_DIAMETER + SPACING) * 3), ease: Circ.easeOut}, 'transition9')
+                .5, {x: "-=" + ((CIRCLE_DIAMETER + SPACING) * 3), ease: Circ.easeOut}, 'transition9');
 
             animationWrapper.addChild(flowerContainer);
             animationWrapper.addChild(treeContainer);
@@ -1100,7 +1096,7 @@
                 .to(snakeContainer, .5, {x: LEFT_1}, 'transition16')
                 .to(hugContainer, .5, {x: LEFT_1}, 'transition16')
                 .to(cactusContainer3, .5, {x: LEFT_3}, 'transition16')
-                .to(questionContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut}, '+=1.2')
+                .to(questionContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut}, '+=1.2');
 
             var spikeObjs = getSpikeTimeline(LEFT_3, TOP_1);
             var spikeTimeline = spikeObjs[0];
@@ -1113,7 +1109,7 @@
             var knifeSet5 = knifeSets[4];
             var knifeSet6 = knifeSets[5];
             var knifeSet7 = knifeSets[6];
-            spikeContainer.scaleX = spikeContainer.scaleY = 0
+            spikeContainer.scaleX = spikeContainer.scaleY = 0;
 
             var transitionTimeline17 = new TimelineMax({autoRemoveChildren: false});
             transitionTimeline17
@@ -1172,7 +1168,7 @@
                     scaleY: 1.5,
                     ease: Back.easeOut.config(1)}, '+=.4')
                 .to([hugContainer, snakeContainer, spikeContainer, cactusContainer3, questionContainer, hugEyesWrapper, cactusFlowerWrapper3], .5, {
-                    x: '-=' + (3 * (CIRCLE_DIAMETER + SPACING)), ease: Circ.easeOut}, '+=1')
+                    x: '-=' + (3 * (CIRCLE_DIAMETER + SPACING)), ease: Circ.easeOut}, '+=1');
 
             animationWrapper.addChild(jackalopeContainer);
             animationWrapper.addChild(yetiContainer);
@@ -1351,16 +1347,16 @@
         mainText.x = CANVAS_WIDTH / 2;
         mainText.y = 60;
         mainText.lineWidth = CANVAS_WIDTH - 4 * outerSize;
-        mainText.lineHeight = 24
-        mainText.textAlign = 'center'
+        mainText.lineHeight = 24;
+        mainText.textAlign = 'center';
         infoWrapper.addChild(mainText);
 
         var footerText = new createjs.Text('Made with \'\'\nby Wei Seng', '14px Happy Monkey', '#000');
         footerText.x = CANVAS_WIDTH / 2;
         footerText.y = 239.5;
         footerText.lineWidth = CANVAS_WIDTH - 4 * outerSize;
-        footerText.lineHeight = 20
-        footerText.textAlign = 'center'
+        footerText.lineHeight = 20;
+        footerText.textAlign = 'center';
         infoWrapper.addChild(footerText);
 
         var heart = getHeartContainer(202, 248);
@@ -1548,7 +1544,7 @@
             .lineTo(-12, 0)
             .lineTo(6, 12)
             .closePath()
-            .endStroke()
+            .endStroke();
 
         btnPrevWrapper.addChild(btnPrev);
         galleryPageWrapper.addChild(btnPrevWrapper);
@@ -1846,14 +1842,12 @@
         trunk.graphics.beginFill(COLOR_AUTUMN_TRUNK)
             .moveTo(-8, 25)
             .lineTo(8, 25)
-            .lineTo(0, 22)
-            .command;
+            .lineTo(0, 22);
         treeWrapper.addChild(trunk);
 
         var trunk2 = new createjs.Shape();
         trunk2.graphics.beginFill(COLOR_AUTUMN_TRUNK)
-            .rect(-1.5, 24, 3, -8)
-            .command;
+            .rect(-1.5, 24, 3, -8);
         treeWrapper.addChild(trunk2);
 
         function getFlower() {
@@ -2207,14 +2201,12 @@
         trunk.graphics.beginFill(COLOR_AUTUMN_TRUNK)
             .moveTo(-8, 25)
             .lineTo(8, 25)
-            .lineTo(0, 22)
-            .command;
+            .lineTo(0, 22);
         treeWrapper.addChild(trunk);
 
         var trunk2 = new createjs.Shape();
         trunk2.graphics.beginFill(COLOR_AUTUMN_TRUNK)
-            .rect(-1.5, 24, 3, -8)
-            .command;
+            .rect(-1.5, 24, 3, -8);
         treeWrapper.addChild(trunk2);
 
         var leaves = [
@@ -3035,7 +3027,6 @@
             .drawEllipse(-8, 18, 10, 4)
             .endFill().beginFill('greenyellow')
             .drawEllipse(-10, -17, 3, 42);
-        ;
         grassWrapper.addChild(grass);
 
         var grass2 = new createjs.Shape();
@@ -3051,7 +3042,6 @@
             .drawEllipse(8, 14, 10, 5)
             .endFill().beginFill('green')
             .drawEllipse(6, -20, 3, 45);
-        ;
         grassWrapper.addChild(grass2);
 
         var bubble = new createjs.Shape();
@@ -3237,7 +3227,7 @@
             onComplete: function (e) {
                 bubble.alpha = 0;
             }
-        })
+        });
 
         fishTimeline
             .add('fish')
@@ -3275,7 +3265,7 @@
         cactus.graphics.beginFill(COLOR_CACTUS);
         var cactusCmd1 = cactus.graphics.rect(-15, 25, 30, 0).command;
         cactus.graphics.endFill().beginFill(COLOR_CACTUS);
-        var cactusCmd2 = cactus.graphics.arc(0, -10, 15, 0 * Math.PI / 180, 0 * Math.PI / 180).command;
+        var cactusCmd2 = cactus.graphics.arc(0, -10, 15, 0, 0).command;
         cactusWrapper.addChild(cactus);
 
         var leftHand = new createjs.Shape();
@@ -3352,7 +3342,7 @@
         var flower = new createjs.Shape();
         flower.graphics
             .beginFill('yellow')
-            .drawCircle(0, 0, 3)
+            .drawCircle(0, 0, 3);
         flowerWrapper.addChild(flower);
 
         var petalColor = 'hotpink';
@@ -3585,7 +3575,7 @@
         var body = new createjs.Shape();
         body.graphics
             .beginFill(COLOR_JACKALOPE)
-            .arc(0, 25, 12.5, 180 * Math.PI / 180, 0 * Math.PI / 180);
+            .arc(0, 25, 12.5, 180 * Math.PI / 180, 0);
         jackalopeWrapper.addChild(body);
 
         var faceWrapper = new createjs.Container();
@@ -3731,7 +3721,7 @@
         var leftHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
         leftHandTimeline
             .to(leftHand, .8, {rotation: "+=40", ease: Sine.easeOut})
-            .to(leftHand, .8, {rotation: "-=40", ease: Sine.easeIn})
+            .to(leftHand, .8, {rotation: "-=40", ease: Sine.easeIn});
 
         var rightHandWrapper = new createjs.Container();
         rightHandWrapper.x = 22;
@@ -3750,7 +3740,7 @@
         var rightHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
         rightHandTimeline
             .to(rightHand, .8, {rotation: "-=40", ease: Sine.easeOut})
-            .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn})
+            .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn});
 
         var foot = new createjs.Shape();
         foot.graphics
@@ -3772,7 +3762,7 @@
             .moveTo(0, -10)
             .lineTo(-5, -32)
             .moveTo(0, -10)
-            .lineTo(5, -32)
+            .lineTo(5, -32);
 
         yetiWrapper.addChild(body);
         yetiWrapper.addChild(tummy);
@@ -3847,7 +3837,7 @@
             .to(seaMonsterCmd2, 1, {h: -40}, 'head')
             .to(seaMonsterCmd3, 1, {y: -22}, 'head')
             .to(eyeWrapper, 1, {y: -19}, 'head')
-            .to(seaMonsterCmd, .5, {startAngle: 180 * Math.PI / 180, endAngle: 0 * Math.PI / 180, ease: Sine.easeOut}, 'seaMonster')
+            .to(seaMonsterCmd, .5, {startAngle: 180 * Math.PI / 180, endAngle: 0, ease: Sine.easeOut}, 'seaMonster')
             .to(seaMonsterCmd, .5, {y: 25}, 'seaMonster')
         ;
 
@@ -4096,7 +4086,7 @@
             .arc(22, 39.5, 2.5, -90 * Math.PI / 180, 90 * Math.PI / 180);
         nobitaWrapper.addChild(limbs);
 
-        nobitaWrapper.x += 01;
+        nobitaWrapper.x += 1;
         nobitaWrapper.y -= 10;
         hugContainer.addChild(nobitaWrapper);
 
@@ -4311,7 +4301,7 @@
             .to(creature, .6, {y: '-=19.5', rotation: '+=180'}, 'start')
             .to(catEyes, .6, {y: -1}, 'start')
             .to(creature, .6, {y: '+=19.5', rotation: '+=180'}, 'start+=.6')
-            .to(catEyes, .6, {y: 1}, 'start+=.6')
+            .to(catEyes, .6, {y: 1}, 'start+=.6');
 
         return [catTimeline, catContainer];
     }
@@ -4331,45 +4321,39 @@
 
         var balloonWrapper = new createjs.Container();
         var balloon1 = new createjs.Shape();
-        var balloon1StringCmd = balloon1.graphics
+        balloon1.graphics
             .beginStroke(COLOR_BALLOON_STRING)
             .moveTo(-6, 24)
-            .lineTo(-11, -11)
-            .command;
-        var balloon1Cmd = balloon1.graphics
+            .lineTo(-11, -11);
+        balloon1.graphics
             .endStroke()
             .endFill().beginFill(COLOR_BALLOON_1)
-            .drawEllipse(-18, -20, 14, 18)
-            .command;
+            .drawEllipse(-18, -20, 14, 18);
         balloon1.rotation = -12;
         balloonWrapper.addChild(balloon1);
 
         var balloon2 = new createjs.Shape();
-        var balloon2StringCmd = balloon2.graphics
+        balloon2.graphics
             .setStrokeStyle(1)
             .beginStroke(COLOR_BALLOON_STRING)
             .moveTo(0, 24)
-            .lineTo(0, -11)
-            .command;
-        var balloon2Cmd = balloon2.graphics
+            .lineTo(0, -11);
+        balloon2.graphics
             .endStroke()
             .beginFill(COLOR_BALLOON_2)
-            .drawEllipse(-7, -24, 14, 18)
-            .command;
+            .drawEllipse(-7, -24, 14, 18);
         balloon2.rotation = 0;
         balloonWrapper.addChild(balloon2);
 
         var balloon3 = new createjs.Shape();
-        var balloon3StringCmd = balloon3.graphics
+        balloon3.graphics
             .beginStroke(COLOR_BALLOON_STRING)
             .moveTo(6, 24)
-            .lineTo(11, -11)
-            .command;
-        var balloon3Cmd = balloon3.graphics
+            .lineTo(11, -11);
+        balloon3.graphics
             .endStroke()
             .endFill().beginFill(COLOR_BALLOON_3)
-            .drawEllipse(4, -20, 14, 18)
-            .command;
+            .drawEllipse(4, -20, 14, 18);
         balloon3.rotation = 12;
         balloonWrapper.addChild(balloon3);
 
@@ -4389,7 +4373,7 @@
             .to(creature, 2, {rotation: '-=20'})
             .to(creature, 1.5, {})
             .to(creature, 2, {rotation: '+=20'})
-            .to(creature, 1.5, {})
+            .to(creature, 1.5, {});
 
         return [balloonTimeline, balloonContainer];
     }
@@ -4454,7 +4438,7 @@
 
         var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
         creatureTimeline
-            .to(creature, .5, {y: '-=3'})
+            .to(creature, .5, {y: '-=3'});
         return [seaTimeline, seaContainer];
     }
 
@@ -4466,7 +4450,7 @@
         cactus.graphics.beginFill(COLOR_CACTUS)
             .rect(-15, 25, 30, -35)
             .endFill().beginFill(COLOR_CACTUS)
-            .arc(0, -10, 15, -90 * Math.PI / 180, 270 * Math.PI / 180).command;
+            .arc(0, -10, 15, -90 * Math.PI / 180, 270 * Math.PI / 180);
         cactusWrapper.addChild(cactus);
 
         var leftHand = new createjs.Shape();
@@ -4504,7 +4488,7 @@
             .setStrokeStyle(1, 'round', 'round')
             .beginStroke(COLOR_CACTUS_STRIPE)
             .moveTo(-15, 10);
-        leftStripe.graphics.arcTo(-22, 10, -22, 10, 5).command;
+        leftStripe.graphics.arcTo(-22, 10, -22, 10, 5);
         var leftStripeCmd = leftStripe.graphics.lineTo(-22, -5).command;
         cactusWrapper.addChild(leftStripe);
 
@@ -4513,7 +4497,7 @@
             .setStrokeStyle(1, 'round', 'round')
             .beginStroke(COLOR_CACTUS_STRIPE)
             .moveTo(15, 10);
-        rightStripe.graphics.arcTo(22, 10, 22, 10, 5).command;
+        rightStripe.graphics.arcTo(22, 10, 22, 10, 5);
         var rightStripeCmd = rightStripe.graphics.lineTo(22, -10).command;
         cactusWrapper.addChild(rightStripe);
 
@@ -4537,7 +4521,7 @@
         var flower = new createjs.Shape();
         flower.graphics
             .beginFill('yellow')
-            .drawCircle(0, 0, 3)
+            .drawCircle(0, 0, 3);
         flowerWrapper.addChild(flower);
 
         var petalColor = 'hotpink';
@@ -4582,7 +4566,7 @@
             .to(creature, .5, {x: '+=22', y: '-=14', rotation: '-=180'})
             .to(creature, .5, {x: '+=22', y: '+=14', rotation: '-=180'})
             .to([leftHandCmd, leftStripeCmd], .5, {y: '+=5'}, 'start2+=.5')
-            .to([rightHandCmd, rightStripeCmd], .5, {y: '-=5'}, 'start2+=.5')
+            .to([rightHandCmd, rightStripeCmd], .5, {y: '-=5'}, 'start2+=.5');
 
         return [cactusTimeline, cactusContainer];
     }
@@ -4614,7 +4598,7 @@
             .to(creature, .4, {y: '+=8'}, 'hands')
             .to(creature, .8, {y: '-=16'}, 'hands+=.4')
             .to(creature, .4, {y: '+=8'}, 'hands+=1.2')
-            .to(creature, .6, {})
+            .to(creature, .6, {});
 
         return [yetiTimeline, yetiContainer];
     }
@@ -4628,7 +4612,7 @@
         var seaMonster = new createjs.Shape();
         seaMonster.graphics
             .beginFill(COLOR_SEA_MONSTER)
-            .arc(-10, 25, 20, 180 * Math.PI / 180, 0 * Math.PI / 180);
+            .arc(-10, 25, 20, 180 * Math.PI / 180, 0);
 
         seaMonster.graphics
             .endFill().beginFill(COLOR_SEA_MONSTER)
@@ -4681,7 +4665,7 @@
             .to(creature, 1.2, {x: '-=30', ease: Sine.easeOut}, 'bounce4-=.3')
             .to(creature, 1.2, {rotation: '-=360'}, 'bounce4-=.3')
             .to(seaMonsterWrapper, .3, {y: '+=10'}, 'bounce4+=.6')
-            .to(creature, .6, {})
+            .to(creature, .6, {});
 
         return [seaMonsterTimeline, seaMonsterContainer];
     }
