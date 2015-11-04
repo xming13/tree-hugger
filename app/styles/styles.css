@@ -18,13 +18,21 @@ body {
     transform: translate(-50%, -50%);
 }
 
+#github {
+    position: absolute;
+    bottom: 100px;
+    left: 30px;
+    border-radius: 50%;
+    border: 5px solid blueviolet;
+    background-color: cyan;
+}
+
 #profile-pic {
     position: absolute;
     bottom: 100px;
     right: 30px;
     border-radius: 50%;
     border: 5px solid blueviolet;
-    display: none;
 }
 
 #canvas,

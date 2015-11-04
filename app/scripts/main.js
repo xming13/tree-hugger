@@ -1310,6 +1310,8 @@
     }
 
     function renderInfo() {
+        var github = document.getElementById('github');
+        github.style.display = 'block';
         var profilePic = document.getElementById('profile-pic');
         profilePic.style.display = 'block';
 
@@ -1340,6 +1342,7 @@
         btnCloseWrapper.cursor = 'pointer';
         btnCloseWrapper.addEventListener('click', function () {
             stage.removeChild(infoWrapper);
+            github.style.display = 'none';
             profilePic.style.display = 'none';
         });
         infoWrapper.addChild(btnCloseWrapper);
