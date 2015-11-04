@@ -118,7 +118,7 @@
     // for debugging
     var DEBUG = false;
     var START_TIME = DEBUG ? 168 : 0;
-    var debugObjs = null;
+    var debugObjs = getHugTimeline(LEFT_2, TOP_1);
     //getNContainer(LEFT_2, TOP_1);
 
     function init() {
@@ -1323,15 +1323,16 @@
 
         var background = new createjs.Shape();
         var outerSize = 15;
-        background.graphics.beginFill('#BBE3FA').drawRoundRect(outerSize, outerSize, CANVAS_WIDTH - 2 * outerSize, CANVAS_HEIGHT - 2 * outerSize, outerSize, outerSize, outerSize, outerSize);
+        background.graphics.beginFill('#BBE3FA')
+            .drawRoundRect(outerSize, outerSize, CANVAS_WIDTH - 2 * outerSize, CANVAS_HEIGHT - 2 * outerSize, outerSize);
         infoWrapper.addChild(background);
 
         var btnCloseWrapper = new createjs.Container();
         var btnClose = new createjs.Shape();
         btnClose.rotation = 45;
         btnClose.graphics.beginFill('#999999')
-            .drawRoundRect(0, 0 + 28 / 2 - 6 / 2, 28, 6, 3, 3, 3, 3)
-            .drawRoundRect(0 + 28 / 2 - 6 / 2, 0, 6, 28, 3, 3, 3, 3);
+            .drawRoundRect(0, 0 + 28 / 2 - 6 / 2, 28, 6, 3)
+            .drawRoundRect(0 + 28 / 2 - 6 / 2, 0, 6, 28, 3);
         btnCloseWrapper.addChild(btnClose);
         btnCloseWrapper.x = 275;
         btnCloseWrapper.y = 20;
@@ -3890,13 +3891,13 @@
 
         var snake = new createjs.Shape();
         var snakeCmd1 = snake.graphics.beginFill(COLOR_SNAKE)
-            .rect(-15, 20, 30, 5)
+            .drawRoundRect(-15, 20, 30, 5, 0)
             .command;
-        var snakeCmd2 = snake.graphics
-            .rect(10, 15, 20, 5)
+        var snakeCmd2 = snake.graphics.endFill().beginFill(COLOR_SNAKE)
+            .drawRoundRect(10, 15, 20, 5, 0)
             .command;
-        var snakeCmd3 = snake.graphics
-            .rect(-5, 10, 10, 5)
+        var snakeCmd3 = snake.graphics.endFill().beginFill(COLOR_SNAKE)
+            .drawRoundRect(-5, 10, 10, 5, 0)
             .command;
         var snakeCmd4 = snake.graphics
             .rect(-2.5, 10, 5, 14)
@@ -3961,13 +3962,16 @@
         snakeContainer.addChild(snakeWrapper);
 
         snakeTimeline
-            .set([snakeCmd1, snakeCmd2, snakeCmd3], {w: 0})
+            .set([snakeCmd1, snakeCmd2, snakeCmd3], {w: 0, radiusTL: 0, radiusTR: 0,radiusBL: 0,radiusBR: 0})
             .set(snakeCmd4, {h: 0})
             .set(headCmd, {w: 0})
             .set(eyes, {alpha: 0})
             .set([handsCmd1, handsCmd2, handsCmd3, handsCmd4, handsCmd5, handsCmd6, handsCmd7, handsCmd8], {radius: 0})
+            .set(snakeCmd1, {radiusTL: 2.5, radiusTR: 2.5,radiusBL: 2.5,radiusBR: 2.5})
             .to(snakeCmd1, .4, {w: 30})
-            .to(snakeCmd2, .35, {w: -20})
+            .set(snakeCmd2, {radiusTL: 2.5, radiusTR: 2.5,radiusBL: 2.5,radiusBR: 2.5})
+            .to(snakeCmd2, .35, {x: -10, w: 20})
+            .set(snakeCmd3, {radiusTL: 2.5, radiusTR: 2.5,radiusBL: 2.5,radiusBR: 2.5})
             .to(snakeCmd3, .3, {w: 10})
             .to(snakeCmd4, .3, {h: -16})
             .to(headCmd, .3, {w: 14})
@@ -4070,12 +4074,12 @@
 
         var shirt = new createjs.Shape();
         shirt.graphics.beginFill(COLOR_NOBITA_SHIRT)
-            .rect(-12, 20, 24, 15);
+            .drawRoundRectComplex(-12, 20, 24, 15, 5, 5, 0, 0);
         nobitaWrapper.addChild(shirt);
 
         var pants = new createjs.Shape();
         pants.graphics.beginFill(COLOR_NOBITA_PANTS)
-            .rect(-12, 35, 24, 8);
+            .drawRoundRectComplex(-12, 35, 24, 8, 0, 0, 0, 5);
         nobitaWrapper.addChild(pants);
 
         var limbs = new createjs.Shape();
