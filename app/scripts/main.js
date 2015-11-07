@@ -140,9 +140,9 @@
         // Ticker
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", stage);
-        createjs.Ticker.addEventListener('tick', function () {
-            console.log(TweenMax.getAllTweens().length);
-        });
+//        createjs.Ticker.addEventListener('tick', function () {
+//            console.log(TweenMax.getAllTweens().length);
+//        });
 
         // Defaults
         TweenLite.defaultEase = Power0.easeNone;
@@ -205,35 +205,33 @@
             "[ti:Tree Hugger]",
             "[ar:Kumya Dawson]",
             "[al:JUNO OST]",
-            "[00:06.36]Song: Tree Hugger",
-            "[00:12.40]Artist: Kimya Dawson",
+            "[00:05.00]Song: Tree Hugger",
+            "[00:11.50]Artist: Kimya Dawson",
             "[00:18.00]",
-            "[00:19.52]The flower said, \"I wish I was a tree.\"",
-            "[00:21.64]The tree said, \"I wish I could be",
-            "[00:24.00]A different kind of tree.\"",
-            "[00:26.68]The cat wished that it was a bee,",
-            "[00:29.02]The turtle wished that it could fly,",
-            "[00:31.49]Really high into the sky,",
-            "[00:33.82]Over rooftops and then dive",
-            "[00:36.15]Deep into the sea.",
-            "[00:37.24]",
-            "[00:38.34]And in the sea there is a fish,",
-            "[00:40.66]A fish that has a secret wish;",
-            "[00:43.08]A wish to be a big cactus,",
-            "[00:45.33]With a pink flower on it.",
-            "[00:47.76]And in the sea there is a fish,",
-            "[00:50.10]A fish that has a secret wish;",
-            "[00:52.69]A wish to be a big cactus,",
-            "[00:54.68]With a pink flower on it.",
-            "[00:56.60]",
-            "[00:56.95]And the flower",
-            "[00:58.85]Would be its offering",
-            "[01:01.51]Of love, to the desert.",
-            "[01:06.20]And the desert,",
-            "[01:08.81]So dry and lonely,",
-            "[01:10.88]That the creatures all",
-            "[01:12.57]Appreciate the effort.",
-            "[01:14.50]",
+            "[00:19.20]The flower said, \"I wish I was a tree.\"",
+            "[00:21.14]The tree said, \"I wish I could be",
+            "[00:23.50]A different kind of tree.\"",
+            "[00:25.78]The cat wished that it was a bee,",
+            "[00:28.52]The turtle wished that it could fly,",
+            "[00:30.59]Really high into the sky,",
+            "[00:32.92]Over rooftops and then dive",
+            "[00:35.65]Deep into the sea.",
+            "[00:38.04]And in the sea there is a fish,",
+            "[00:40.16]A fish that has a secret wish;",
+            "[00:42.58]A wish to be a big cactus,",
+            "[00:44.43]With a pink flower on it.",
+            "[00:47.26]And in the sea there is a fish,",
+            "[00:49.60]A fish that has a secret wish;",
+            "[00:52.02]A wish to be a big cactus,",
+            "[00:53.87]With a pink flower on it.",
+            "[00:56.45]And the flower",
+            "[00:58.35]Would be its offering",
+            "[01:01.01]Of love, to the desert.",
+            "[01:05.50]And the desert,",
+            "[01:07.81]So dry and lonely,",
+            "[01:10.08]That the creatures all",
+            "[01:12.07]Appreciate the effort.",
+            "[01:14.80]",
             "[01:15.88]Et le jackalope a dit, <br>(And the Jackalope said,)",
             "[01:18.26]\"Je voudrais être un yeti, <br>(\"I'd like to be a yeti,)",
             "[01:20.51]Pour voler dans la nuit <br>(To flee in the night)",
@@ -252,32 +250,30 @@
             "[01:45.91]That'll stab you like a thousand knives.",
             "[01:48.80]A hug would be nice,",
             "[01:50.07]But hug my flower with your eyes.\"",
-            "[01:53.21]The flower said, \"I wish I was a tree.\"",
-            "[01:55.79]The tree said, \"I wish I could be",
-            "[01:58.58]A different kind of tree.\"",
-            "[02:01.01]The cat wished that it was a bee,",
-            "[02:03.42]The turtle wished that it could fly,",
-            "[02:05.89]Really high into the sky,",
-            "[02:08.39]Over rooftops and then dive",
-            "[02:10.45]Deep into the sea.",
-            "[02:12.18]",
-            "[02:12.83]And in the sea there is a fish,",
-            "[02:15.24]A fish that has a secret wish;",
-            "[02:17.69]A wish to be a big cactus,",
-            "[02:19.88]With a pink flower on it.",
-            "[02:22.43]And in the sea there is a fish,",
-            "[02:24.82]A fish that has a secret wish;",
-            "[02:27.16]A wish to be a big cactus,",
-            "[02:29.63]With a pink flower on it.",
-            "[02:30.98]",
-            "[02:31.62]And the flower",
-            "[02:33.86]Would be its offering",
-            "[02:36.01]Of love, to the desert.",
-            "[02:40.88]And the desert,",
-            "[02:43.17]So dry and lonely,",
-            "[02:45.74]That the creatures all,",
-            "[02:47.43]Appreciate the effort.",
-            "[02:52.00]"];
+            "[01:53.71]The flower said, \"I wish I was a tree.\"",
+            "[01:55.65]The tree said, \"I wish I could be",
+            "[01:58.01]A different kind of tree.\"",
+            "[02:00.29]The cat wished that it was a bee,",
+            "[02:03.03]The turtle wished that it could fly,",
+            "[02:05.50]Really high into the sky,",
+            "[02:07.83]Over rooftops and then dive",
+            "[02:10.56]Deep into the sea.",
+            "[02:12.95]And in the sea there is a fish,",
+            "[02:15.07]A fish that has a secret wish;",
+            "[02:17.49]A wish to be a big cactus,",
+            "[02:19.34]With a pink flower on it.",
+            "[02:22.17]And in the sea there is a fish,",
+            "[02:24.51]A fish that has a secret wish;",
+            "[02:26.93]A wish to be a big cactus,",
+            "[02:28.78]With a pink flower on it.",
+            "[02:31.36]And the flower",
+            "[02:33.26]Would be its offering",
+            "[02:35.92]Of love, to the desert.",
+            "[02:40.41]And the desert,",
+            "[02:42.72]So dry and lonely,",
+            "[02:44.99]That the creatures all,",
+            "[02:46.98]Appreciate the effort.",
+            "[02:49.71]"];
         var lrcArr = parseLrc(lyrics);
         var lrc, lrcNext;
         for (var i = 0; i < lrcArr.length; i++) {
@@ -697,12 +693,13 @@
                     creatures.forEach(function (creature) {
                         if (creature.timeline) {
                             creature.timeline.remove();
-                            console.log('remove');
                         }
                     });
                     creatureTimeline.remove();
-                });
-
+                })
+                // delay .5 sec
+                .to({}, .5, {});
+            console.log(openingTimeline.duration(), 'openingTimeline.duration()');
             return openingTimeline;
         }
 
@@ -1337,7 +1334,7 @@
                 .add(transitionTimeline12, '+=2')
                 .add(seaMonsterTimeline)
                 .add(transitionTimeline13, '+=1.5')
-                .add(transitionTimeline14, '+=2.2')
+                .add(transitionTimeline14, '+=1.7')
                 .add(snakeTimeline)
                 .add(transitionTimeline15, '+=.4')
                 .add(transitionTimeline16, '+=1')
@@ -1396,10 +1393,11 @@
             var dContainer = getDContainer(LEFT_3, TOP_3);
             var theEndContainers = [tContainer, hContainer, eContainer, eContainer2, nContainer, dContainer];
 
+            var needsToRemove = isMobileOrTablet();
             theEndContainers.forEach(function (container) {
                 animationWrapper.addChild(container);
 
-                if (isMobileOrTablet()) {
+                if (needsToRemove) {
                     container.removeTimeline();
                 }
             });
