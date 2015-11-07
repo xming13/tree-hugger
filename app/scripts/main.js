@@ -616,35 +616,35 @@
             var summerContainer = getSummerContainer(LEFT_2, TOP_2);
             var autumnContainer = getAutumnContainer(LEFT_2, TOP_2);
             var winterContainer = getWinterContainer(LEFT_2, TOP_2);
-            var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_2);
             var seaContainer = getSeaContainer(LEFT_2, TOP_2);
             var desertGroundContainer = getDesertGroundContainer(LEFT_2, TOP_2);
             var iceContainer = getIceContainer(LEFT_2, TOP_2);
+            var iceSeaContainer = getIceSeaContainer(LEFT_2, TOP_2);
 
             var defaultCreature = getCreatureContainer();
             var springCreature = getCreatureContainer();
             var summerCreature = getCreatureContainer();
             var autumnCreature = getCreatureContainer();
             var winterCreature = getCreatureContainer();
-            var seaWaveCreature = getCreatureContainer();
             var seaCreature = getCreatureContainer();
             var desertGroundCreature = getCreatureContainer();
             var iceCreature = getCreatureContainer();
+            var iceSeaCreature = getCreatureContainer();
 
             defaultContainer.addChild(defaultCreature);
             springContainer.addChild(springCreature);
             summerContainer.addChild(summerCreature);
             autumnContainer.addChild(autumnCreature);
             winterContainer.addChild(winterCreature);
-            seaWaveContainer.addChild(seaWaveCreature);
             seaContainer.addChild(seaCreature);
             desertGroundContainer.addChild(desertGroundCreature);
             iceContainer.addChild(iceCreature);
+            iceSeaContainer.addChild(iceSeaCreature);
 
             var containers = [defaultContainer, springContainer, summerContainer, autumnContainer, winterContainer,
-                seaWaveContainer, seaContainer, desertGroundContainer, iceContainer];
+                seaContainer, desertGroundContainer, iceContainer, iceSeaContainer];
             var creatures = [defaultCreature, springCreature, summerCreature, autumnCreature, winterCreature,
-                seaWaveCreature, seaCreature, desertGroundCreature, iceCreature];
+                seaCreature, desertGroundCreature, iceCreature, iceSeaCreature];
 
             containers.forEach(function (container) {
                 container.scaleX = container.scaleY = 0;
@@ -658,10 +658,10 @@
                 .to(creatures, .6, {y: '+=19.5', rotation: '+=180'})
                 .to(creatures, .03, {});
 
+            animationWrapper.addChild(iceSeaContainer);
             animationWrapper.addChild(iceContainer);
             animationWrapper.addChild(desertGroundContainer);
             animationWrapper.addChild(seaContainer);
-            animationWrapper.addChild(seaWaveContainer);
             animationWrapper.addChild(winterContainer);
             animationWrapper.addChild(autumnContainer);
             animationWrapper.addChild(summerContainer);
@@ -682,14 +682,14 @@
                 .to(autumnContainer, durationPosition, {x: LEFT_1, y: TOP_2, ease: Circ.easeOut}, delay)
                 .to(winterContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
                 .to(winterContainer, durationPosition, {x: LEFT_3, y: TOP_2, ease: Circ.easeOut}, delay)
-                .to(seaWaveContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
-                .to(seaWaveContainer, durationPosition, {x: LEFT_1, y: TOP_3, ease: Circ.easeOut}, delay)
                 .to(seaContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
-                .to(seaContainer, durationPosition, {x: LEFT_2, y: TOP_3, ease: Circ.easeOut}, delay)
+                .to(seaContainer, durationPosition, {x: LEFT_1, y: TOP_3, ease: Circ.easeOut}, delay)
                 .to(desertGroundContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
-                .to(desertGroundContainer, durationPosition, {x: LEFT_3, y: TOP_3, ease: Circ.easeOut}, delay)
+                .to(desertGroundContainer, durationPosition, {x: LEFT_2, y: TOP_3, ease: Circ.easeOut}, delay)
                 .to(iceContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
-                .to(iceContainer, durationPosition, {x: LEFT_2, y: TOP_2, ease: Circ.easeOut}, delay)
+                .to(iceContainer, durationPosition, {x: LEFT_3, y: TOP_3, ease: Circ.easeOut}, delay)
+                .to(iceSeaContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
+                .to(iceSeaContainer, durationPosition, {x: LEFT_2, y: TOP_2, ease: Circ.easeOut}, delay)
                 .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.4')
                 .add(function () {
                     creatures.forEach(function (creature) {
