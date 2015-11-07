@@ -1393,13 +1393,9 @@
             var dContainer = getDContainer(LEFT_3, TOP_3);
             var theEndContainers = [tContainer, hContainer, eContainer, eContainer2, nContainer, dContainer];
 
-            var needsToRemove = isMobileOrTablet();
             theEndContainers.forEach(function (container) {
                 animationWrapper.addChild(container);
-
-                if (needsToRemove) {
-                    container.removeTimeline();
-                }
+                container.removeTimeline();
             });
 
             endingTimeline
@@ -4013,25 +4009,20 @@
 
         yetiContainer.addChild(yetiWrapper);
 
+        var degreeRotation = 15;
         yetiTimeline
             .add('right')
-            .to(rightFoot, .5, {y: '-=4'}, 'right')
-            .to(upperWrapper, .5, {rotation: '-=5'}, 'right')
+            .to([upperWrapper, rightFoot], .5, {rotation: '-=' + degreeRotation}, 'right')
             .add('rightend')
-            .to(rightFoot, .5, {y: '+=4'}, 'rightend')
-            .to(upperWrapper, .5, {rotation: '+=5'}, 'rightend')
+            .to([upperWrapper, rightFoot], .5, {rotation: '+=' + degreeRotation}, 'rightend')
             .add('left')
-            .to(leftFoot, .5, {y: '-=4'}, 'left')
-            .to(upperWrapper, .5, {rotation: '+=5'}, 'left')
+            .to([upperWrapper, leftFoot], .5, {rotation: '+=' + degreeRotation}, 'left')
             .add('leftend')
-            .to(leftFoot, .5, {y: '+=4'}, 'leftend')
-            .to(upperWrapper, .5, {rotation: '-=5'}, 'leftend')
+            .to([upperWrapper, leftFoot], .5, {rotation: '-=' + degreeRotation}, 'leftend')
             .add('right2')
-            .to(rightFoot, .5, {y: '-=4'}, 'right2')
-            .to(upperWrapper, .5, {rotation: '-=5'}, 'right2')
+            .to([upperWrapper, rightFoot], .5, {rotation: '-=' + degreeRotation}, 'right2')
             .add('rightend2')
-            .to(rightFoot, .5, {y: '+=4'}, 'rightend2')
-            .to(upperWrapper, .5, {rotation: '+=5'}, 'rightend2')
+            .to([upperWrapper, rightFoot], .5, {rotation: '+=' + degreeRotation}, 'rightend2')
         ;
 
         yetiContainer.removeTimeline = function () {
