@@ -379,6 +379,21 @@
         }
         loadingWrapper.removeAllChildren();
 
+        var loadingText = new createjs.Text('Loading ...', '18px Happy Monkey', '#000');
+        loadingText.x = CANVAS_WIDTH / 2;
+        loadingText.y = 80;
+        loadingText.lineWidth = CANVAS_WIDTH - 30;
+        loadingText.textAlign = 'center';
+        loadingWrapper.addChild(loadingText);
+
+//        var waitingText = new createjs.Text('This might take a while.', '16px Happy Monkey', '#000');
+//        waitingText.x = CANVAS_WIDTH / 2;
+//        waitingText.y = 220;
+//        waitingText.lineWidth = CANVAS_WIDTH - 80;
+//        waitingText.lineHeight = 20;
+//        waitingText.textAlign = 'center';
+//        loadingWrapper.addChild(waitingText);
+
         var loadingIconWrapper = new createjs.Container();
         loadingIconWrapper.x = LEFT_2;
         loadingIconWrapper.y = TOP_2;
