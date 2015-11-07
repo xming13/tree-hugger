@@ -118,7 +118,7 @@
     // for debugging
     var DEBUG = false;
     var START_TIME = DEBUG ? 168 : 0;
-    var debugObjs = getHugTimeline(LEFT_2, TOP_1);
+    var debugObjs = getYetiTimeline(LEFT_2, TOP_1);
     //getNContainer(LEFT_2, TOP_1);
 
 
@@ -452,7 +452,9 @@
     }
 
     function renderMenu() {
-        TweenMax.killAll();
+        if (!DEBUG) {
+            TweenMax.killAll();
+        }
 
         if (!menuWrapper) {
             menuWrapper = new createjs.Container();
@@ -1128,8 +1130,10 @@
                 .to(jackalopeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition9b');
 
             var yetiObjs = getYetiTimeline(LEFT_4, TOP_2);
+            var yetiTimeline = yetiObjs[0];
             var yetiContainer = yetiObjs[1];
             var yetiObjs2 = getYetiTimeline(LEFT_0, TOP_2);
+            var yetiTimeline2 = yetiObjs2[0];
             var yetiContainer2 = yetiObjs2[1];
 
             var transitionTimeline10 = new TimelineMax({autoRemoveChildren: false});
@@ -1144,8 +1148,11 @@
             var transitionTimeline11 = new TimelineMax();
             transitionTimeline11
                 .add('transition11')
+                .add('move', '+=1.5')
                 .to(yetiContainer, 3, {x: LEFT_4}, 'transition11')
-                .to(yetiContainer2, 3, {x: LEFT_2}, '-=1.5')
+                .add(yetiTimeline, 'transition11')
+                .to(yetiContainer2, 3, {x: LEFT_2}, 'move')
+                .add(yetiTimeline2, 'move')
                 .add(function () {
                     yetiContainer.removeTimeline();
                 });
@@ -3955,13 +3962,20 @@
             .to(rightHand, .8, {rotation: "-=40", ease: Sine.easeOut})
             .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn});
 
-        var foot = new createjs.Shape();
-        foot.graphics
+        var leftFoot = new createjs.Shape();
+        leftFoot.graphics
             .beginFill(COLOR_YETI)
             .setStrokeStyle(7, 'round', 'round')
             .beginStroke(COLOR_YETI_DARK_BLUE)
             .moveTo(-6, 22)
             .lineTo(-20, 22)
+        ;
+
+        var rightFoot = new createjs.Shape();
+        rightFoot.graphics
+            .beginFill(COLOR_YETI)
+            .setStrokeStyle(7, 'round', 'round')
+            .beginStroke(COLOR_YETI_DARK_BLUE)
             .moveTo(6, 22)
             .lineTo(20, 22)
         ;
@@ -3977,10 +3991,11 @@
             .moveTo(0, -10)
             .lineTo(5, -32);
 
-        yetiWrapper.addChild(body);
-        yetiWrapper.addChild(tummy);
-        yetiWrapper.addChild(leftHandWrapper);
-        yetiWrapper.addChild(rightHandWrapper);
+        var upperWrapper = new createjs.Container();
+        upperWrapper.addChild(body);
+        upperWrapper.addChild(tummy);
+        upperWrapper.addChild(leftHandWrapper);
+        upperWrapper.addChild(rightHandWrapper);
 
         var headWrapper = new createjs.Container();
         headWrapper.addChild(hair);
@@ -3992,10 +4007,34 @@
         headWrapper.scaleX = headWrapper.scaleY = 0.9;
         headWrapper.y -= 6;
 
-        yetiWrapper.addChild(headWrapper);
-        yetiWrapper.addChild(foot);
+        upperWrapper.addChild(headWrapper);
+
+        yetiWrapper.addChild(upperWrapper);
+        yetiWrapper.addChild(leftFoot);
+        yetiWrapper.addChild(rightFoot);
 
         yetiContainer.addChild(yetiWrapper);
+
+        yetiTimeline
+            .add('right')
+            .to(rightFoot, .5, {y: '-=4'}, 'right')
+            .to(upperWrapper, .5, {rotation: '-=5'}, 'right')
+            .add('rightend')
+            .to(rightFoot, .5, {y: '+=4'}, 'rightend')
+            .to(upperWrapper, .5, {rotation: '+=5'}, 'rightend')
+            .add('left')
+            .to(leftFoot, .5, {y: '-=4'}, 'left')
+            .to(upperWrapper, .5, {rotation: '+=5'}, 'left')
+            .add('leftend')
+            .to(leftFoot, .5, {y: '+=4'}, 'leftend')
+            .to(upperWrapper, .5, {rotation: '-=5'}, 'leftend')
+            .add('right2')
+            .to(rightFoot, .5, {y: '-=4'}, 'right2')
+            .to(upperWrapper, .5, {rotation: '-=5'}, 'right2')
+            .add('rightend2')
+            .to(rightFoot, .5, {y: '+=4'}, 'rightend2')
+            .to(upperWrapper, .5, {rotation: '+=5'}, 'rightend2')
+        ;
 
         yetiContainer.removeTimeline = function () {
             eyesTimeline.remove();
@@ -4823,6 +4862,7 @@
         var yetiContainer = yetiObjs[1];
         var leftHandTimeline = yetiObjs[2];
         var rightHandTimeline = yetiObjs[3];
+        yetiTimeline.remove();
         leftHandTimeline.remove();
         rightHandTimeline.remove();
 
@@ -4833,7 +4873,7 @@
         yetiContainer.addChild(creature);
         creature.y += 5;
 
-        var endYetiTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        var endYetiTimeline = new TimelineMax({repeat: -1});
         endYetiTimeline
             .add('hands')
             .to(leftHand, .8, {rotation: "+=40", ease: Sine.easeOut}, 'hands')
@@ -4846,7 +4886,7 @@
             .to(creature, .4, {y: '+=8'}, 'hands+=1.2')
             .to(creature, .6, {});
 
-        return [yetiTimeline, yetiContainer];
+        return [endYetiTimeline, yetiContainer];
     }
 
     function getEndSeaMonsterTimeline(x, y) {
