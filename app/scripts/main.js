@@ -81,7 +81,8 @@
     var COLOR_SHARK = '#CCCCCC';
 
     var COLOR_SNAKE = '#F4A460';
-    var COLOR_KNIFE = 'grey';
+    var COLOR_KNIFE = 'darkgrey';
+    var COLOR_KNIFE_HANDLE = 'grey';
 
     // Stage
     var stage;
@@ -4482,9 +4483,15 @@
         for (var i = 0; i < 35; i++) {
             var knife = new createjs.Shape();
             knife.graphics.beginFill(COLOR_KNIFE)
-                .moveTo(25, ((i % 5) * 9) - 15)
-                .lineTo(13, ((i % 5) * 9) - 18)
-                .lineTo(25, ((i % 5) * 9) - 21);
+                .moveTo(24, ((i % 5) * 12) - 18)
+                .lineTo(13, ((i % 5) * 12) - 21)
+                .lineTo(24, ((i % 5) * 12) - 24)
+                .endFill().beginFill(COLOR_KNIFE_HANDLE)
+                .rect(24, ((i % 5) * 12) - 26, 3, 10)
+                .endFill().beginFill(COLOR_KNIFE_HANDLE)
+                .rect(27, ((i % 5) * 12) - 22, 3, 2)
+            ;
+
             if (i < 5) {
                 knifeSet1.addChild(knife);
             }
