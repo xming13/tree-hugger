@@ -94,6 +94,7 @@
     // Loading
     var loadingWrapper;
     var loadingTimeline;
+    var isLoadingFinished;
 
     // Menu
     var menuWrapper;
@@ -207,7 +208,7 @@
             "[ar:Kumya Dawson]",
             "[al:JUNO OST]",
             "[00:05.00]Song: Tree Hugger",
-            "[00:11.50]Artist: Kimya Dawson",
+            "[00:11.50]Artist: Antsy Pants & Kimya Dawson",
             "[00:18.00]",
             "[00:19.20]The flower said, \"I wish I was a tree.\"",
             "[00:21.14]The tree said, \"I wish I could be",
@@ -293,7 +294,7 @@
 
         pop.on('canplayall', function () {
             popCanPlay = true;
-            renderMenu();
+            isLoadingFinished = true;
 
             // hide #loading
 //                var loading = document.getElementById('loading');
@@ -368,6 +369,8 @@
 
     // Render
     function renderLoading() {
+        isLoadingFinished = false;
+
         if (!loadingWrapper) {
             loadingWrapper = new createjs.Container();
         }
@@ -432,7 +435,16 @@
         petal5.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
         loadingIconWrapper.addChildAt(petal5, 1);
 
-        loadingTimeline = new TimelineMax({repeat: -1, repeatDelay: .3, autoRemoveChildren: false});
+        loadingTimeline = new TimelineMax({
+            repeat: -1,
+            repeatDelay: .3,
+            autoRemoveChildren: false,
+            onRepeat: function() {
+                if (isLoadingFinished) {
+                    renderMenu();
+                }
+            }
+        });
         loadingTimeline
             .set([petal1, petal2, petal3, petal4, petal5], {alpha: 0})
             .to(flowerCmd, .6, {
@@ -1474,11 +1486,6 @@
     }
 
     function renderInfo() {
-        var github = document.getElementById('github');
-        github.style.display = 'block';
-        var profilePic = document.getElementById('profile-pic');
-        profilePic.style.display = 'block';
-
         if (!infoWrapper) {
             infoWrapper = new createjs.Container();
             infoWrapper.setBounds(100, 100, CANVAS_WIDTH - 30, CANVAS_HEIGHT - 30);
@@ -1512,7 +1519,7 @@
         });
         infoWrapper.addChild(btnCloseWrapper);
 
-        var mainText = new createjs.Text('This is a short animation based on the song Tree Hugger.\nThe song is performed by Kimya Dawson And Antsy Pants and appears on the album Juno (2008).', '16px Happy Monkey', '#000');
+        var mainText = new createjs.Text('This is a short animation for the song Tree Hugger.\nThe song is performed by Kimya Dawson & Antsy Pants and appears on the album Juno (2008).', '16px Happy Monkey', '#000');
         mainText.x = CANVAS_WIDTH / 2;
         mainText.y = 60;
         mainText.lineWidth = CANVAS_WIDTH - 4 * outerSize;
@@ -1520,7 +1527,7 @@
         mainText.textAlign = 'center';
         infoWrapper.addChild(mainText);
 
-        var footerText = new createjs.Text('Made with \'\'\nby Wei Seng', '14px Happy Monkey', '#000');
+        var footerText = new createjs.Text('Crafted with \'\'\'\nby Wei Seng', '14px Happy Monkey', '#000');
         footerText.x = CANVAS_WIDTH / 2;
         footerText.y = 239.5;
         footerText.lineWidth = CANVAS_WIDTH - 4 * outerSize;
@@ -1528,8 +1535,13 @@
         footerText.textAlign = 'center';
         infoWrapper.addChild(footerText);
 
-        var heart = getHeartContainer(202, 248);
+        var heart = getHeartContainer(209, 248);
         infoWrapper.addChild(heart);
+
+        var github = document.getElementById('github');
+        github.style.display = 'block';
+        var profilePic = document.getElementById('profile-pic');
+        profilePic.style.display = 'block';
     }
 
     function _renderGallery() {
