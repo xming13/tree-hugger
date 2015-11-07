@@ -134,7 +134,7 @@
     function init() {
         stage = new createjs.Stage('canvas');
         if (!isMobileOrTablet()) {
-//            stage.enableMouseOver(10);
+            stage.enableMouseOver(10);
         }
 
         // Ticker
@@ -1329,8 +1329,8 @@
 
         function getEndingTimeline() {
             var endingTimeline = new TimelineMax({
-                paused: false,
                 autoRemoveChildren: true,
+                paused: true,
                 onStart: function () {
                     console.log('endingTimeline onStart');
                     ga('send', 'event', 'Ending', 'start', 'Ending Start', {
@@ -1418,7 +1418,6 @@
                             flowerToDesertTimeline2.play();
                         });
                         iceWorldTimeline.play();
-
                     }, 'next');
 
                     flowerToDesertTimeline.play();
