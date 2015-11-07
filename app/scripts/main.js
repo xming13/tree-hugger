@@ -1006,7 +1006,7 @@
                                     .add('next', 'desertend+=0.4')
                                     .add(transitionTimeline7, 'fish')
                                     .add(transitionTimeline8, 'desert')
-                                    .add(transitionTimeline9, 'next')
+                                    .add(transitionTimeline9, 'next');
                                 tlPart3.play();
                                 console.log(tlPart3.duration(), 'tlPart3.duration()');
                             }
@@ -2710,15 +2710,15 @@
             treeWrapper.addChild(leaf);
         }
 
-        leaves = leaves.sort(function (a, b) {
-            if (a.x === b.x) {
-                if (a.y === b.y) {
-                    return a.rotation - b.rotation;
-                }
-                return a.y - b.y;
-            }
-            return a.x - b.x;
-        });
+//        leaves = leaves.sort(function (a, b) {
+//            if (a.x === b.x) {
+//                if (a.y === b.y) {
+//                    return a.rotation - b.rotation;
+//                }
+//                return a.y - b.y;
+//            }
+//            return a.x - b.x;
+//        });
 //    console.log(JSON.stringify(leaves));
 
         return [autumnTimeline, autumnContainer];
@@ -3412,7 +3412,7 @@
             onStart: function () {
                 bubble.alpha = 1
             },
-            onComplete: function (e) {
+            onComplete: function () {
                 bubble.alpha = 0;
             }
         });
