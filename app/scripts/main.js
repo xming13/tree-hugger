@@ -5485,6 +5485,34 @@
         return container;
     }
 
+    function getCustomHeartContainer(x, y) {
+        var segmentDesert = new createjs.Shape();
+        segmentDesert.graphics.beginFill(COLOR_DESERT)
+            .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+        var segmentSky = new createjs.Shape();
+        segmentSky.graphics.beginFill(COLOR_DESERT_SKY)
+            .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+        var container = _constructContainer(x, y, [segmentDesert, segmentSky]);
+
+        var heartContainer1 = getHeartContainer(-20, 0);
+        var heartContainer2 = getHeartContainer(0, 15);
+        var heartContainer3 = getHeartContainer(20, 0);
+        var heartContainer4 = getHeartContainer(15, -20);
+        var heartContainer5 = getHeartContainer(-15, -20);
+        var heartContainer6 = getHeartContainer(0, -5);
+
+        container.addChild(heartContainer1);
+        container.addChild(heartContainer2);
+        container.addChild(heartContainer3);
+        container.addChild(heartContainer4);
+        container.addChild(heartContainer5);
+        container.addChild(heartContainer6);
+
+        return [null, container];
+    }
+
     // Utilities
     /**
      * Returns a createjs.Container instance with center (x, y) and segments as its children.
