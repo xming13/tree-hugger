@@ -119,8 +119,9 @@
 
     // for debugging
     var DEBUG = false;
-    var START_TIME = DEBUG ? 168 : 0;
-    var debugObjs = getYetiTimeline(LEFT_2, TOP_1);
+    var START_TIME = DEBUG ? 0 : 0;
+//        168 : 0;
+    var debugObjs = null;
     //getNContainer(LEFT_2, TOP_1);
 
 
@@ -134,6 +135,8 @@
     }
 
     function init() {
+        console.log(TweenMax.getAllTweens(), 'init');
+
         stage = new createjs.Stage('canvas');
         if (!isMobileOrTablet()) {
             stage.enableMouseOver(10);
@@ -323,11 +326,12 @@
         });
         pop.on('ended', function () {
             setTimeout(function () {
+                console.log('pop ended');
                 ga('send', 'event', 'Ending', 'finish', 'Ending Finish', {
                     nonInteraction: true
                 });
                 stage.removeChild(animationWrapper);
-                renderMenu()
+                renderMenu();
             }, 200);
         });
 
@@ -438,10 +442,12 @@
         loadingTimeline = new TimelineMax({
             repeat: -1,
             repeatDelay: .3,
-            autoRemoveChildren: false,
-            onRepeat: function() {
+            autoRemoveChildren: true,
+            onRepeat: function () {
                 if (isLoadingFinished) {
+                    loadingTimeline.stop().kill();
                     renderMenu();
+
                 }
             }
         });
@@ -461,9 +467,9 @@
     }
 
     function renderMenu() {
-        if (!DEBUG) {
-            TweenMax.killAll();
-        }
+        console.log('renderMenu start');
+        TweenMax.killAll();
+        console.log(TweenMax.getAllTweens().length, 'TweenMax.getAllTweens().length renderMenu');
 
         if (!menuWrapper) {
             menuWrapper = new createjs.Container();
@@ -474,7 +480,6 @@
         menuWrapper.removeAllChildren();
 
         stage.removeChild(loadingWrapper);
-        loadingTimeline.remove();
         galleryTimelines.forEach(function (timeline) {
             timeline.remove();
         });
@@ -603,11 +608,12 @@
         }
         animationWrapper.removeAllChildren();
 
+        console.log(TweenMax.getAllTweens().length, 'TweenMax.getAllTweens().length renderAnim');
         mainTimeline = new TimelineMax({
             paused: true,
             autoRemoveChildren: true,
             onStart: function () {
-                console.log('mainTimeline onStart');
+                console.log(TweenMax.getAllTweens(), 'TweenMax.getAllTweens() mainTimeline onStart');
             },
             onComplete: function () {
                 console.log('mainTimeline onComplete');
@@ -618,7 +624,13 @@
         function getOpeningTimeline() {
             var openingTimeline = new TimelineMax({
                 autoRemoveChildren: true,
-                paused: true
+                paused: true,
+                onStart: function () {
+                    console.log(TweenMax.getAllTweens(), 'TweenMax.getAllTweens() openingTimeline onStart');
+                }
+//                ,onUpdate: function() {
+//                    console.log(TweenMax.getAllTweens().length, 'TweenMax.getAllTweens().length openingTimeline onUpdate');
+//                }
             });
             openingTimeline.name = 'openingTimeline';
 
@@ -683,7 +695,7 @@
             var durationAppear = .4;
             var delay = '+=1';
             openingTimeline
-                .to(defaultContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut}, '+=1')
+                .to(defaultContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut}, delay)
                 .to(defaultContainer, durationPosition, {x: LEFT_1, y: TOP_1, ease: Circ.easeOut}, delay)
                 .to(springContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
                 .to(springContainer, durationPosition, {x: LEFT_2, y: TOP_1, ease: Circ.easeOut}, delay)
@@ -703,12 +715,12 @@
                 .to(iceSeaContainer, durationPosition, {x: LEFT_2, y: TOP_2, ease: Circ.easeOut}, delay)
                 .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.4')
                 .add(function () {
+                    creatureTimeline.stop();
+                    creatureTimeline.kill();
+
                     creatures.forEach(function (creature) {
-                        if (creature.timeline) {
-                            creature.timeline.remove();
-                        }
+                        creature.stopKillTimeline();
                     });
-                    creatureTimeline.remove();
                 })
                 // delay .5 sec
                 .to({}, .5, {});
@@ -719,13 +731,14 @@
         function getFlowerToDesertTimeline() {
             var flowerToDesertTimeline = new TimelineMax({
                 autoRemoveChildren: true,
-                paused: true
+                paused: true,
+                onStart: function () {
+                    console.log(TweenMax.getAllTweens().length, 'TweenMax.getAllTweens().length flowerToDesert onStart');
+                }
             });
 
             flowerToDesertTimeline
-                .to({}, 57.405, {})
-                .add('next')
-                .to({}, .5, {});
+                .add('next', '+=57.405')
 
             flowerToDesertTimeline.eventCallback('onStart', function () {
                 var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
@@ -740,7 +753,11 @@
                 transitionTimeline
                     .add('transition')
                     .to(flowerContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
-                    .to(treeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
+                    .to(treeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition')
+                    .add(function () {
+                        flowerTimeline.stop().kill();
+                        console.log('flowerTimeline.stop().kill();');
+                    });
 
                 var springObjs = getSpringTimeline(0, 0);
                 var springTimeline = springObjs[0];
@@ -814,11 +831,14 @@
                         y: 0,
                         ease: Power3.easeOut,
                         onComplete: function () {
+                            console.log('stopkill tree and seasons timeline');
                             // remove all seasons' animation
-                            springTimeline.remove();
-                            summerTimeline.remove();
-                            autumnTimeline.remove();
-                            winterTimeline.remove();
+                            treeTimeline.stop().kill();
+                            springTimeline.stop().kill();
+                            summerTimeline.stop().kill();
+                            summerContainer.stopKillTimeline();
+                            autumnTimeline.stop().kill();
+                            winterTimeline.stop().kill();
                         }
                     }, 'reverse')
                 ;
@@ -831,7 +851,8 @@
                 transitionTimeline2
                     .add('transition')
                     .to(treeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
-                    .to(catContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
+                    .to(catContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition')
+                ;
 
                 animationWrapper.addChild(flowerContainer);
                 animationWrapper.addChild(treeContainer);
@@ -840,11 +861,22 @@
                 var tlPart1 = new TimelineMax({
                     autoRemoveChild: true,
                     paused: true,
+                    onStart: function () {
+                        console.log(TweenMax.getAllTweens().length, 'tlPart1 onStart');
+                    },
                     onComplete: function () {
+                        console.log(TweenMax.getAllTweens(), 'tlPart1 onComplete');
+                        console.log(TweenMax.getAllTweens().length, 'tlPart1 onComplete');
+
                         var tlPart2 = new TimelineMax({
                             autoRemoveChild: true,
                             paused: true,
+                            onStart: function () {
+                                console.log(TweenMax.getAllTweens().length, 'tlPart2 onStart');
+                            },
                             onComplete: function () {
+                                console.log(TweenMax.getAllTweens().length, 'tlPart2 onComplete');
+
                                 var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_5);
 
                                 var seaObjs = getSeaTimeline(LEFT_1, TOP_5);
@@ -863,14 +895,18 @@
                                         turtleWrapper.removeChild(balloonWrapper);
                                     }, 'transition6')
                                     .add(function () {
-                                        cloudContainer3.removeTimeline();
+                                        cloudContainer3.stopKillTimeline();
+                                        console.log('cloudContainer3.stopKillTimeline()');
                                     })
                                     .add('turtleGone', '+=0')
                                     .to(turtleWrapper, 1.2, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0}, 'turtleGone')
                                     .add(function () {
-                                        turtleContainer.removeTimeline();
+                                        turtleContainer.stopKillTimeline();
+                                        console.log('turtleContainer.stopKillTimeline()');
                                     })
                                     .to(seaWaveContainer, 1.2, {alpha: 0, ease: Circ.easeOut}, 'turtleGone+=1')
+                                    .add(function () {
+                                    })
                                 ;
 
                                 var fishObjs = getFishTimeline(LEFT_4, TOP_2);
@@ -886,7 +922,7 @@
                                 var cactusFlowerWrapper2 = cactusObjs2[2];
                                 var cactusCactusWrapper2 = cactusObjs2[3];
 
-                                var transitionTimeline7 = new TimelineMax({autoRemoveChildren: false});
+                                var transitionTimeline7 = new TimelineMax();
                                 transitionTimeline7
                                     .add('transition7')
                                     .to(fishContainer, 8.8, {x: LEFT_0, startAt: {x: LEFT_4}}, 'transition7')
@@ -896,8 +932,14 @@
                                     .add(cactusTimeline, 'transition7+=5')
                                     .add(cactusTimeline2, 'transition7b+=5')
                                     .add(function () {
-                                        cactusContainer.removeTimeline();
-                                        fishContainer.removeTimeline();
+                                        cactusContainer.stopKillTimeline();
+                                        console.log('cactusContainer.stopKillTimeline()');
+                                        cactusTimeline.stop().kill();
+                                        console.log('cactusTimeline.stopKillTimeline()');
+                                    }, 'transition7b')
+                                    .add(function () {
+                                        fishContainer.stopKillTimeline();
+                                        console.log('fishContainer.stopKillTimeline()');
                                     })
                                 ;
 
@@ -950,6 +992,8 @@
                                         cactusFlowerWrapper2.x += LEFT_2;
                                         cactusFlowerWrapper2.y += TOP_2;
                                         overlayContainer.addChild(cactusFlowerWrapper2);
+                                        seaContainer.stopKillTimeline();
+                                        console.log('seaContainer.stopKillTimeline();');
                                     }, 'overlay')
                                     .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
                                     .to(cactusFlowerWrapper2, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
@@ -980,11 +1024,14 @@
                                     .to([desertGroundContainer1, desertGroundContainer2, cactusContainer2, desertContainer1, desertContainer2, desertFaceContainer],
                                     .5, {x: "-=" + ((CIRCLE_DIAMETER + SPACING) * 3), ease: Circ.easeOut}, 'transition9')
                                     .add(function () {
-                                        seaContainer.removeTimeline();
-                                        desertFaceContainer.removeTimeline();
-                                        desertGroundContainer1.removeTimeline();
-                                        desertGroundContainer2.removeTimeline();
-                                        cactusContainer2.removeTimeline();
+                                        desertFaceContainer.stopKillTimeline();
+                                        desertGroundContainer1.stopKillTimeline();
+                                        desertGroundContainer2.stopKillTimeline();
+                                        cactusContainer2.stopKillTimeline();
+                                        console.log('desertFaceContainer.stopKillTimeline();');
+                                        console.log('desertGroundContainer1.stopKillTimeline();');
+                                        console.log('desertGroundContainer2.stopKillTimeline();');
+                                        console.log('cactusContainer2.stopKillTimeline();');
                                     });
 
                                 animationWrapper.addChildAt(seaWaveContainer, 0);
@@ -1005,8 +1052,11 @@
                                 var tlPart3 = new TimelineMax({
                                     autoRemoveChild: true,
                                     paused: true,
+                                    onStart: function () {
+                                        console.log(TweenMax.getAllTweens().length, 'tlPart3 onStart');
+                                    },
                                     onComplete: function () {
-//                                    flowerToDesertTimeline.play();
+                                        console.log(TweenMax.getAllTweens().length, 'tlPart3 onComplete');
                                     }
                                 });
 
@@ -1033,7 +1083,8 @@
                         transitionTimeline3
                             .add('transition3')
                             .to(catContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition3')
-                            .to(turtleContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition3');
+                            .to(turtleContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition3')
+                        ;
 
                         var skyContainer = new createjs.Container();
                         var sky = new createjs.Shape();
@@ -1072,8 +1123,8 @@
                             .to(cloudContainer1, 2, {y: TOP_5}, 'transition4')
                             .to(cloudContainer2, 2.4, {y: TOP_4}, 'transition4')
                             .add(function () {
-                                cloudContainer1.removeTimeline();
-                                cloudContainer2.removeTimeline();
+                                cloudContainer1.stopKillTimeline();
+                                cloudContainer2.stopKillTimeline();
                             });
 
                         var roofTopObjs = getRoofTopTimeline(LEFT_4, TOP_3);
@@ -1082,21 +1133,27 @@
                         var cloudObjs3 = getCloudTimeline(LEFT_4, TOP_1);
                         var cloudContainer3 = cloudObjs3[1];
 
-                        var transitionTimeline5 = new TimelineMax({autoRemoveChildren: false});
+                        var transitionTimeline5 = new TimelineMax();
 
                         transitionTimeline5
                             .add('transition5')
                             .to(cloudContainer3, 3, {x: LEFT_2}, 'transition5')
                             .to(roofTopContainer, 2.8, {x: LEFT_0}, 'transition5')
                             .add(function () {
-                                roofTopContainer.removeTimeline();
+                                roofTopContainer.stopKillTimeline();
                             });
 
                         tlPart2.add(transitionTimeline3)
                             .add(turtleTimeline, '+=.4')
                             .add('tran5', '+=2.5')
                             .add(transitionTimeline4, '+=.1')
-                            .add(transitionTimeline5, 'tran5');
+                            .add(transitionTimeline5, 'tran5')
+                            .add(function () {
+                                // this will be done in tlPart3
+//                                turtleContainer.stopKillTimeline();
+//                                cloudContainer3.stopKillTimeline();
+//                                console.log('turtleContainer cloudContainer3.stop().kill();');
+                            });
 
                         animationWrapper.addChild(turtleContainer);
                         animationWrapper.addChildAt(skyContainer, animationWrapper.getNumChildren() - 1);
@@ -1117,7 +1174,20 @@
                     .add(treeTimeline, 'tree')
                     .add(transitionSeasonTimeline, 'tree')
                     .add(transitionTimeline2)
-                    .add(catTimeline, '-=.3');
+                    .add(catTimeline, '-=.3')
+                    .add(function () {
+                        transitionTimeline.stop().kill();
+                        console.log('transitionTimeline.stop().kill();');
+
+                        transitionSeasonTimeline.stop().kill();
+                        console.log('transitionSeasonTimeline.stop().kill();');
+
+                        transitionTimeline2.stop().kill();
+                        console.log('transitionTimeline2.stop().kill();');
+
+                        catTimeline.stop().kill();
+                        console.log('catTimeline.stop().kill();');
+                    });
                 tlPart1.play();
                 console.log(tlPart1.duration(), 'tlPart1.duration()');
             });
@@ -1128,7 +1198,13 @@
         function getIceWorldTimeline() {
             var iceWorldTimeline = new TimelineMax({
                 autoRemoveChildren: true,
-                paused: true
+                paused: true,
+                onStart: function () {
+                    console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onStart');
+                },
+                onComplete: function () {
+                    console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onComplete');
+                }
             });
 
             var jackalopeObjs = getJackalopeTimeline(LEFT_4, TOP_2);
@@ -1152,7 +1228,7 @@
                 .to(jackalopeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition10')
                 .to(yetiContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition10')
                 .add(function () {
-                    jackalopeContainer.removeTimeline();
+                    jackalopeContainer.stopKillTimeline();
                 });
 
             var transitionTimeline11 = new TimelineMax();
@@ -1164,7 +1240,7 @@
                 .to(yetiContainer2, 3, {x: LEFT_2}, 'move')
                 .add(yetiTimeline2, 'move')
                 .add(function () {
-                    yetiContainer.removeTimeline();
+                    yetiContainer.stopKillTimeline();
                 });
 
             var seaMonsterObjs = getSeaMonsterTimeline(LEFT_4, TOP_2);
@@ -1180,7 +1256,7 @@
                 .to(yetiContainer2, .5, {x: LEFT_0}, 'transition12')
                 .to(seaMonsterContainer, .5, {x: LEFT_2}, 'transition12')
                 .add(function () {
-                    yetiContainer2.removeTimeline();
+                    yetiContainer2.stopKillTimeline();
                 });
 
             var sharkObjs = getSharkTimeline(LEFT_3, TOP_2);
@@ -1197,7 +1273,7 @@
                 .to(sharkContainer, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=.9')
                 .to(sharkContainer2, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=1.5')
                 .add(function () {
-                    seaMonsterContainer.removeTimeline();
+                    seaMonsterContainer.stopKillTimeline();
                 });
 
             var snakeObjs = getSnakeTimeline(LEFT_4, TOP_2);
@@ -1211,9 +1287,9 @@
                 .to([sharkContainer, sharkContainer2], .01, {alpha: 0}, 'transition14')
                 .to(snakeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition14')
                 .add(function () {
-                    seaMonsterContainer2.removeTimeline();
-                    sharkContainer.removeTimeline();
-                    sharkContainer2.removeTimeline();
+                    seaMonsterContainer2.stopKillTimeline();
+                    sharkContainer.stopKillTimeline();
+                    sharkContainer2.stopKillTimeline();
                 });
 
             var hugObjs = getHugTimeline(LEFT_2, TOP_1);
@@ -1319,10 +1395,10 @@
                 .to([hugContainer, snakeContainer, spikeContainer, cactusContainer3, questionContainer, hugEyesWrapper, cactusFlowerWrapper3], .5, {
                     x: '-=' + (3 * (CIRCLE_DIAMETER + SPACING)), ease: Circ.easeOut}, '+=1')
                 .add(function () {
-                    hugContainer.removeTimeline();
-                    snakeContainer.removeTimeline();
-                    spikeContainer.removeTimeline();
-                    cactusContainer3.removeTimeline();
+                    hugContainer.stopKillTimeline();
+                    snakeContainer.stopKillTimeline();
+                    spikeContainer.stopKillTimeline();
+                    cactusContainer3.stopKillTimeline();
                 });
 
             animationWrapper.addChild(jackalopeContainer);
@@ -1364,13 +1440,13 @@
                 autoRemoveChildren: true,
                 paused: true,
                 onStart: function () {
-                    console.log('endingTimeline onStart');
+                    console.log(TweenMax.getAllTweens().length, 'endingTimeline onStart');
                     ga('send', 'event', 'Ending', 'start', 'Ending Start', {
                         nonInteraction: true
                     });
                 },
                 onComplete: function () {
-                    console.log('endingTimeline onComplete');
+                    console.log(TweenMax.getAllTweens().length, 'endingTimeline onComplete');
                 }
             });
 
@@ -1408,7 +1484,7 @@
 
             theEndContainers.forEach(function (container) {
                 animationWrapper.addChild(container);
-                container.removeTimeline();
+                container.stopKillTimeline();
             });
 
             endingTimeline
@@ -1432,18 +1508,21 @@
 //        var endingTimeline = getEndingTimeline();
 
         mainTimeline
+            .to({}, .00000001, {}) // required to trigger onStart function
             .add(function () {
                 var openingTimeline = getOpeningTimeline();
                 openingTimeline.eventCallback('onComplete', function () {
+                    console.log(TweenMax.getAllTweens().length, 'openingTimeline onComplete');
                     var flowerToDesertTimeline = getFlowerToDesertTimeline();
                     flowerToDesertTimeline.add(function () {
                         var iceWorldTimeline = getIceWorldTimeline();
                         iceWorldTimeline.eventCallback('onComplete', function () {
                             var flowerToDesertTimeline2 = getFlowerToDesertTimeline();
-                            flowerToDesertTimeline2.eventCallback('onComplete', function () {
+                            flowerToDesertTimeline2.add(function () {
+                                console.log(TweenMax.getAllTweens().length, 'flowerToDesertTimeline2 onComplete');
                                 var endingTimeline = getEndingTimeline();
                                 endingTimeline.play();
-                            });
+                            }, 'next');
                             flowerToDesertTimeline2.play();
                         });
                         iceWorldTimeline.play();
@@ -1461,7 +1540,8 @@
 //            .add(flowerToDesertTimeline2)
 //            .add(endingTimeline);
 
-        mainTimeline.play(START_TIME, false);
+        mainTimeline.play(START_TIME);
+//        mainTimeline.play(START_TIME, false);
         if (popCanPlay && pop) {
             pop.play(START_TIME);
         }
@@ -1793,7 +1873,7 @@
 
     // Timelines
     function getFlowerTimeline(x, y) {
-        var flowerTimeline = new TimelineMax({autoRemoveChildren: false});
+        var flowerTimeline = new TimelineMax();
 
         var container1 = new createjs.Container();
         container1.x = x;
@@ -1914,7 +1994,7 @@
     }
 
     function getTreeTimeline(x, y) {
-        var treeTimeline = new TimelineMax({autoRemoveChildren: false});
+        var treeTimeline = new TimelineMax();
 
         var container = getDefaultContainer(x, y);
 
@@ -2014,7 +2094,7 @@
     }
 
     function getSpringTimeline(x, y) {
-        var springTimeline = new TimelineMax({autoRemoveChildren: false});
+        var springTimeline = new TimelineMax();
 
         var springContainer = getSpringContainer(x, y);
 
@@ -2288,7 +2368,7 @@
     }
 
     function getSummerTimeline(x, y) {
-        var summerTimeline = new TimelineMax({autoRemoveChildren: false});
+        var summerTimeline = new TimelineMax();
 
         var summerContainer = getSummerContainer(x, y);
 
@@ -2352,26 +2432,25 @@
 
         var rotation = 6;
         var leavesTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        leavesTimeline
+            .add('leaves')
+            .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
+            .to(rightLeaves, 1, {rotation: '+=' + rotation}, 'leaves')
+            .add('leavesEnd')
+            .to(leftLeaves, 1, {rotation: '+=' + rotation}, 'leavesEnd')
+            .to(rightLeaves, 1, {rotation: '-=' + rotation}, 'leavesEnd')
+        ;
 
-        summerTimeline.eventCallback('onStart', function () {
-            leavesTimeline
-                .add('leaves')
-                .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
-                .to(rightLeaves, 1, {rotation: '+=' + rotation}, 'leaves')
-                .add('leavesEnd')
-                .to(leftLeaves, 1, {rotation: '+=' + rotation}, 'leavesEnd')
-                .to(rightLeaves, 1, {rotation: '-=' + rotation}, 'leavesEnd')
-            ;
-        });
-        summerTimeline.eventCallback('onComplete', function () {
-            leavesTimeline.remove();
-        });
+        summerContainer.stopKillTimeline = function () {
+            console.log('summerContainer stopKillTimeline')
+            leavesTimeline.stop().kill();
+        };
 
         return [summerTimeline, summerContainer];
     }
 
     function getAutumnTimeline(x, y) {
-        var autumnTimeline = new TimelineMax({autoRemoveChildren: false});
+        var autumnTimeline = new TimelineMax();
 
         var autumnContainer = getAutumnContainer(x, y);
 
@@ -2737,7 +2816,7 @@
     }
 
     function getWinterTimeline(x, y) {
-        var snowTreeTimeline = new TimelineMax({autoRemoveChildren: false});
+        var snowTreeTimeline = new TimelineMax();
         snowTreeTimeline.add('snow');
 
         var snowTreeContainer = getWinterContainer(x, y);
@@ -2832,7 +2911,7 @@
     }
 
     function getCatTimeline(x, y) {
-        var catTimeline = new TimelineMax({autoRemoveChildren: false});
+        var catTimeline = new TimelineMax();
 
         var catContainer = getDefaultContainer(x, y);
 
@@ -2928,7 +3007,7 @@
     }
 
     function getTurtleTimeline(x, y) {
-        var turtleTimeline = new TimelineMax({autoRemoveChildren: false});
+        var turtleTimeline = new TimelineMax();
 
         var turtleContainer = getDefaultContainer(x, y);
 
@@ -3051,9 +3130,9 @@
             .to(hand1Wrapper, .44, {rotation: "-=10", startAt: {rotation: "+=8"}, repeat: -1, yoyo: true}, 'hands')
             .to(hand2Wrapper, .44, {rotation: "+=10", startAt: {rotation: "-=8"}, repeat: -1, yoyo: true}, 'hands');
 
-        turtleContainer.removeTimeline = function () {
-            turtleEyesTimeline.remove();
-            flyTimeline.remove();
+        turtleContainer.stopKillTimeline = function () {
+            turtleEyesTimeline.stop().kill();
+            flyTimeline.stop().kill();
         };
 
         return [turtleTimeline, turtleContainer, turtleWrapper, balloonWrapper];
@@ -3120,8 +3199,9 @@
             .add(movingCloudTimeline, 0)
             .add(eyesTimeline, 0);
 
-        cloudContainer.removeTimeline = function () {
-            eyesTimeline.remove();
+        cloudContainer.stopKillTimeline = function () {
+            movingCloudTimeline.stop().kill();
+            eyesTimeline.stop().kill();
         };
 
         return [cloudTimeline, cloudContainer];
@@ -3197,8 +3277,8 @@
                 repeat: -1
             }, 2.6);
 
-        roofTopContainer.removeTimeline = function () {
-            smokeTimeline.remove();
+        roofTopContainer.stopKillTimeline = function () {
+            smokeTimeline.stop().kill();
         };
 
         return [roofTopTimeline, roofTopContainer];
@@ -3330,8 +3410,8 @@
             }, 3.1)
         ;
 
-        seaContainer.removeTimeline = function () {
-            bubbleTimeline.remove();
+        seaContainer.stopKillTimeline = function () {
+            bubbleTimeline.stop().kill();
         };
 
         return [seaTimeline, seaContainer, grassWrapper];
@@ -3437,9 +3517,9 @@
             .to(tailCmd, 1, {y: -6, repeat: -1, yoyo: true}, 'fish')
             .to(tailCmd2, 1, {y: 6, repeat: -1, yoyo: true}, 'fish');
 
-        fishContainer.removeTimeline = function () {
-            fishMoveTimeline.remove();
-            bubbleTimeline.remove();
+        fishContainer.stopKillTimeline = function () {
+            fishMoveTimeline.stop().kill();
+            bubbleTimeline.stop().kill();
         };
 
         return [null, fishContainer];
@@ -3612,8 +3692,8 @@
             .to(flowerWrapper, .6, { scaleX: 1, scaleY: 1, ease: Back.easeOut.config(4) }, 'eyeComplete')
         ;
 
-        cactusContainer.removeTimeline = function () {
-            cactusEyesTimeline.remove();
+        cactusContainer.stopKillTimeline = function () {
+            cactusEyesTimeline.stop().kill();
         };
 
         return [cactusTimeline, cactusContainer, flowerWrapper, cactusWrapper];
@@ -3721,8 +3801,8 @@
             .to(pink, 1.0, {alpha: 1}, 'happyFace')
         ;
 
-        desertFaceContainer.removeTimeline = function () {
-            desertFaceEyesTimeline.remove();
+        desertFaceContainer.stopKillTimeline = function () {
+            desertFaceEyesTimeline.stop().kill();
         };
 
         return [desertFaceTimeline, desertFaceContainer];
@@ -3778,11 +3858,11 @@
                 , 'drop+=0.5')
         ;
 
-        desertGroundContainer.removeTimeline = function () {
-            desertGroundTimeline.remove();
-            creatureWrapper1.removeTimeline();
-            creatureWrapper2.removeTimeline();
-            creatureWrapper3.removeTimeline();
+        desertGroundContainer.stopKillTimeline = function () {
+            desertGroundTimeline.stop().kill();
+            creatureWrapper1.stopKillTimeline();
+            creatureWrapper2.stopKillTimeline();
+            creatureWrapper3.stopKillTimeline();
         };
 
         return [desertGroundTimeline, desertGroundContainer];
@@ -3871,9 +3951,9 @@
             .to(ear, .2, {rotation: 40}, 's4')
             .to(ear2, .2, {rotation: -40}, 's4');
 
-        jackalopeContainer.removeTimeline = function () {
-            eyesTimeline.remove();
-            earTimeline.remove();
+        jackalopeContainer.stopKillTimeline = function () {
+            eyesTimeline.stop().kill();
+            earTimeline.stop().kill();
         };
 
         return [jackalopeTimeline, jackalopeContainer];
@@ -4038,10 +4118,10 @@
             .to([upperWrapper, rightFoot], .5, {rotation: '+=' + degreeRotation}, 'rightend2')
         ;
 
-        yetiContainer.removeTimeline = function () {
-            eyesTimeline.remove();
-            leftHandTimeline.remove();
-            rightHandTimeline.remove();
+        yetiContainer.stopKillTimeline = function () {
+            eyesTimeline.stop().kill();
+            leftHandTimeline.stop().kill();
+            rightHandTimeline.stop().kill();
         };
 
         return [yetiTimeline, yetiContainer, leftHandTimeline, rightHandTimeline, leftHand, rightHand];
@@ -4101,8 +4181,8 @@
             .to(seaMonsterCmd, .5, {y: 25}, 'seaMonster')
         ;
 
-        seaMonsterContainer.removeTimeline = function () {
-            eyeTimeline.remove();
+        seaMonsterContainer.stopKillTimeline = function () {
+            eyeTimeline.stop().kill();
         };
 
         return [seaMonsterTimeline, seaMonsterContainer];
@@ -4129,8 +4209,8 @@
             .to(shark, 2, {x: 17})
             .to(shark, .1, {x: 36, scaleX: 1});
 
-        sharkContainer.removeTimeline = function () {
-            sharkTimeline.remove();
+        sharkContainer.stopKillTimeline = function () {
+            sharkTimeline.stop().kill();
         };
 
         return [sharkTimeline, sharkContainer];
@@ -4249,8 +4329,8 @@
             .to([handsCmd6, handsCmd7, handsCmd8], .2, {radius: 2})
         ;
 
-        snakeContainer.removeTimeline = function () {
-            snakeEyesTimeline.remove();
+        snakeContainer.stopKillTimeline = function () {
+            snakeEyesTimeline.stop().kill();
         };
 
         return [snakeTimeline, snakeContainer];
@@ -4365,8 +4445,8 @@
         nobitaWrapper.y -= 10;
         hugContainer.addChild(nobitaWrapper);
 
-        hugContainer.removeTimeline = function () {
-            eyesTimeline.remove();
+        hugContainer.stopKillTimeline = function () {
+            eyesTimeline.stop().kill();
         };
 
         return [hugTimeline, hugContainer, eyesWrapper, nobitaWrapper, deadEyesWrapper];
@@ -4535,8 +4615,8 @@
         cactusWrapper.addChildAt(knifeSet6, 0);
         cactusWrapper.addChildAt(knifeSet7, 0);
 
-        spikeContainer.removeTimeline = function () {
-            spikeTimeline.remove();
+        spikeContainer.stopKillTimeline = function () {
+            spikeTimeline.stop().kill();
         };
 
         return [spikeTimeline, spikeContainer, [knifeSet1, knifeSet2, knifeSet3, knifeSet4, knifeSet5, knifeSet6, knifeSet7]];
@@ -5143,11 +5223,10 @@
         eyesTimeline
             .to(eyes, .1, {scaleY: 0})
             .to(eyes, .1, {scaleY: 1});
-        creatureWrapper.timeline = eyesTimeline;
         eyesTimeline.name = 'eyesTimeline1';
 
-        creatureWrapper.removeTimeline = function () {
-            eyesTimeline.remove();
+        creatureWrapper.stopKillTimeline = function () {
+            eyesTimeline.stop().kill();
         };
         return creatureWrapper;
     }
@@ -5211,12 +5290,12 @@
         container.addChild(creature4);
         container.addChild(creature5);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
         };
 
         return container;
@@ -5255,14 +5334,14 @@
         container.addChild(creature6);
         container.addChild(creature7);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
-            creature6.removeTimeline();
-            creature7.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
+            creature6.stopKillTimeline();
+            creature7.stopKillTimeline();
         };
 
         return container;
@@ -5305,15 +5384,15 @@
         container.addChild(creature7);
         container.addChild(creature8);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
-            creature6.removeTimeline();
-            creature7.removeTimeline();
-            creature8.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
+            creature6.stopKillTimeline();
+            creature7.stopKillTimeline();
+            creature8.stopKillTimeline();
         };
 
         return container;
@@ -5350,13 +5429,13 @@
         container.addChild(creature5);
         container.addChild(creature6);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
-            creature6.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
+            creature6.stopKillTimeline();
         };
 
         return container;
@@ -5394,13 +5473,13 @@
         container.addChild(creature5);
         container.addChild(creature6);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
-            creature6.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
+            creature6.stopKillTimeline();
         };
 
         return container;
