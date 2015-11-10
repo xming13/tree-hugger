@@ -679,8 +679,7 @@
                 .to(iceSeaContainer, durationPosition, {x: LEFT_2, y: TOP_2, ease: Circ.easeOut}, delay)
                 .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.4')
                 .add(function () {
-                    creatureTimeline.stop();
-                    creatureTimeline.kill();
+                    creatureTimeline.stop().kill();
 
                     creatures.forEach(function (creature) {
                         creature.stopKillTimeline();
@@ -1508,11 +1507,23 @@
             return endingTimeline;
         }
 
+        // Original implementation is to construct a mainTimeline that contains all the sub timelines.
+        // However, this is not performant on mobile devices.
+        // Instead, we use custom function to create timeline on the fly during the onStart and onComplete event .
+
 //        var openingTimeline = getOpeningTimeline();
 //        var flowerToDesertTimeline = getFlowerToDesertTimeline();
 //        var iceWorldTimeline = getIceWorldTimeline();
 //        var flowerToDesertTimeline2 = getFlowerToDesertTimeline();
 //        var endingTimeline = getEndingTimeline();
+
+//        mainTimeline
+//            .add(openingTimeline)
+//            .add(flowerToDesertTimeline)
+//            .add('flowerToDesertEnd')
+//            .add(iceWorldTimeline, 'flowerToDesertEnd-=.5')
+//            .add(flowerToDesertTimeline2)
+//            .add(endingTimeline);
 
         mainTimeline
             .to({}, .00000001, {}) // required to trigger onStart function
@@ -1540,15 +1551,7 @@
                 openingTimeline.play();
             });
 
-//            .add(openingTimeline)
-//            .add(flowerToDesertTimeline)
-//            .add('flowerToDesertEnd')
-//            .add(iceWorldTimeline, 'flowerToDesertEnd-=.5')
-//            .add(flowerToDesertTimeline2)
-//            .add(endingTimeline);
-
         mainTimeline.play(START_TIME);
-//        mainTimeline.play(START_TIME, false);
         if (popCanPlay && pop) {
             pop.play(START_TIME);
         }
