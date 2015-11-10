@@ -498,9 +498,7 @@
 
         btnFbWrapper.addChild(btnFb);
         btnFbWrapper.addEventListener('click', function () {
-            alert('not implemented yet!');
-
-//        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank');
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank');
         });
         menuWrapper.addChild(btnFbWrapper);
 
