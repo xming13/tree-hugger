@@ -129,7 +129,7 @@
         (function (a) {
             if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))check = true
         })(navigator.userAgent || navigator.vendor || window.opera);
-        console.log(check, 'isMobileOrTablet');
+        //console.log(check, 'isMobileOrTablet');
         return check;
     }
 
@@ -143,7 +143,7 @@
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", stage);
         createjs.Ticker.addEventListener('tick', function () {
-//            console.log(TweenMax.getAllTweens().length);
+//            //console.log(TweenMax.getAllTweens().length);
         });
 
         // Defaults
@@ -298,7 +298,7 @@
         });
         pop.on('ended', function () {
             setTimeout(function () {
-                console.log('pop ended');
+                //console.log('pop ended');
                 ga('send', 'event', 'Ending', 'finish', 'Ending Finish', {
                     nonInteraction: true
                 });
@@ -579,10 +579,10 @@
             paused: true,
             autoRemoveChildren: true,
             onStart: function () {
-                console.log('mainTimeline onStart');
+                //console.log('mainTimeline onStart');
             },
             onComplete: function () {
-                console.log('mainTimeline onComplete');
+                //console.log('mainTimeline onComplete');
             }
         });
         mainTimeline.name = 'mainTimeline';
@@ -685,7 +685,7 @@
                 })
                 // delay .5 sec
                 .to({}, .5, {});
-            console.log(openingTimeline.duration(), 'openingTimeline.duration()');
+            //console.log(openingTimeline.duration(), 'openingTimeline.duration()');
             return openingTimeline;
         }
 
@@ -716,7 +716,7 @@
                     .to(treeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition')
                     .add(function () {
                         flowerTimeline.stop().kill();
-                        console.log('flowerTimeline.stop().kill();');
+                        //console.log('flowerTimeline.stop().kill();');
                     });
 
                 var springObjs = getSpringTimeline(0, 0);
@@ -791,7 +791,7 @@
                         y: 0,
                         ease: Power3.easeOut,
                         onComplete: function () {
-                            console.log('stopkill tree and seasons timeline');
+                            //console.log('stopkill tree and seasons timeline');
                             // remove all seasons' animation
                             treeTimeline.stop().kill();
                             springTimeline.stop().kill();
@@ -822,19 +822,19 @@
                     autoRemoveChild: true,
                     paused: true,
                     onStart: function () {
-                        console.log(TweenMax.getAllTweens().length, 'tlPart1 onStart');
+                        //console.log(TweenMax.getAllTweens().length, 'tlPart1 onStart');
                     },
                     onComplete: function () {
-                        console.log(TweenMax.getAllTweens().length, 'tlPart1 onComplete');
+                        //console.log(TweenMax.getAllTweens().length, 'tlPart1 onComplete');
 
                         var tlPart2 = new TimelineMax({
                             autoRemoveChild: true,
                             paused: true,
                             onStart: function () {
-                                console.log(TweenMax.getAllTweens().length, 'tlPart2 onStart');
+                                //console.log(TweenMax.getAllTweens().length, 'tlPart2 onStart');
                             },
                             onComplete: function () {
-                                console.log(TweenMax.getAllTweens().length, 'tlPart2 onComplete');
+                                //console.log(TweenMax.getAllTweens().length, 'tlPart2 onComplete');
 
                                 var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_5);
 
@@ -855,13 +855,13 @@
                                     }, 'transition6')
                                     .add(function () {
                                         cloudContainer3.stopKillTimeline();
-                                        console.log('cloudContainer3.stopKillTimeline()');
+                                        //console.log('cloudContainer3.stopKillTimeline()');
                                     })
                                     .add('turtleGone', '+=0')
                                     .to(turtleWrapper, 1.2, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0}, 'turtleGone')
                                     .add(function () {
                                         turtleContainer.stopKillTimeline();
-                                        console.log('turtleContainer.stopKillTimeline()');
+                                        //console.log('turtleContainer.stopKillTimeline()');
                                     })
                                     .to(seaWaveContainer, 1.2, {alpha: 0, ease: Circ.easeOut}, 'turtleGone+=1')
                                 ;
@@ -890,13 +890,13 @@
                                     .add(cactusTimeline2, 'transition7b+=5')
                                     .add(function () {
                                         cactusContainer.stopKillTimeline();
-                                        console.log('cactusContainer.stopKillTimeline()');
+                                        //console.log('cactusContainer.stopKillTimeline()');
                                         cactusTimeline.stop().kill();
-                                        console.log('cactusTimeline.stopKillTimeline()');
+                                        //console.log('cactusTimeline.stopKillTimeline()');
                                     }, 'transition7b')
                                     .add(function () {
                                         fishContainer.stopKillTimeline();
-                                        console.log('fishContainer.stopKillTimeline()');
+                                        //console.log('fishContainer.stopKillTimeline()');
                                     })
                                 ;
 
@@ -910,10 +910,10 @@
                                     autoRemoveChild: true,
                                     paused: true,
                                     onStart: function () {
-                                        console.log(TweenMax.getAllTweens().length, 'tlPart3 onStart');
+                                        //console.log(TweenMax.getAllTweens().length, 'tlPart3 onStart');
                                     },
                                     onComplete: function () {
-                                        console.log(TweenMax.getAllTweens().length, 'tlPart3 onComplete');
+                                        //console.log(TweenMax.getAllTweens().length, 'tlPart3 onComplete');
 
                                         var overlayContainer = new createjs.Container();
                                         overlayContainer.x = 0;
@@ -965,7 +965,7 @@
                                                 cactusFlowerWrapper2.y += TOP_2;
                                                 overlayContainer.addChild(cactusFlowerWrapper2);
                                                 seaContainer.stopKillTimeline();
-                                                console.log('seaContainer.stopKillTimeline();');
+                                                //console.log('seaContainer.stopKillTimeline();');
                                             }, 'overlay')
                                             .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
                                             .to(cactusFlowerWrapper2, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
@@ -1000,10 +1000,10 @@
                                                 desertGroundContainer1.stopKillTimeline();
                                                 desertGroundContainer2.stopKillTimeline();
                                                 cactusContainer2.stopKillTimeline();
-                                                console.log('desertFaceContainer.stopKillTimeline();');
-                                                console.log('desertGroundContainer1.stopKillTimeline();');
-                                                console.log('desertGroundContainer2.stopKillTimeline();');
-                                                console.log('cactusContainer2.stopKillTimeline();');
+                                                //console.log('desertFaceContainer.stopKillTimeline();');
+                                                //console.log('desertGroundContainer1.stopKillTimeline();');
+                                                //console.log('desertGroundContainer2.stopKillTimeline();');
+                                                //console.log('cactusContainer2.stopKillTimeline();');
                                             });
 
                                         animationWrapper.addChild(overlayContainer);
@@ -1020,10 +1020,10 @@
                                             autoRemoveChild: true,
                                             paused: true,
                                             onStart: function () {
-                                                console.log(TweenMax.getAllTweens().length, 'tlPart4 onStart');
+                                                //console.log(TweenMax.getAllTweens().length, 'tlPart4 onStart');
                                             },
                                             onComplete: function () {
-                                                console.log(TweenMax.getAllTweens().length, 'tlPart4 onComplete');
+                                                //console.log(TweenMax.getAllTweens().length, 'tlPart4 onComplete');
                                             }
                                         });
 
@@ -1032,7 +1032,7 @@
                                             .add(transitionTimeline8)
                                             .add(transitionTimeline9, 'next');
                                         tlPart4.play();
-                                        console.log(tlPart4.duration(), 'tlPart4.duration()');
+                                        //console.log(tlPart4.duration(), 'tlPart4.duration()');
 
                                     }
                                 });
@@ -1048,7 +1048,7 @@
 //                                    .add(transitionTimeline9, 'next');
 
                                 tlPart3.play();
-                                console.log(tlPart3.duration(), 'tlPart3.duration()');
+                                //console.log(tlPart3.duration(), 'tlPart3.duration()');
                             }
                         });
 
@@ -1130,7 +1130,7 @@
                                 // this will be done in tlPart3
 //                                turtleContainer.stopKillTimeline();
 //                                cloudContainer3.stopKillTimeline();
-//                                console.log('turtleContainer cloudContainer3.stop().kill();');
+//                                //console.log('turtleContainer cloudContainer3.stop().kill();');
                             });
 
                         animationWrapper.addChild(turtleContainer);
@@ -1141,7 +1141,7 @@
                         animationWrapper.addChild(roofTopContainer);
 
                         tlPart2.play();
-                        console.log(tlPart2.duration(), 'tlPart2.duration()');
+                        //console.log(tlPart2.duration(), 'tlPart2.duration()');
                     }
                 });
 
@@ -1155,19 +1155,19 @@
                     .add(catTimeline, '-=.3')
                     .add(function () {
                         transitionTimeline.stop().kill();
-                        console.log('transitionTimeline.stop().kill();');
+                        //console.log('transitionTimeline.stop().kill();');
 
                         transitionSeasonTimeline.stop().kill();
-                        console.log('transitionSeasonTimeline.stop().kill();');
+                        //console.log('transitionSeasonTimeline.stop().kill();');
 
                         transitionTimeline2.stop().kill();
-                        console.log('transitionTimeline2.stop().kill();');
+                        //console.log('transitionTimeline2.stop().kill();');
 
                         catTimeline.stop().kill();
-                        console.log('catTimeline.stop().kill();');
+                        //console.log('catTimeline.stop().kill();');
                     });
                 tlPart1.play();
-                console.log(tlPart1.duration(), 'tlPart1.duration()');
+                //console.log(tlPart1.duration(), 'tlPart1.duration()');
             });
 
             return flowerToDesertTimeline;
@@ -1259,10 +1259,10 @@
                         autoRemoveChildren: true,
                         paused: true,
                         onStart: function () {
-                            console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onStart');
+                            //console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onStart');
                         },
                         onComplete: function () {
-                            console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onComplete');
+                            //console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onComplete');
 
                             var snakeObjs = getSnakeTimeline(LEFT_4, TOP_2);
                             var snakeTimeline = snakeObjs[0];
@@ -1400,10 +1400,10 @@
                                 autoRemoveChildren: true,
                                 paused: true,
                                 onStart: function () {
-                                    console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onStart');
+                                    //console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onStart');
                                 },
                                 onComplete: function () {
-                                    console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onComplete');
+                                    //console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onComplete');
                                 }
                             });
 
@@ -1417,7 +1417,7 @@
                                 .add(transitionTimeline18, '+=.24');
 
                             tlPart2.play();
-                            console.log(tlPart2.duration(), 'iceWorld tlPart2.duration()');
+                            //console.log(tlPart2.duration(), 'iceWorld tlPart2.duration()');
                         }
                     });
 
@@ -1431,7 +1431,7 @@
                         .add(transitionTimeline13, '+=1.5')
                     ;
                     tlPart1.play();
-                    console.log(tlPart1.duration(), 'iceWorld tlPart1.duration()');
+                    //console.log(tlPart1.duration(), 'iceWorld tlPart1.duration()');
                 }
             });
 
@@ -1444,13 +1444,13 @@
                 autoRemoveChildren: true,
                 paused: true,
                 onStart: function () {
-                    console.log(TweenMax.getAllTweens().length, 'endingTimeline onStart');
+                    //console.log(TweenMax.getAllTweens().length, 'endingTimeline onStart');
                     ga('send', 'event', 'Ending', 'start', 'Ending Start', {
                         nonInteraction: true
                     });
                 },
                 onComplete: function () {
-                    console.log(TweenMax.getAllTweens().length, 'endingTimeline onComplete');
+                    //console.log(TweenMax.getAllTweens().length, 'endingTimeline onComplete');
                 }
             });
 
@@ -1528,14 +1528,14 @@
             .add(function () {
                 var openingTimeline = getOpeningTimeline();
                 openingTimeline.eventCallback('onComplete', function () {
-                    console.log(TweenMax.getAllTweens().length, 'openingTimeline onComplete');
+                    //console.log(TweenMax.getAllTweens().length, 'openingTimeline onComplete');
                     var flowerToDesertTimeline = getFlowerToDesertTimeline();
                     flowerToDesertTimeline.add(function () {
                         var iceWorldTimeline = getIceWorldTimeline();
                         iceWorldTimeline.add(function () {
                             var flowerToDesertTimeline2 = getFlowerToDesertTimeline();
                             flowerToDesertTimeline2.add(function () {
-                                console.log(TweenMax.getAllTweens().length, 'flowerToDesertTimeline2 onComplete');
+                                //console.log(TweenMax.getAllTweens().length, 'flowerToDesertTimeline2 onComplete');
                                 var endingTimeline = getEndingTimeline();
                                 endingTimeline.play();
                             }, 'next');
@@ -2219,7 +2219,7 @@
 //        }
 //        return a.x - b.x;
 //    })
-//    console.log(JSON.stringify(flowers));
+//    //console.log(JSON.stringify(flowers));
 
         springContainer.addChild(treeWrapper);
 
@@ -2301,7 +2301,7 @@
         ;
 
         summerContainer.stopKillTimeline = function () {
-            console.log('summerContainer stopKillTimeline')
+            //console.log('summerContainer stopKillTimeline')
             leavesTimeline.stop().kill();
         };
 
@@ -2645,7 +2645,7 @@
 //            }
 //            return a.x - b.x;
 //        });
-//    console.log(JSON.stringify(leaves));
+//    //console.log(JSON.stringify(leaves));
 
         return [autumnTimeline, autumnContainer];
     }
