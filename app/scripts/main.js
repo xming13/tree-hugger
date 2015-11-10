@@ -638,7 +638,7 @@
                 creature.y += 13;
             });
 
-            var creatureTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false})
+            var creatureTimeline = new TimelineMax({repeat: -1})
                 .to(creatures, .6, {y: '-=19.5', rotation: '+=180'})
                 .to(creatures, .6, {y: '+=19.5', rotation: '+=180'})
                 .to(creatures, .03, {});
@@ -841,7 +841,7 @@
                                 var seaObjs = getSeaTimeline(LEFT_1, TOP_5);
                                 var seaContainer = seaObjs[1];
 
-                                var transitionTimeline6 = new TimelineMax({autoRemoveChildren: false});
+                                var transitionTimeline6 = new TimelineMax();
                                 transitionTimeline6
                                     .add('transition6')
                                     .to(cloudContainer3, .5, {y: TOP_NEG1, ease: Circ.easeOut}, 'transition6')
@@ -990,7 +990,7 @@
                                             .add(desertGroundTimeline2, 'desert+=6.3')
                                         ;
 
-                                        var transitionTimeline9 = new TimelineMax({autoRemoveChildren: false});
+                                        var transitionTimeline9 = new TimelineMax();
                                         transitionTimeline9
                                             .add('transition9')
                                             .to([desertGroundContainer1, desertGroundContainer2, cactusContainer2, desertContainer1, desertContainer2, desertFaceContainer],
@@ -2290,7 +2290,7 @@
         summerContainer.addChild(treeWrapper);
 
         var rotation = 6;
-        var leavesTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        var leavesTimeline = new TimelineMax({repeat: -1});
         leavesTimeline
             .add('leaves')
             .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
@@ -2865,7 +2865,7 @@
             .drawEllipse(2, 20, 2, 2);
         turtleWrapper.addChild(eyes);
 
-        var turtleEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var turtleEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         turtleEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 21})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -2959,7 +2959,7 @@
             .to(balloon3Cmd, .4, {x: 4, y: -20, w: 14, h: 18}, 'balloon+=0.6')
         ;
 
-        var flyTimeline = new TimelineMax({autoRemoveChildren: false});
+        var flyTimeline = new TimelineMax();
         flyTimeline
             .add('hands')
             .to(hand1Wrapper, .44, {rotation: "-=10", startAt: {rotation: "+=8"}, repeat: -1, yoyo: true}, 'hands')
@@ -2974,7 +2974,7 @@
     }
 
     function getCloudTimeline(x, y) {
-        var cloudTimeline = new TimelineMax({autoRemoveChildren: false});
+        var cloudTimeline = new TimelineMax();
 
         var cloudContainer = new createjs.Container();
         cloudContainer.x = x;
@@ -3018,7 +3018,7 @@
         eyes.graphics.endFill().beginFill('black');
         eyes.graphics.drawEllipse(4, -6, 5, 8);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -2})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3027,7 +3027,7 @@
         cloudContainer.addChild(cloudWrapper);
 
         cloudWrapper.x += 6;
-        var movingCloudTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true, autoRemoveChildren: false});
+        var movingCloudTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true});
         movingCloudTimeline.to(cloudWrapper, 2, {x: "-=12", ease: Power2.easeInOut });
 
         cloudTimeline
@@ -3330,7 +3330,7 @@
 
         fishContainer.addChild(fishWrapper);
 
-        var bubbleTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.2, autoRemoveChildren: false});
+        var bubbleTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.2});
         bubbleTimeline.to(bubbleCmd, 2, {
             x: -10,
             y: -24,
@@ -3361,7 +3361,7 @@
     }
 
     function getCactusTimeline(x, y) {
-        var cactusTimeline = new TimelineMax({autoRemoveChildren: false});
+        var cactusTimeline = new TimelineMax();
 
         var cactusContainer = new createjs.Container();
         cactusContainer.x = x;
@@ -3447,7 +3447,7 @@
         eyes.graphics.endFill().beginFill('black');
         eyes.graphics.drawEllipse(4, -9, 5, 8);
 
-        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
+        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
         cactusEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3535,7 +3535,7 @@
     }
 
     function getDesertFaceTimeline(x, y) {
-        var desertFaceTimeline = new TimelineMax({autoRemoveChildren: false});
+        var desertFaceTimeline = new TimelineMax();
 
         var desertFaceContainer = new createjs.Container();
         desertFaceContainer.x = x;
@@ -3559,7 +3559,7 @@
             .drawEllipse(8, 0, 6, 10)
             .command;
 
-        var desertFaceEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
+        var desertFaceEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
         desertFaceEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3644,7 +3644,7 @@
     }
 
     function getDesertGroundTimeline(x, y) {
-        var desertGroundTimeline = new TimelineMax({autoRemoveChildren: false});
+        var desertGroundTimeline = new TimelineMax();
 
         var desertGroundContainer = getDesertGroundContainer(x, y);
 
@@ -3730,7 +3730,7 @@
             .drawCircle(3, 7, 1.5);
         faceWrapper.addChild(eyes);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true, autoRemoveChildren: false});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 7})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3771,7 +3771,7 @@
         jackalopeWrapper.addChild(faceWrapper);
         jackalopeContainer.addChild(jackalopeWrapper);
 
-        var earTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.4, autoRemoveChildren: false});
+        var earTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.4});
         earTimeline
             .add('s1')
             .to(ear, .2, {rotation: 50}, 's1')
@@ -3814,7 +3814,7 @@
             .drawEllipse(-6, -20, 3, 4)
             .drawEllipse(4, -20, 3, 4)
         ;
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.5, yoyo: true, autoRemoveChildren: false});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.5, yoyo: true});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -18})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3860,7 +3860,7 @@
         leftHand.rotation = -20;
         leftHandWrapper.addChild(leftHand);
 
-        var leftHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
+        var leftHandTimeline = new TimelineMax({repeat: -1, yoyo: true});
         leftHandTimeline
             .to(leftHand, .8, {rotation: "+=40", ease: Sine.easeOut})
             .to(leftHand, .8, {rotation: "-=40", ease: Sine.easeIn});
@@ -3879,7 +3879,7 @@
         rightHand.rotation = 20;
         rightHandWrapper.addChild(rightHand);
 
-        var rightHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
+        var rightHandTimeline = new TimelineMax({repeat: -1, yoyo: true});
         rightHandTimeline
             .to(rightHand, .8, {rotation: "-=40", ease: Sine.easeOut})
             .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn});
@@ -3995,7 +3995,7 @@
         eyeWrapper.addChild(eye);
         seaMonsterWrapper.addChild(eyeWrapper);
 
-        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         eyeTimeline
             .to(eye, .2, {scaleY: 0, y: 2})
             .to(eye, .2, {scaleY: 1, y: 0});
@@ -4136,7 +4136,7 @@
 
         snakeWrapper.addChild(hands);
 
-        var snakeEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var snakeEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         snakeEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -7})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -4235,7 +4235,7 @@
         eyesWrapper.addChild(eyeballs);
         nobitaWrapper.addChild(eyesWrapper);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         eyesTimeline
             .to(eyeballs, .2, {scaleY: 0, y: 3.5})
             .to(eyeballs, .2, {scaleY: 1, y: 0});
@@ -4288,7 +4288,7 @@
     }
 
     function getQuestionTimeline(x, y) {
-        var questionTimeline = new TimelineMax({repeat: 1, ease: Bounce.easeOut, autoRemoveChildren: false});
+        var questionTimeline = new TimelineMax({repeat: 1, ease: Bounce.easeOut});
 
         var questionContainer = new createjs.Container();
         questionContainer.x = x;
@@ -4459,7 +4459,7 @@
 
     // End timelines
     function getEndCatTimeline(x, y) {
-        var catTimeline = new TimelineMax({autoRemoveChildren: false});
+        var catTimeline = new TimelineMax();
 
         var catContainer = getDefaultContainer(x, y);
 
@@ -4499,7 +4499,7 @@
 
         catEyes.y = 1;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut, autoRemoveChildren: false});
+        var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut});
         creatureTimeline
             .add('start')
             .to(creature, .6, {y: '-=19.5', rotation: '+=180'}, 'start')
@@ -4513,7 +4513,7 @@
     }
 
     function getEndBalloonTimeline(x, y) {
-        var balloonTimeline = new TimelineMax({autoRemoveChildren: false});
+        var balloonTimeline = new TimelineMax();
 
         var balloonContainer = new createjs.Container();
         balloonContainer.x = x;
@@ -4571,10 +4571,10 @@
         creature.y += 10;
         creature.rotation = 10;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
+        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true});
         creatureTimeline.to(creature, 1, {y: '+=4'});
 
-        var creatureTimeline2 = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        var creatureTimeline2 = new TimelineMax({repeat: -1});
         creatureTimeline2
             .to(creature, 2, {rotation: '-=20'})
             .to(creature, 1.5, {})
@@ -4644,7 +4644,7 @@
             }, 3.1)
         ;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
+        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true});
         creatureTimeline
             .to(creature, .5, {y: '-=3'});
         return [seaTimeline, seaContainer];
@@ -4715,7 +4715,7 @@
             .endFill().beginFill('black')
             .drawEllipse(4, -9, 5, 8);
 
-        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
+        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
         cactusEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -4763,7 +4763,7 @@
         cactusContainer.addChild(cactusWrapper);
         cactusContainer.addChild(creature);
 
-        var cactusTimeline = new TimelineMax({ease: Sine.easeInOut, repeat: -1, autoRemoveChildren: false});
+        var cactusTimeline = new TimelineMax({ease: Sine.easeInOut, repeat: -1});
         cactusTimeline
             .add('start')
             .to(creature, .5, {x: '-=22', y: '-=14', rotation: '-=180'})
@@ -4842,7 +4842,7 @@
         eyeWrapper.addChild(eye);
         seaMonsterWrapper.addChild(eyeWrapper);
 
-        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         eyeTimeline
             .to(eye, .2, {scaleY: 0, y: 2})
             .to(eye, .2, {scaleY: 1, y: 0});
@@ -4855,7 +4855,7 @@
 
         seaMonsterWrapper.y += 10;
 
-        var seaMonsterTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        var seaMonsterTimeline = new TimelineMax({repeat: -1});
         seaMonsterTimeline
             .add('bounce')
             .add('bounce2', 'bounce+=.9')
