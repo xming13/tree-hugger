@@ -376,7 +376,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         (function (a) {
             if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))check = true
         })(navigator.userAgent || navigator.vendor || window.opera);
-        console.log(check, 'isMobileOrTablet');
+        //console.log(check, 'isMobileOrTablet');
         return check;
     }
 
@@ -390,7 +390,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", stage);
         createjs.Ticker.addEventListener('tick', function () {
-//            console.log(TweenMax.getAllTweens().length);
+//            //console.log(TweenMax.getAllTweens().length);
         });
 
         // Defaults
@@ -545,7 +545,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         });
         pop.on('ended', function () {
             setTimeout(function () {
-                console.log('pop ended');
+                //console.log('pop ended');
                 ga('send', 'event', 'Ending', 'finish', 'Ending Finish', {
                     nonInteraction: true
                 });
@@ -826,10 +826,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             paused: true,
             autoRemoveChildren: true,
             onStart: function () {
-                console.log('mainTimeline onStart');
+                //console.log('mainTimeline onStart');
             },
             onComplete: function () {
-                console.log('mainTimeline onComplete');
+                //console.log('mainTimeline onComplete');
             }
         });
         mainTimeline.name = 'mainTimeline';
@@ -885,7 +885,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 creature.y += 13;
             });
 
-            var creatureTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false})
+            var creatureTimeline = new TimelineMax({repeat: -1})
                 .to(creatures, .6, {y: '-=19.5', rotation: '+=180'})
                 .to(creatures, .6, {y: '+=19.5', rotation: '+=180'})
                 .to(creatures, .03, {});
@@ -932,7 +932,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 })
                 // delay .5 sec
                 .to({}, .5, {});
-            console.log(openingTimeline.duration(), 'openingTimeline.duration()');
+            //console.log(openingTimeline.duration(), 'openingTimeline.duration()');
             return openingTimeline;
         }
 
@@ -963,7 +963,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                     .to(treeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition')
                     .add(function () {
                         flowerTimeline.stop().kill();
-                        console.log('flowerTimeline.stop().kill();');
+                        //console.log('flowerTimeline.stop().kill();');
                     });
 
                 var springObjs = getSpringTimeline(0, 0);
@@ -1038,7 +1038,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         y: 0,
                         ease: Power3.easeOut,
                         onComplete: function () {
-                            console.log('stopkill tree and seasons timeline');
+                            //console.log('stopkill tree and seasons timeline');
                             // remove all seasons' animation
                             treeTimeline.stop().kill();
                             springTimeline.stop().kill();
@@ -1069,26 +1069,26 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                     autoRemoveChild: true,
                     paused: true,
                     onStart: function () {
-                        console.log(TweenMax.getAllTweens().length, 'tlPart1 onStart');
+                        //console.log(TweenMax.getAllTweens().length, 'tlPart1 onStart');
                     },
                     onComplete: function () {
-                        console.log(TweenMax.getAllTweens().length, 'tlPart1 onComplete');
+                        //console.log(TweenMax.getAllTweens().length, 'tlPart1 onComplete');
 
                         var tlPart2 = new TimelineMax({
                             autoRemoveChild: true,
                             paused: true,
                             onStart: function () {
-                                console.log(TweenMax.getAllTweens().length, 'tlPart2 onStart');
+                                //console.log(TweenMax.getAllTweens().length, 'tlPart2 onStart');
                             },
                             onComplete: function () {
-                                console.log(TweenMax.getAllTweens().length, 'tlPart2 onComplete');
+                                //console.log(TweenMax.getAllTweens().length, 'tlPart2 onComplete');
 
                                 var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_5);
 
                                 var seaObjs = getSeaTimeline(LEFT_1, TOP_5);
                                 var seaContainer = seaObjs[1];
 
-                                var transitionTimeline6 = new TimelineMax({autoRemoveChildren: false});
+                                var transitionTimeline6 = new TimelineMax();
                                 transitionTimeline6
                                     .add('transition6')
                                     .to(cloudContainer3, .5, {y: TOP_NEG1, ease: Circ.easeOut}, 'transition6')
@@ -1102,13 +1102,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                     }, 'transition6')
                                     .add(function () {
                                         cloudContainer3.stopKillTimeline();
-                                        console.log('cloudContainer3.stopKillTimeline()');
+                                        //console.log('cloudContainer3.stopKillTimeline()');
                                     })
                                     .add('turtleGone', '+=0')
                                     .to(turtleWrapper, 1.2, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0}, 'turtleGone')
                                     .add(function () {
                                         turtleContainer.stopKillTimeline();
-                                        console.log('turtleContainer.stopKillTimeline()');
+                                        //console.log('turtleContainer.stopKillTimeline()');
                                     })
                                     .to(seaWaveContainer, 1.2, {alpha: 0, ease: Circ.easeOut}, 'turtleGone+=1')
                                 ;
@@ -1137,13 +1137,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                     .add(cactusTimeline2, 'transition7b+=5')
                                     .add(function () {
                                         cactusContainer.stopKillTimeline();
-                                        console.log('cactusContainer.stopKillTimeline()');
+                                        //console.log('cactusContainer.stopKillTimeline()');
                                         cactusTimeline.stop().kill();
-                                        console.log('cactusTimeline.stopKillTimeline()');
+                                        //console.log('cactusTimeline.stopKillTimeline()');
                                     }, 'transition7b')
                                     .add(function () {
                                         fishContainer.stopKillTimeline();
-                                        console.log('fishContainer.stopKillTimeline()');
+                                        //console.log('fishContainer.stopKillTimeline()');
                                     })
                                 ;
 
@@ -1157,10 +1157,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                     autoRemoveChild: true,
                                     paused: true,
                                     onStart: function () {
-                                        console.log(TweenMax.getAllTweens().length, 'tlPart3 onStart');
+                                        //console.log(TweenMax.getAllTweens().length, 'tlPart3 onStart');
                                     },
                                     onComplete: function () {
-                                        console.log(TweenMax.getAllTweens().length, 'tlPart3 onComplete');
+                                        //console.log(TweenMax.getAllTweens().length, 'tlPart3 onComplete');
 
                                         var overlayContainer = new createjs.Container();
                                         overlayContainer.x = 0;
@@ -1212,7 +1212,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                                 cactusFlowerWrapper2.y += TOP_2;
                                                 overlayContainer.addChild(cactusFlowerWrapper2);
                                                 seaContainer.stopKillTimeline();
-                                                console.log('seaContainer.stopKillTimeline();');
+                                                //console.log('seaContainer.stopKillTimeline();');
                                             }, 'overlay')
                                             .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
                                             .to(cactusFlowerWrapper2, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
@@ -1237,7 +1237,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                             .add(desertGroundTimeline2, 'desert+=6.3')
                                         ;
 
-                                        var transitionTimeline9 = new TimelineMax({autoRemoveChildren: false});
+                                        var transitionTimeline9 = new TimelineMax();
                                         transitionTimeline9
                                             .add('transition9')
                                             .to([desertGroundContainer1, desertGroundContainer2, cactusContainer2, desertContainer1, desertContainer2, desertFaceContainer],
@@ -1247,10 +1247,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                                 desertGroundContainer1.stopKillTimeline();
                                                 desertGroundContainer2.stopKillTimeline();
                                                 cactusContainer2.stopKillTimeline();
-                                                console.log('desertFaceContainer.stopKillTimeline();');
-                                                console.log('desertGroundContainer1.stopKillTimeline();');
-                                                console.log('desertGroundContainer2.stopKillTimeline();');
-                                                console.log('cactusContainer2.stopKillTimeline();');
+                                                //console.log('desertFaceContainer.stopKillTimeline();');
+                                                //console.log('desertGroundContainer1.stopKillTimeline();');
+                                                //console.log('desertGroundContainer2.stopKillTimeline();');
+                                                //console.log('cactusContainer2.stopKillTimeline();');
                                             });
 
                                         animationWrapper.addChild(overlayContainer);
@@ -1267,10 +1267,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                             autoRemoveChild: true,
                                             paused: true,
                                             onStart: function () {
-                                                console.log(TweenMax.getAllTweens().length, 'tlPart4 onStart');
+                                                //console.log(TweenMax.getAllTweens().length, 'tlPart4 onStart');
                                             },
                                             onComplete: function () {
-                                                console.log(TweenMax.getAllTweens().length, 'tlPart4 onComplete');
+                                                //console.log(TweenMax.getAllTweens().length, 'tlPart4 onComplete');
                                             }
                                         });
 
@@ -1279,7 +1279,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                             .add(transitionTimeline8)
                                             .add(transitionTimeline9, 'next');
                                         tlPart4.play();
-                                        console.log(tlPart4.duration(), 'tlPart4.duration()');
+                                        //console.log(tlPart4.duration(), 'tlPart4.duration()');
 
                                     }
                                 });
@@ -1295,7 +1295,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 //                                    .add(transitionTimeline9, 'next');
 
                                 tlPart3.play();
-                                console.log(tlPart3.duration(), 'tlPart3.duration()');
+                                //console.log(tlPart3.duration(), 'tlPart3.duration()');
                             }
                         });
 
@@ -1377,7 +1377,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                 // this will be done in tlPart3
 //                                turtleContainer.stopKillTimeline();
 //                                cloudContainer3.stopKillTimeline();
-//                                console.log('turtleContainer cloudContainer3.stop().kill();');
+//                                //console.log('turtleContainer cloudContainer3.stop().kill();');
                             });
 
                         animationWrapper.addChild(turtleContainer);
@@ -1388,7 +1388,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         animationWrapper.addChild(roofTopContainer);
 
                         tlPart2.play();
-                        console.log(tlPart2.duration(), 'tlPart2.duration()');
+                        //console.log(tlPart2.duration(), 'tlPart2.duration()');
                     }
                 });
 
@@ -1402,19 +1402,19 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                     .add(catTimeline, '-=.3')
                     .add(function () {
                         transitionTimeline.stop().kill();
-                        console.log('transitionTimeline.stop().kill();');
+                        //console.log('transitionTimeline.stop().kill();');
 
                         transitionSeasonTimeline.stop().kill();
-                        console.log('transitionSeasonTimeline.stop().kill();');
+                        //console.log('transitionSeasonTimeline.stop().kill();');
 
                         transitionTimeline2.stop().kill();
-                        console.log('transitionTimeline2.stop().kill();');
+                        //console.log('transitionTimeline2.stop().kill();');
 
                         catTimeline.stop().kill();
-                        console.log('catTimeline.stop().kill();');
+                        //console.log('catTimeline.stop().kill();');
                     });
                 tlPart1.play();
-                console.log(tlPart1.duration(), 'tlPart1.duration()');
+                //console.log(tlPart1.duration(), 'tlPart1.duration()');
             });
 
             return flowerToDesertTimeline;
@@ -1506,10 +1506,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         autoRemoveChildren: true,
                         paused: true,
                         onStart: function () {
-                            console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onStart');
+                            //console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onStart');
                         },
                         onComplete: function () {
-                            console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onComplete');
+                            //console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onComplete');
 
                             var snakeObjs = getSnakeTimeline(LEFT_4, TOP_2);
                             var snakeTimeline = snakeObjs[0];
@@ -1647,10 +1647,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                 autoRemoveChildren: true,
                                 paused: true,
                                 onStart: function () {
-                                    console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onStart');
+                                    //console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onStart');
                                 },
                                 onComplete: function () {
-                                    console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onComplete');
+                                    //console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onComplete');
                                 }
                             });
 
@@ -1664,7 +1664,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                 .add(transitionTimeline18, '+=.24');
 
                             tlPart2.play();
-                            console.log(tlPart2.duration(), 'iceWorld tlPart2.duration()');
+                            //console.log(tlPart2.duration(), 'iceWorld tlPart2.duration()');
                         }
                     });
 
@@ -1678,7 +1678,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         .add(transitionTimeline13, '+=1.5')
                     ;
                     tlPart1.play();
-                    console.log(tlPart1.duration(), 'iceWorld tlPart1.duration()');
+                    //console.log(tlPart1.duration(), 'iceWorld tlPart1.duration()');
                 }
             });
 
@@ -1691,13 +1691,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 autoRemoveChildren: true,
                 paused: true,
                 onStart: function () {
-                    console.log(TweenMax.getAllTweens().length, 'endingTimeline onStart');
+                    //console.log(TweenMax.getAllTweens().length, 'endingTimeline onStart');
                     ga('send', 'event', 'Ending', 'start', 'Ending Start', {
                         nonInteraction: true
                     });
                 },
                 onComplete: function () {
-                    console.log(TweenMax.getAllTweens().length, 'endingTimeline onComplete');
+                    //console.log(TweenMax.getAllTweens().length, 'endingTimeline onComplete');
                 }
             });
 
@@ -1775,14 +1775,14 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .add(function () {
                 var openingTimeline = getOpeningTimeline();
                 openingTimeline.eventCallback('onComplete', function () {
-                    console.log(TweenMax.getAllTweens().length, 'openingTimeline onComplete');
+                    //console.log(TweenMax.getAllTweens().length, 'openingTimeline onComplete');
                     var flowerToDesertTimeline = getFlowerToDesertTimeline();
                     flowerToDesertTimeline.add(function () {
                         var iceWorldTimeline = getIceWorldTimeline();
                         iceWorldTimeline.add(function () {
                             var flowerToDesertTimeline2 = getFlowerToDesertTimeline();
                             flowerToDesertTimeline2.add(function () {
-                                console.log(TweenMax.getAllTweens().length, 'flowerToDesertTimeline2 onComplete');
+                                //console.log(TweenMax.getAllTweens().length, 'flowerToDesertTimeline2 onComplete');
                                 var endingTimeline = getEndingTimeline();
                                 endingTimeline.play();
                             }, 'next');
@@ -2466,7 +2466,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 //        }
 //        return a.x - b.x;
 //    })
-//    console.log(JSON.stringify(flowers));
+//    //console.log(JSON.stringify(flowers));
 
         springContainer.addChild(treeWrapper);
 
@@ -2537,7 +2537,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         summerContainer.addChild(treeWrapper);
 
         var rotation = 6;
-        var leavesTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        var leavesTimeline = new TimelineMax({repeat: -1});
         leavesTimeline
             .add('leaves')
             .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
@@ -2548,7 +2548,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         ;
 
         summerContainer.stopKillTimeline = function () {
-            console.log('summerContainer stopKillTimeline')
+            //console.log('summerContainer stopKillTimeline')
             leavesTimeline.stop().kill();
         };
 
@@ -2892,7 +2892,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 //            }
 //            return a.x - b.x;
 //        });
-//    console.log(JSON.stringify(leaves));
+//    //console.log(JSON.stringify(leaves));
 
         return [autumnTimeline, autumnContainer];
     }
@@ -3112,7 +3112,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .drawEllipse(2, 20, 2, 2);
         turtleWrapper.addChild(eyes);
 
-        var turtleEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var turtleEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         turtleEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 21})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3206,7 +3206,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(balloon3Cmd, .4, {x: 4, y: -20, w: 14, h: 18}, 'balloon+=0.6')
         ;
 
-        var flyTimeline = new TimelineMax({autoRemoveChildren: false});
+        var flyTimeline = new TimelineMax();
         flyTimeline
             .add('hands')
             .to(hand1Wrapper, .44, {rotation: "-=10", startAt: {rotation: "+=8"}, repeat: -1, yoyo: true}, 'hands')
@@ -3221,7 +3221,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getCloudTimeline(x, y) {
-        var cloudTimeline = new TimelineMax({autoRemoveChildren: false});
+        var cloudTimeline = new TimelineMax();
 
         var cloudContainer = new createjs.Container();
         cloudContainer.x = x;
@@ -3265,7 +3265,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyes.graphics.endFill().beginFill('black');
         eyes.graphics.drawEllipse(4, -6, 5, 8);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -2})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3274,7 +3274,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         cloudContainer.addChild(cloudWrapper);
 
         cloudWrapper.x += 6;
-        var movingCloudTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true, autoRemoveChildren: false});
+        var movingCloudTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true});
         movingCloudTimeline.to(cloudWrapper, 2, {x: "-=12", ease: Power2.easeInOut });
 
         cloudTimeline
@@ -3577,7 +3577,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         fishContainer.addChild(fishWrapper);
 
-        var bubbleTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.2, autoRemoveChildren: false});
+        var bubbleTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.2});
         bubbleTimeline.to(bubbleCmd, 2, {
             x: -10,
             y: -24,
@@ -3608,7 +3608,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getCactusTimeline(x, y) {
-        var cactusTimeline = new TimelineMax({autoRemoveChildren: false});
+        var cactusTimeline = new TimelineMax();
 
         var cactusContainer = new createjs.Container();
         cactusContainer.x = x;
@@ -3694,7 +3694,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyes.graphics.endFill().beginFill('black');
         eyes.graphics.drawEllipse(4, -9, 5, 8);
 
-        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
+        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
         cactusEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3782,7 +3782,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getDesertFaceTimeline(x, y) {
-        var desertFaceTimeline = new TimelineMax({autoRemoveChildren: false});
+        var desertFaceTimeline = new TimelineMax();
 
         var desertFaceContainer = new createjs.Container();
         desertFaceContainer.x = x;
@@ -3806,7 +3806,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .drawEllipse(8, 0, 6, 10)
             .command;
 
-        var desertFaceEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
+        var desertFaceEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
         desertFaceEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -3891,7 +3891,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getDesertGroundTimeline(x, y) {
-        var desertGroundTimeline = new TimelineMax({autoRemoveChildren: false});
+        var desertGroundTimeline = new TimelineMax();
 
         var desertGroundContainer = getDesertGroundContainer(x, y);
 
@@ -3977,7 +3977,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .drawCircle(3, 7, 1.5);
         faceWrapper.addChild(eyes);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true, autoRemoveChildren: false});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, yoyo: true});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: 7})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -4018,7 +4018,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         jackalopeWrapper.addChild(faceWrapper);
         jackalopeContainer.addChild(jackalopeWrapper);
 
-        var earTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.4, autoRemoveChildren: false});
+        var earTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.4});
         earTimeline
             .add('s1')
             .to(ear, .2, {rotation: 50}, 's1')
@@ -4061,7 +4061,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .drawEllipse(-6, -20, 3, 4)
             .drawEllipse(4, -20, 3, 4)
         ;
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.5, yoyo: true, autoRemoveChildren: false});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 1.5, yoyo: true});
         eyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -18})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -4107,7 +4107,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         leftHand.rotation = -20;
         leftHandWrapper.addChild(leftHand);
 
-        var leftHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
+        var leftHandTimeline = new TimelineMax({repeat: -1, yoyo: true});
         leftHandTimeline
             .to(leftHand, .8, {rotation: "+=40", ease: Sine.easeOut})
             .to(leftHand, .8, {rotation: "-=40", ease: Sine.easeIn});
@@ -4126,7 +4126,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         rightHand.rotation = 20;
         rightHandWrapper.addChild(rightHand);
 
-        var rightHandTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
+        var rightHandTimeline = new TimelineMax({repeat: -1, yoyo: true});
         rightHandTimeline
             .to(rightHand, .8, {rotation: "-=40", ease: Sine.easeOut})
             .to(rightHand, .8, {rotation: "+=40", ease: Sine.easeIn});
@@ -4242,7 +4242,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyeWrapper.addChild(eye);
         seaMonsterWrapper.addChild(eyeWrapper);
 
-        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         eyeTimeline
             .to(eye, .2, {scaleY: 0, y: 2})
             .to(eye, .2, {scaleY: 1, y: 0});
@@ -4383,7 +4383,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         snakeWrapper.addChild(hands);
 
-        var snakeEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var snakeEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         snakeEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -7})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -4482,7 +4482,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyesWrapper.addChild(eyeballs);
         nobitaWrapper.addChild(eyesWrapper);
 
-        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var eyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         eyesTimeline
             .to(eyeballs, .2, {scaleY: 0, y: 3.5})
             .to(eyeballs, .2, {scaleY: 1, y: 0});
@@ -4535,7 +4535,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getQuestionTimeline(x, y) {
-        var questionTimeline = new TimelineMax({repeat: 1, ease: Bounce.easeOut, autoRemoveChildren: false});
+        var questionTimeline = new TimelineMax({repeat: 1, ease: Bounce.easeOut});
 
         var questionContainer = new createjs.Container();
         questionContainer.x = x;
@@ -4706,7 +4706,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
     // End timelines
     function getEndCatTimeline(x, y) {
-        var catTimeline = new TimelineMax({autoRemoveChildren: false});
+        var catTimeline = new TimelineMax();
 
         var catContainer = getDefaultContainer(x, y);
 
@@ -4746,7 +4746,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         catEyes.y = 1;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut, autoRemoveChildren: false});
+        var creatureTimeline = new TimelineMax({repeat: -1, ease: Sine.easeInOut});
         creatureTimeline
             .add('start')
             .to(creature, .6, {y: '-=19.5', rotation: '+=180'}, 'start')
@@ -4760,7 +4760,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getEndBalloonTimeline(x, y) {
-        var balloonTimeline = new TimelineMax({autoRemoveChildren: false});
+        var balloonTimeline = new TimelineMax();
 
         var balloonContainer = new createjs.Container();
         balloonContainer.x = x;
@@ -4818,10 +4818,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         creature.y += 10;
         creature.rotation = 10;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
+        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true});
         creatureTimeline.to(creature, 1, {y: '+=4'});
 
-        var creatureTimeline2 = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        var creatureTimeline2 = new TimelineMax({repeat: -1});
         creatureTimeline2
             .to(creature, 2, {rotation: '-=20'})
             .to(creature, 1.5, {})
@@ -4891,7 +4891,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             }, 3.1)
         ;
 
-        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true, autoRemoveChildren: false});
+        var creatureTimeline = new TimelineMax({repeat: -1, yoyo: true});
         creatureTimeline
             .to(creature, .5, {y: '-=3'});
         return [seaTimeline, seaContainer];
@@ -4962,7 +4962,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .endFill().beginFill('black')
             .drawEllipse(4, -9, 5, 8);
 
-        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2, autoRemoveChildren: false});
+        var cactusEyesTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, delay: 2});
         cactusEyesTimeline
             .to(eyes, .2, {scaleY: 0, y: -5})
             .to(eyes, .2, {scaleY: 1, y: 0});
@@ -5010,7 +5010,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         cactusContainer.addChild(cactusWrapper);
         cactusContainer.addChild(creature);
 
-        var cactusTimeline = new TimelineMax({ease: Sine.easeInOut, repeat: -1, autoRemoveChildren: false});
+        var cactusTimeline = new TimelineMax({ease: Sine.easeInOut, repeat: -1});
         cactusTimeline
             .add('start')
             .to(creature, .5, {x: '-=22', y: '-=14', rotation: '-=180'})
@@ -5089,7 +5089,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyeWrapper.addChild(eye);
         seaMonsterWrapper.addChild(eyeWrapper);
 
-        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2, autoRemoveChildren: false});
+        var eyeTimeline = new TimelineMax({repeat: -1, repeatDelay: 2});
         eyeTimeline
             .to(eye, .2, {scaleY: 0, y: 2})
             .to(eye, .2, {scaleY: 1, y: 0});
@@ -5102,7 +5102,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         seaMonsterWrapper.y += 10;
 
-        var seaMonsterTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        var seaMonsterTimeline = new TimelineMax({repeat: -1});
         seaMonsterTimeline
             .add('bounce')
             .add('bounce2', 'bounce+=.9')
