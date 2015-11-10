@@ -341,6 +341,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     // Loading
     var loadingWrapper;
     var loadingTimeline;
+    var isLoadingFinished;
 
     // Menu
     var menuWrapper;
@@ -365,10 +366,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
     // for debugging
     var DEBUG = false;
-    var START_TIME = DEBUG ? 168 : 0;
-    var debugObjs = getYetiTimeline(LEFT_2, TOP_1);
+    var START_TIME = DEBUG ? 0 : 0;
+//        168 : 0;
+    var debugObjs = null;
     //getNContainer(LEFT_2, TOP_1);
-
 
     function isMobileOrTablet() {
         var check = false;
@@ -388,9 +389,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         // Ticker
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", stage);
-//        createjs.Ticker.addEventListener('tick', function () {
+        createjs.Ticker.addEventListener('tick', function () {
 //            console.log(TweenMax.getAllTweens().length);
-//        });
+        });
 
         // Defaults
         TweenLite.defaultEase = Power0.easeNone;
@@ -454,7 +455,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             "[ar:Kumya Dawson]",
             "[al:JUNO OST]",
             "[00:05.00]Song: Tree Hugger",
-            "[00:11.50]Artist: Kimya Dawson",
+            "[00:11.50]Artist: Antsy Pants & Kimya Dawson",
             "[00:18.00]",
             "[00:19.20]The flower said, \"I wish I was a tree.\"",
             "[00:21.14]The tree said, \"I wish I could be",
@@ -540,40 +541,16 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         pop.on('canplayall', function () {
             popCanPlay = true;
-            renderMenu();
-
-            // hide #loading
-//                var loading = document.getElementById('loading');
-//                loading.style.display = 'none';
-//
-//                // show #btn-start
-//                var btnStart = document.getElementById('btn-start');
-//                btnStart.style.display = '';
-//
-//                btnStart.addEventListener("click", function () {
-//                    // hide #btn-start
-//                    btnStart.style.display = 'none';
-//
-//                    // Add class 'loaded' to container
-//                    var container = document.getElementsByClassName('container')[0];
-//                    if (container.classList) {
-//                        container.classList.add('loaded');
-//                    }
-//                    else {
-//                        container.className += ' loaded';
-//                    }
-//
-//                    // start
-//                    pop.play();
-//                });
+            isLoadingFinished = true;
         });
         pop.on('ended', function () {
             setTimeout(function () {
+                console.log('pop ended');
                 ga('send', 'event', 'Ending', 'finish', 'Ending Finish', {
                     nonInteraction: true
                 });
                 stage.removeChild(animationWrapper);
-                renderMenu()
+                renderMenu();
             }, 200);
         });
 
@@ -615,6 +592,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
     // Render
     function renderLoading() {
+        isLoadingFinished = false;
+
         if (!loadingWrapper) {
             loadingWrapper = new createjs.Container();
         }
@@ -679,7 +658,17 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         petal5.graphics.beginFill(petalColor).drawCircle(0, 0, petalRadius);
         loadingIconWrapper.addChildAt(petal5, 1);
 
-        loadingTimeline = new TimelineMax({repeat: -1, repeatDelay: .3, autoRemoveChildren: false});
+        loadingTimeline = new TimelineMax({
+            repeat: -1,
+            repeatDelay: .3,
+            autoRemoveChildren: true,
+            onRepeat: function () {
+                if (isLoadingFinished) {
+                    loadingTimeline.stop().kill();
+                    renderMenu();
+                }
+            }
+        });
         loadingTimeline
             .set([petal1, petal2, petal3, petal4, petal5], {alpha: 0})
             .to(flowerCmd, .6, {
@@ -696,9 +685,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function renderMenu() {
-        if (!DEBUG) {
-            TweenMax.killAll();
-        }
+        TweenMax.killAll();
 
         if (!menuWrapper) {
             menuWrapper = new createjs.Container();
@@ -709,7 +696,6 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         menuWrapper.removeAllChildren();
 
         stage.removeChild(loadingWrapper);
-        loadingTimeline.remove();
         galleryTimelines.forEach(function (timeline) {
             timeline.remove();
         });
@@ -759,9 +745,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         btnFbWrapper.addChild(btnFb);
         btnFbWrapper.addEventListener('click', function () {
-            alert('not implemented yet!');
-
-//        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank');
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank');
         });
         menuWrapper.addChild(btnFbWrapper);
 
@@ -853,7 +837,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         function getOpeningTimeline() {
             var openingTimeline = new TimelineMax({
                 autoRemoveChildren: true,
-                paused: true
+                paused: true,
+                onStart: function () {
+                }
             });
             openingTimeline.name = 'openingTimeline';
 
@@ -918,7 +904,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             var durationAppear = .4;
             var delay = '+=1';
             openingTimeline
-                .to(defaultContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut}, '+=1')
+                .to(defaultContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut}, delay)
                 .to(defaultContainer, durationPosition, {x: LEFT_1, y: TOP_1, ease: Circ.easeOut}, delay)
                 .to(springContainer, durationAppear, {scaleX: 1, scaleY: 1, ease: Circ.easeOut})
                 .to(springContainer, durationPosition, {x: LEFT_2, y: TOP_1, ease: Circ.easeOut}, delay)
@@ -938,12 +924,11 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 .to(iceSeaContainer, durationPosition, {x: LEFT_2, y: TOP_2, ease: Circ.easeOut}, delay)
                 .to(containers, durationPosition, {scaleX: 0, scaleY: 0, ease: Circ.easeOut}, '+=.4')
                 .add(function () {
+                    creatureTimeline.stop().kill();
+
                     creatures.forEach(function (creature) {
-                        if (creature.timeline) {
-                            creature.timeline.remove();
-                        }
+                        creature.stopKillTimeline();
                     });
-                    creatureTimeline.remove();
                 })
                 // delay .5 sec
                 .to({}, .5, {});
@@ -954,13 +939,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         function getFlowerToDesertTimeline() {
             var flowerToDesertTimeline = new TimelineMax({
                 autoRemoveChildren: true,
-                paused: true
+                paused: true,
+                onStart: function () {
+                }
             });
 
             flowerToDesertTimeline
-                .to({}, 57.405, {})
-                .add('next')
-                .to({}, .5, {});
+                .add('next', '+=56.505');
 
             flowerToDesertTimeline.eventCallback('onStart', function () {
                 var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
@@ -975,7 +960,11 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 transitionTimeline
                     .add('transition')
                     .to(flowerContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
-                    .to(treeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
+                    .to(treeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition')
+                    .add(function () {
+                        flowerTimeline.stop().kill();
+                        console.log('flowerTimeline.stop().kill();');
+                    });
 
                 var springObjs = getSpringTimeline(0, 0);
                 var springTimeline = springObjs[0];
@@ -1049,11 +1038,14 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         y: 0,
                         ease: Power3.easeOut,
                         onComplete: function () {
+                            console.log('stopkill tree and seasons timeline');
                             // remove all seasons' animation
-                            springTimeline.remove();
-                            summerTimeline.remove();
-                            autumnTimeline.remove();
-                            winterTimeline.remove();
+                            treeTimeline.stop().kill();
+                            springTimeline.stop().kill();
+                            summerTimeline.stop().kill();
+                            summerContainer.stopKillTimeline();
+                            autumnTimeline.stop().kill();
+                            winterTimeline.stop().kill();
                         }
                     }, 'reverse')
                 ;
@@ -1066,7 +1058,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 transitionTimeline2
                     .add('transition')
                     .to(treeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition')
-                    .to(catContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition');
+                    .to(catContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition')
+                ;
 
                 animationWrapper.addChild(flowerContainer);
                 animationWrapper.addChild(treeContainer);
@@ -1075,11 +1068,21 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 var tlPart1 = new TimelineMax({
                     autoRemoveChild: true,
                     paused: true,
+                    onStart: function () {
+                        console.log(TweenMax.getAllTweens().length, 'tlPart1 onStart');
+                    },
                     onComplete: function () {
+                        console.log(TweenMax.getAllTweens().length, 'tlPart1 onComplete');
+
                         var tlPart2 = new TimelineMax({
                             autoRemoveChild: true,
                             paused: true,
+                            onStart: function () {
+                                console.log(TweenMax.getAllTweens().length, 'tlPart2 onStart');
+                            },
                             onComplete: function () {
+                                console.log(TweenMax.getAllTweens().length, 'tlPart2 onComplete');
+
                                 var seaWaveContainer = getSeaWaveContainer(LEFT_2, TOP_5);
 
                                 var seaObjs = getSeaTimeline(LEFT_1, TOP_5);
@@ -1098,12 +1101,14 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                         turtleWrapper.removeChild(balloonWrapper);
                                     }, 'transition6')
                                     .add(function () {
-                                        cloudContainer3.removeTimeline();
+                                        cloudContainer3.stopKillTimeline();
+                                        console.log('cloudContainer3.stopKillTimeline()');
                                     })
                                     .add('turtleGone', '+=0')
                                     .to(turtleWrapper, 1.2, {y: "+=" + CIRCLE_RADIUS / 2, alpha: 0}, 'turtleGone')
                                     .add(function () {
-                                        turtleContainer.removeTimeline();
+                                        turtleContainer.stopKillTimeline();
+                                        console.log('turtleContainer.stopKillTimeline()');
                                     })
                                     .to(seaWaveContainer, 1.2, {alpha: 0, ease: Circ.easeOut}, 'turtleGone+=1')
                                 ;
@@ -1121,139 +1126,174 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                 var cactusFlowerWrapper2 = cactusObjs2[2];
                                 var cactusCactusWrapper2 = cactusObjs2[3];
 
-                                var transitionTimeline7 = new TimelineMax({autoRemoveChildren: false});
+                                var transitionTimeline7 = new TimelineMax();
                                 transitionTimeline7
                                     .add('transition7')
-                                    .to(fishContainer, 8.8, {x: LEFT_0, startAt: {x: LEFT_4}}, 'transition7')
+                                    .to(fishContainer, 8.55, {x: LEFT_0, startAt: {x: LEFT_4}}, 'transition7')
                                     .to(cactusContainer, .5, {scaleX: 0, scaleY: 0, ease: Power2.easeOut })
                                     .add('transition7b', '+=0.5')
-                                    .to(fishContainer, 8.8, {x: LEFT_4, startAt: {x: LEFT_0, scaleX: -1}}, 'transition7b')
+                                    .to(fishContainer, 8.55, {x: LEFT_4, startAt: {x: LEFT_0, scaleX: -1}}, 'transition7b')
                                     .add(cactusTimeline, 'transition7+=5')
                                     .add(cactusTimeline2, 'transition7b+=5')
                                     .add(function () {
-                                        cactusContainer.removeTimeline();
-                                        fishContainer.removeTimeline();
+                                        cactusContainer.stopKillTimeline();
+                                        console.log('cactusContainer.stopKillTimeline()');
+                                        cactusTimeline.stop().kill();
+                                        console.log('cactusTimeline.stopKillTimeline()');
+                                    }, 'transition7b')
+                                    .add(function () {
+                                        fishContainer.stopKillTimeline();
+                                        console.log('fishContainer.stopKillTimeline()');
                                     })
                                 ;
-
-                                var overlayContainer = new createjs.Container();
-                                overlayContainer.x = 0;
-                                overlayContainer.y = 0;
-                                var overlay = new createjs.Shape();
-                                overlay.alpha = 0;
-                                overlay.graphics.beginFill('black').rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                                overlayContainer.addChild(overlay);
-
-                                var desertGroundObj1 = getDesertGroundTimeline(LEFT_1, TOP_2);
-                                var desertGroundTimeline1 = desertGroundObj1[0];
-                                var desertGroundContainer1 = desertGroundObj1[1];
-
-                                var desertGroundObj2 = getDesertGroundTimeline(LEFT_3, TOP_2);
-                                var desertGroundTimeline2 = desertGroundObj2[0];
-                                var desertGroundContainer2 = desertGroundObj2[1];
-
-                                var desertContainer1 = getDesertContainer(LEFT_1, TOP_3);
-                                var desertContainer2 = getDesertContainer(LEFT_3, TOP_3);
-
-                                var desertFaceObjs = getDesertFaceTimeline(LEFT_2, TOP_3);
-                                var desertFaceTimeline = desertFaceObjs[0];
-                                var desertFaceContainer = desertFaceObjs[1];
-
-                                desertGroundContainer1.scaleX = desertGroundContainer1.scaleY
-                                    = desertGroundContainer1.scaleX = desertGroundContainer2.scaleY
-                                    = desertContainer1.scaleX = desertContainer1.scaleY
-                                    = desertContainer2.scaleX = desertContainer2.scaleY
-                                    = desertFaceContainer.scaleX = desertFaceContainer.scaleY
-                                    = 0;
-
-                                var hearts = [];
-                                for (var i = 1; i <= 25; i++) {
-                                    var heartContainer = getHeartContainer(_random(10, 310), TOP_0 - _random(0, CIRCLE_RADIUS));
-                                    heartContainer.alpha = .8;
-                                    hearts.push(heartContainer);
-                                }
-
-                                var transitionTimeline8 = new TimelineMax();
-                                transitionTimeline8
-                                    .add('transition8')
-                                    .set([desertGroundContainer1, desertGroundContainer2, desertContainer1, desertContainer2, desertFaceContainer], {scaleX: 0, scaleY: 0})
-                                    .to(seaContainer, .5, {y: TOP_4}, 'transition8')
-                                    .to(cactusContainer2, .5, {y: TOP_2}, 'transition8')
-                                    .add('overlay')
-                                    .add(function () {
-                                        cactusCactusWrapper2.removeChild(cactusFlowerWrapper2);
-                                        cactusFlowerWrapper2.x += LEFT_2;
-                                        cactusFlowerWrapper2.y += TOP_2;
-                                        overlayContainer.addChild(cactusFlowerWrapper2);
-                                    }, 'overlay')
-                                    .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
-                                    .to(cactusFlowerWrapper2, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
-                                    .add(new TimelineMax({delay: .6, autoRemoveChildren: true})
-                                        .to(cactusFlowerWrapper2, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
-                                        .to(cactusFlowerWrapper2, .26, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
-                                        .to(cactusFlowerWrapper2, .22, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
-                                        .to(cactusFlowerWrapper2, .18, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
-                                        .to(cactusFlowerWrapper2, .14, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
-                                        .to(cactusFlowerWrapper2, .1, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
-                                        .to(cactusFlowerWrapper2, .06, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
-                                        .to(cactusFlowerWrapper2, .02, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2}))
-                                    .add('overlayend', '+=3.5')
-                                    .add('desert', '+=4')
-                                    .to(hearts, 16, {y: "+=" + (CIRCLE_DIAMETER + CIRCLE_DIAMETER + CIRCLE_DIAMETER)})
-                                    .to(hearts, 2, {alpha: 0}, '-=2')
-                                    .to(overlay, .5, {alpha: 0}, 'overlayend')
-                                    .to([desertGroundContainer1, desertGroundContainer2], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert')
-                                    .to([desertContainer1, desertContainer2, desertFaceContainer], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert+=1')
-                                    .add(desertFaceTimeline, 'desert+=2')
-                                    .add(desertGroundTimeline1, 'desert+=7.3')
-                                    .add(desertGroundTimeline2, 'desert+=7.3')
-                                ;
-
-                                var transitionTimeline9 = new TimelineMax({autoRemoveChildren: false});
-                                transitionTimeline9
-                                    .add('transition9')
-                                    .to([desertGroundContainer1, desertGroundContainer2, cactusContainer2, desertContainer1, desertContainer2, desertFaceContainer],
-                                    .5, {x: "-=" + ((CIRCLE_DIAMETER + SPACING) * 3), ease: Circ.easeOut}, 'transition9')
-                                    .add(function () {
-                                        seaContainer.removeTimeline();
-                                        desertFaceContainer.removeTimeline();
-                                        desertGroundContainer1.removeTimeline();
-                                        desertGroundContainer2.removeTimeline();
-                                        cactusContainer2.removeTimeline();
-                                    });
 
                                 animationWrapper.addChildAt(seaWaveContainer, 0);
                                 animationWrapper.addChild(seaContainer);
                                 animationWrapper.addChild(fishContainer);
                                 animationWrapper.addChild(cactusContainer);
                                 animationWrapper.addChild(cactusContainer2);
-                                animationWrapper.addChild(overlayContainer);
-                                animationWrapper.addChild(desertGroundContainer1);
-                                animationWrapper.addChild(desertGroundContainer2);
-                                animationWrapper.addChild(desertContainer1);
-                                animationWrapper.addChild(desertContainer2);
-                                animationWrapper.addChild(desertFaceContainer);
-                                hearts.forEach(function (heartContainer) {
-                                    animationWrapper.addChild(heartContainer);
-                                });
 
                                 var tlPart3 = new TimelineMax({
                                     autoRemoveChild: true,
                                     paused: true,
+                                    onStart: function () {
+                                        console.log(TweenMax.getAllTweens().length, 'tlPart3 onStart');
+                                    },
                                     onComplete: function () {
-//                                    flowerToDesertTimeline.play();
+                                        console.log(TweenMax.getAllTweens().length, 'tlPart3 onComplete');
+
+                                        var overlayContainer = new createjs.Container();
+                                        overlayContainer.x = 0;
+                                        overlayContainer.y = 0;
+                                        var overlay = new createjs.Shape();
+                                        overlay.alpha = 0;
+                                        overlay.graphics.beginFill('black').rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                                        overlayContainer.addChild(overlay);
+
+                                        var desertGroundObj1 = getDesertGroundTimeline(LEFT_1, TOP_2);
+                                        var desertGroundTimeline1 = desertGroundObj1[0];
+                                        var desertGroundContainer1 = desertGroundObj1[1];
+
+                                        var desertGroundObj2 = getDesertGroundTimeline(LEFT_3, TOP_2);
+                                        var desertGroundTimeline2 = desertGroundObj2[0];
+                                        var desertGroundContainer2 = desertGroundObj2[1];
+
+                                        var desertContainer1 = getDesertContainer(LEFT_1, TOP_3);
+                                        var desertContainer2 = getDesertContainer(LEFT_3, TOP_3);
+
+                                        var desertFaceObjs = getDesertFaceTimeline(LEFT_2, TOP_3);
+                                        var desertFaceTimeline = desertFaceObjs[0];
+                                        var desertFaceContainer = desertFaceObjs[1];
+
+                                        desertGroundContainer1.scaleX = desertGroundContainer1.scaleY
+                                            = desertGroundContainer1.scaleX = desertGroundContainer2.scaleY
+                                            = desertContainer1.scaleX = desertContainer1.scaleY
+                                            = desertContainer2.scaleX = desertContainer2.scaleY
+                                            = desertFaceContainer.scaleX = desertFaceContainer.scaleY
+                                            = 0;
+
+                                        var hearts = [];
+                                        for (var i = 1; i <= 25; i++) {
+                                            var heartContainer = getHeartContainer(_random(10, 310), TOP_0 - _random(0, CIRCLE_RADIUS));
+                                            heartContainer.alpha = .8;
+                                            hearts.push(heartContainer);
+                                        }
+
+                                        var transitionTimeline8 = new TimelineMax();
+                                        transitionTimeline8
+                                            .add('transition8')
+                                            .set([desertGroundContainer1, desertGroundContainer2, desertContainer1, desertContainer2, desertFaceContainer], {scaleX: 0, scaleY: 0})
+                                            .to(seaContainer, .5, {y: TOP_4}, 'transition8')
+                                            .to(cactusContainer2, .5, {y: TOP_2}, 'transition8')
+                                            .add('overlay')
+                                            .add(function () {
+                                                cactusCactusWrapper2.removeChild(cactusFlowerWrapper2);
+                                                cactusFlowerWrapper2.x += LEFT_2;
+                                                cactusFlowerWrapper2.y += TOP_2;
+                                                overlayContainer.addChild(cactusFlowerWrapper2);
+                                                seaContainer.stopKillTimeline();
+                                                console.log('seaContainer.stopKillTimeline();');
+                                            }, 'overlay')
+                                            .to(overlay, .5, {alpha: .6, startAt: {alpha: 0}}, 'overlay')
+                                            .to(cactusFlowerWrapper2, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 3, scaleY: 3, ease: Power3.easeIn}, 'overlay')
+                                            .add(new TimelineMax({delay: .6, autoRemoveChildren: true})
+                                                .to(cactusFlowerWrapper2, .3, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
+                                                .to(cactusFlowerWrapper2, .26, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
+                                                .to(cactusFlowerWrapper2, .22, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
+                                                .to(cactusFlowerWrapper2, .18, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
+                                                .to(cactusFlowerWrapper2, .14, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
+                                                .to(cactusFlowerWrapper2, .1, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2})
+                                                .to(cactusFlowerWrapper2, .06, {scaleX: -3, y: "-=" + CIRCLE_RADIUS / 2})
+                                                .to(cactusFlowerWrapper2, .02, {scaleX: 3, y: "-=" + CIRCLE_RADIUS / 2}))
+                                            .add('overlayend', '+=3.5')
+                                            .add('desert', '+=4')
+                                            .to(hearts, 16, {y: "+=" + (CIRCLE_DIAMETER + CIRCLE_DIAMETER + CIRCLE_DIAMETER)})
+                                            .to(hearts, 2, {alpha: 0}, '-=2')
+                                            .to(overlay, .5, {alpha: 0}, 'overlayend')
+                                            .to([desertGroundContainer1, desertGroundContainer2], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert')
+                                            .to([desertContainer1, desertContainer2, desertFaceContainer], .6, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)}, 'desert+=1')
+                                            .add(desertFaceTimeline, 'desert+=2')
+                                            .add(desertGroundTimeline1, 'desert+=6.3')
+                                            .add(desertGroundTimeline2, 'desert+=6.3')
+                                        ;
+
+                                        var transitionTimeline9 = new TimelineMax({autoRemoveChildren: false});
+                                        transitionTimeline9
+                                            .add('transition9')
+                                            .to([desertGroundContainer1, desertGroundContainer2, cactusContainer2, desertContainer1, desertContainer2, desertFaceContainer],
+                                            .5, {x: "-=" + ((CIRCLE_DIAMETER + SPACING) * 3), ease: Circ.easeOut}, 'transition9')
+                                            .add(function () {
+                                                desertFaceContainer.stopKillTimeline();
+                                                desertGroundContainer1.stopKillTimeline();
+                                                desertGroundContainer2.stopKillTimeline();
+                                                cactusContainer2.stopKillTimeline();
+                                                console.log('desertFaceContainer.stopKillTimeline();');
+                                                console.log('desertGroundContainer1.stopKillTimeline();');
+                                                console.log('desertGroundContainer2.stopKillTimeline();');
+                                                console.log('cactusContainer2.stopKillTimeline();');
+                                            });
+
+                                        animationWrapper.addChild(overlayContainer);
+                                        animationWrapper.addChild(desertGroundContainer1);
+                                        animationWrapper.addChild(desertGroundContainer2);
+                                        animationWrapper.addChild(desertContainer1);
+                                        animationWrapper.addChild(desertContainer2);
+                                        animationWrapper.addChild(desertFaceContainer);
+                                        hearts.forEach(function (heartContainer) {
+                                            animationWrapper.addChild(heartContainer);
+                                        });
+
+                                        var tlPart4 = new TimelineMax({
+                                            autoRemoveChild: true,
+                                            paused: true,
+                                            onStart: function () {
+                                                console.log(TweenMax.getAllTweens().length, 'tlPart4 onStart');
+                                            },
+                                            onComplete: function () {
+                                                console.log(TweenMax.getAllTweens().length, 'tlPart4 onComplete');
+                                            }
+                                        });
+
+                                        tlPart4
+                                            .add('next', '+=19.08')
+                                            .add(transitionTimeline8)
+                                            .add(transitionTimeline9, 'next');
+                                        tlPart4.play();
+                                        console.log(tlPart4.duration(), 'tlPart4.duration()');
+
                                     }
                                 });
 
                                 tlPart3
                                     .add(transitionTimeline6)
                                     .add('fish')
-                                    .add('desert', '+=18.1')
-                                    .add('desertend', 'desert+=19.58')
-                                    .add('next', 'desertend+=0.4')
+//                                    .add('desert', '+=18.1')
+//                                    .add('desertend', 'desert+=19.58')
+//                                    .add('next', 'desertend+=0.4')
                                     .add(transitionTimeline7, 'fish')
-                                    .add(transitionTimeline8, 'desert')
-                                    .add(transitionTimeline9, 'next');
+//                                    .add(transitionTimeline8, 'desert')
+//                                    .add(transitionTimeline9, 'next');
+
                                 tlPart3.play();
                                 console.log(tlPart3.duration(), 'tlPart3.duration()');
                             }
@@ -1268,7 +1308,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         transitionTimeline3
                             .add('transition3')
                             .to(catContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition3')
-                            .to(turtleContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition3');
+                            .to(turtleContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition3')
+                        ;
 
                         var skyContainer = new createjs.Container();
                         var sky = new createjs.Shape();
@@ -1307,8 +1348,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                             .to(cloudContainer1, 2, {y: TOP_5}, 'transition4')
                             .to(cloudContainer2, 2.4, {y: TOP_4}, 'transition4')
                             .add(function () {
-                                cloudContainer1.removeTimeline();
-                                cloudContainer2.removeTimeline();
+                                cloudContainer1.stopKillTimeline();
+                                cloudContainer2.stopKillTimeline();
                             });
 
                         var roofTopObjs = getRoofTopTimeline(LEFT_4, TOP_3);
@@ -1317,21 +1358,27 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         var cloudObjs3 = getCloudTimeline(LEFT_4, TOP_1);
                         var cloudContainer3 = cloudObjs3[1];
 
-                        var transitionTimeline5 = new TimelineMax({autoRemoveChildren: false});
+                        var transitionTimeline5 = new TimelineMax();
 
                         transitionTimeline5
                             .add('transition5')
                             .to(cloudContainer3, 3, {x: LEFT_2}, 'transition5')
                             .to(roofTopContainer, 2.8, {x: LEFT_0}, 'transition5')
                             .add(function () {
-                                roofTopContainer.removeTimeline();
+                                roofTopContainer.stopKillTimeline();
                             });
 
                         tlPart2.add(transitionTimeline3)
                             .add(turtleTimeline, '+=.4')
                             .add('tran5', '+=2.5')
                             .add(transitionTimeline4, '+=.1')
-                            .add(transitionTimeline5, 'tran5');
+                            .add(transitionTimeline5, 'tran5')
+                            .add(function () {
+                                // this will be done in tlPart3
+//                                turtleContainer.stopKillTimeline();
+//                                cloudContainer3.stopKillTimeline();
+//                                console.log('turtleContainer cloudContainer3.stop().kill();');
+                            });
 
                         animationWrapper.addChild(turtleContainer);
                         animationWrapper.addChildAt(skyContainer, animationWrapper.getNumChildren() - 1);
@@ -1352,7 +1399,20 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                     .add(treeTimeline, 'tree')
                     .add(transitionSeasonTimeline, 'tree')
                     .add(transitionTimeline2)
-                    .add(catTimeline, '-=.3');
+                    .add(catTimeline, '-=.3')
+                    .add(function () {
+                        transitionTimeline.stop().kill();
+                        console.log('transitionTimeline.stop().kill();');
+
+                        transitionSeasonTimeline.stop().kill();
+                        console.log('transitionSeasonTimeline.stop().kill();');
+
+                        transitionTimeline2.stop().kill();
+                        console.log('transitionTimeline2.stop().kill();');
+
+                        catTimeline.stop().kill();
+                        console.log('catTimeline.stop().kill();');
+                    });
                 tlPart1.play();
                 console.log(tlPart1.duration(), 'tlPart1.duration()');
             });
@@ -1362,235 +1422,267 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         function getIceWorldTimeline() {
             var iceWorldTimeline = new TimelineMax({
-                autoRemoveChildren: true,
-                paused: true
+                autoRemoveChild: true,
+                paused: true,
+                onStart: function () {
+                    var jackalopeObjs = getJackalopeTimeline(LEFT_4, TOP_2);
+                    var jackalopeContainer = jackalopeObjs[1];
+
+                    var transitionTimeline9b = new TimelineMax();
+                    transitionTimeline9b
+                        .add('transition9b')
+                        .to(jackalopeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition9b');
+
+                    var yetiObjs = getYetiTimeline(LEFT_4, TOP_2);
+                    var yetiTimeline = yetiObjs[0];
+                    var yetiContainer = yetiObjs[1];
+                    var yetiObjs2 = getYetiTimeline(LEFT_0, TOP_2);
+                    var yetiTimeline2 = yetiObjs2[0];
+                    var yetiContainer2 = yetiObjs2[1];
+
+                    var transitionTimeline10 = new TimelineMax();
+                    transitionTimeline10
+                        .add('transition10')
+                        .to(jackalopeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition10')
+                        .to(yetiContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition10')
+                        .add(function () {
+                            jackalopeContainer.stopKillTimeline();
+                        });
+
+                    var transitionTimeline11 = new TimelineMax();
+                    transitionTimeline11
+                        .add('transition11')
+                        .add('move', '+=1.5')
+                        .to(yetiContainer, 3, {x: LEFT_4}, 'transition11')
+                        .add(yetiTimeline, 'transition11')
+                        .to(yetiContainer2, 3, {x: LEFT_2}, 'move')
+                        .add(yetiTimeline2, 'move')
+                        .add(function () {
+                            yetiContainer.stopKillTimeline();
+                        });
+
+                    var seaMonsterObjs = getSeaMonsterTimeline(LEFT_4, TOP_2);
+                    var seaMonsterTimeline = seaMonsterObjs[0];
+                    var seaMonsterContainer = seaMonsterObjs[1];
+
+                    var seaMonsterObjs2 = getSeaMonsterTimeline(LEFT_0, TOP_2);
+                    var seaMonsterContainer2 = seaMonsterObjs2[1];
+
+                    var transitionTimeline12 = new TimelineMax();
+                    transitionTimeline12
+                        .add('transition12')
+                        .to(yetiContainer2, .5, {x: LEFT_0}, 'transition12')
+                        .to(seaMonsterContainer, .5, {x: LEFT_2}, 'transition12')
+                        .add(function () {
+                            yetiContainer2.stopKillTimeline();
+                        });
+
+                    var sharkObjs = getSharkTimeline(LEFT_3, TOP_2);
+                    var sharkContainer = sharkObjs[1];
+                    var sharkObjs2 = getSharkTimeline(LEFT_1, TOP_2);
+                    var sharkContainer2 = sharkObjs2[1];
+
+                    var transitionTimeline13 = new TimelineMax();
+                    transitionTimeline13
+                        .add('transition13')
+                        .set([sharkContainer, sharkContainer2], {scaleX: 0, scaleY: 0})
+                        .to(seaMonsterContainer, 1.2, {x: LEFT_4}, 'transition13')
+                        .to(seaMonsterContainer2, 1.2, {x: LEFT_2}, 'transition13+=0.6')
+                        .to(sharkContainer, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=.9')
+                        .to(sharkContainer2, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=1.5')
+                        .add(function () {
+                            seaMonsterContainer.stopKillTimeline();
+                        });
+
+                    animationWrapper.addChild(jackalopeContainer);
+                    animationWrapper.addChild(yetiContainer);
+                    animationWrapper.addChild(yetiContainer2);
+                    animationWrapper.addChild(seaMonsterContainer);
+                    animationWrapper.addChild(seaMonsterContainer2);
+                    animationWrapper.addChild(sharkContainer);
+                    animationWrapper.addChild(sharkContainer2);
+
+                    var tlPart1 = new TimelineMax({
+                        autoRemoveChildren: true,
+                        paused: true,
+                        onStart: function () {
+                            console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onStart');
+                        },
+                        onComplete: function () {
+                            console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onComplete');
+
+                            var snakeObjs = getSnakeTimeline(LEFT_4, TOP_2);
+                            var snakeTimeline = snakeObjs[0];
+                            var snakeContainer = snakeObjs[1];
+
+                            var transitionTimeline14 = new TimelineMax();
+                            transitionTimeline14
+                                .add('transition14')
+                                .to(seaMonsterContainer2, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition14')
+                                .to([sharkContainer, sharkContainer2], .01, {alpha: 0}, 'transition14')
+                                .to(snakeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition14')
+                                .add(function () {
+                                    seaMonsterContainer2.stopKillTimeline();
+                                    sharkContainer.stopKillTimeline();
+                                    sharkContainer2.stopKillTimeline();
+                                });
+
+                            var hugObjs = getHugTimeline(LEFT_2, TOP_1);
+                            var hugContainer = hugObjs[1];
+                            var hugEyesWrapper = hugObjs[2];
+                            var hugNobitaWrapper = hugObjs[3];
+                            var hugDeadEyesWrapper = hugObjs[4];
+                            hugContainer.scaleX = hugContainer.scaleY = 0;
+
+                            var transitionTimeline15 = new TimelineMax();
+                            transitionTimeline15
+                                .add('transition15')
+                                .set(hugContainer, {scaleX: 0, scaleY: 0})
+                                .to(hugContainer, 1, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)});
+
+                            var cactusObjs3 = getCactusTimeline(LEFT_4, TOP_2);
+                            var cactusContainer3 = cactusObjs3[1];
+                            var cactusFlowerWrapper3 = cactusObjs3[2];
+                            var cactusCactusWrapper3 = cactusObjs3[3];
+
+                            var questionObjs = getQuestionTimeline(LEFT_3, TOP_1);
+                            var questionTimeline = questionObjs[0];
+                            var questionContainer = questionObjs[1];
+                            questionContainer.scaleX = questionContainer.scaleY = 0;
+
+                            var transitionTimeline16 = new TimelineMax();
+                            transitionTimeline16
+                                .add('transition16')
+                                .to(snakeContainer, .5, {x: LEFT_1}, 'transition16')
+                                .to(hugContainer, .5, {x: LEFT_1}, 'transition16')
+                                .to(cactusContainer3, .5, {x: LEFT_3}, 'transition16')
+                                .to(questionContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut}, '+=1.2');
+
+                            var spikeObjs = getSpikeTimeline(LEFT_3, TOP_1);
+                            var spikeTimeline = spikeObjs[0];
+                            var spikeContainer = spikeObjs[1];
+                            var knifeSets = spikeObjs[2];
+                            var knifeSet1 = knifeSets[0];
+                            var knifeSet2 = knifeSets[1];
+                            var knifeSet3 = knifeSets[2];
+                            var knifeSet4 = knifeSets[3];
+                            var knifeSet5 = knifeSets[4];
+                            var knifeSet6 = knifeSets[5];
+                            var knifeSet7 = knifeSets[6];
+                            spikeContainer.scaleX = spikeContainer.scaleY = 0;
+
+                            var transitionTimeline17 = new TimelineMax();
+                            transitionTimeline17
+                                .add('transition17')
+                                .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut})
+                                .set(questionContainer, {alpha: 0})
+                                .add(spikeTimeline, '+=0.1')
+                                .add('knife')
+                                .to(knifeSet1, 1, {x: '-=200'}, 'knife')
+                                .set(knifeSet1, {alpha: 0})
+                                .set(hugEyesWrapper, {alpha: 0})
+                                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+                                .set(hugDeadEyesWrapper, {alpha: 1})
+                                .to(knifeSet2, 1 / 200 * 212, {x: '-=212'}, 'knife+=.2')
+                                .set(knifeSet2, {alpha: 0})
+                                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+                                .to(knifeSet3, 1 / 200 * 224, {x: '-=224'}, 'knife+=.4')
+                                .set(knifeSet3, {alpha: 0})
+                                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+                                .to(knifeSet4, 1 / 200 * 236, {x: '-=236'}, 'knife+=.6')
+                                .set(knifeSet4, {alpha: 0})
+                                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+                                .to(knifeSet5, 1 / 200 * 248, {x: '-=248'}, 'knife+=.8')
+                                .set(knifeSet5, {alpha: 0})
+                                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+                                .to(knifeSet6, 1 / 200 * 260, {x: '-=260'}, 'knife+=1')
+                                .set(knifeSet6, {alpha: 0})
+                                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+                                .to(knifeSet7, 1 / 200 * 272, {x: '-=272'}, 'knife+=1.2')
+                                .set(knifeSet7, {alpha: 0})
+                                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
+                                .to(spikeContainer, .5, {scaleX: 0, scaleY: 0, ease: Power1.easeOut})
+                            ;
+
+                            var flowerEyeContainer = new createjs.Container();
+                            var transitionTimeline18 = new TimelineMax();
+                            transitionTimeline18
+                                .add('transition18')
+                                .add(function () {
+                                    cactusCactusWrapper3.removeChild(cactusFlowerWrapper3);
+                                    cactusFlowerWrapper3.x += LEFT_3;
+                                    cactusFlowerWrapper3.y += TOP_2;
+                                    flowerEyeContainer.addChild(cactusFlowerWrapper3);
+
+                                    hugNobitaWrapper.removeChild(hugEyesWrapper);
+                                    hugEyesWrapper.x += LEFT_2 + hugNobitaWrapper.x;
+                                    hugEyesWrapper.y += TOP_2 + hugNobitaWrapper.y;
+                                    flowerEyeContainer.addChild(hugEyesWrapper);
+                                })
+                                .to(cactusFlowerWrapper3, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 5, scaleY: 5, ease: Power3.easeIn})
+                                .set(hugEyesWrapper, {alpha: 0, scaleX: 3.5, scaleY: 3.5})
+                                .to(hugEyesWrapper, 1, {x: LEFT_2 + hugNobitaWrapper.x,
+                                    y: TOP_2 + hugNobitaWrapper.y,
+                                    alpha: 1,
+                                    scaleX: 1.5,
+                                    scaleY: 1.5,
+                                    ease: Back.easeOut.config(1)}, '+=.4')
+                                .to([hugContainer, snakeContainer, spikeContainer, cactusContainer3, questionContainer, hugEyesWrapper, cactusFlowerWrapper3], .5, {
+                                    x: '-=' + (3 * (CIRCLE_DIAMETER + SPACING)), ease: Circ.easeOut}, '+=1')
+                                .add(function () {
+                                    hugContainer.stopKillTimeline();
+                                    snakeContainer.stopKillTimeline();
+                                    spikeContainer.stopKillTimeline();
+                                    cactusContainer3.stopKillTimeline();
+                                });
+
+                            animationWrapper.addChild(snakeContainer);
+                            animationWrapper.addChild(questionContainer);
+                            animationWrapper.addChild(spikeContainer);
+                            animationWrapper.addChild(hugContainer);
+                            animationWrapper.addChild(cactusContainer3);
+                            animationWrapper.addChild(flowerEyeContainer);
+
+                            var tlPart2 = new TimelineMax({
+                                autoRemoveChildren: true,
+                                paused: true,
+                                onStart: function () {
+                                    console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onStart');
+                                },
+                                onComplete: function () {
+                                    console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onComplete');
+                                }
+                            });
+
+                            tlPart2
+                                .add(transitionTimeline14, '+=1.7')
+                                .add(snakeTimeline)
+                                .add(transitionTimeline15, '+=.4')
+                                .add(transitionTimeline16, '+=1')
+                                .add(questionTimeline)
+                                .add(transitionTimeline17, '+=1.8')
+                                .add(transitionTimeline18, '+=.24');
+
+                            tlPart2.play();
+                            console.log(tlPart2.duration(), 'iceWorld tlPart2.duration()');
+                        }
+                    });
+
+                    tlPart1
+                        .add('iceWorld')
+                        .add(transitionTimeline9b)
+                        .add(transitionTimeline10, '+=1.5')
+                        .add(transitionTimeline11, '+=2')
+                        .add(transitionTimeline12, '+=2')
+                        .add(seaMonsterTimeline)
+                        .add(transitionTimeline13, '+=1.5')
+                    ;
+                    tlPart1.play();
+                    console.log(tlPart1.duration(), 'iceWorld tlPart1.duration()');
+                }
             });
 
-            var jackalopeObjs = getJackalopeTimeline(LEFT_4, TOP_2);
-            var jackalopeContainer = jackalopeObjs[1];
-
-            var transitionTimeline9b = new TimelineMax({autoRemoveChildren: false});
-            transitionTimeline9b
-                .add('transition9b')
-                .to(jackalopeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition9b');
-
-            var yetiObjs = getYetiTimeline(LEFT_4, TOP_2);
-            var yetiTimeline = yetiObjs[0];
-            var yetiContainer = yetiObjs[1];
-            var yetiObjs2 = getYetiTimeline(LEFT_0, TOP_2);
-            var yetiTimeline2 = yetiObjs2[0];
-            var yetiContainer2 = yetiObjs2[1];
-
-            var transitionTimeline10 = new TimelineMax({autoRemoveChildren: false});
-            transitionTimeline10
-                .add('transition10')
-                .to(jackalopeContainer, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition10')
-                .to(yetiContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition10')
-                .add(function () {
-                    jackalopeContainer.removeTimeline();
-                });
-
-            var transitionTimeline11 = new TimelineMax();
-            transitionTimeline11
-                .add('transition11')
-                .add('move', '+=1.5')
-                .to(yetiContainer, 3, {x: LEFT_4}, 'transition11')
-                .add(yetiTimeline, 'transition11')
-                .to(yetiContainer2, 3, {x: LEFT_2}, 'move')
-                .add(yetiTimeline2, 'move')
-                .add(function () {
-                    yetiContainer.removeTimeline();
-                });
-
-            var seaMonsterObjs = getSeaMonsterTimeline(LEFT_4, TOP_2);
-            var seaMonsterTimeline = seaMonsterObjs[0];
-            var seaMonsterContainer = seaMonsterObjs[1];
-
-            var seaMonsterObjs2 = getSeaMonsterTimeline(LEFT_0, TOP_2);
-            var seaMonsterContainer2 = seaMonsterObjs2[1];
-
-            var transitionTimeline12 = new TimelineMax();
-            transitionTimeline12
-                .add('transition12')
-                .to(yetiContainer2, .5, {x: LEFT_0}, 'transition12')
-                .to(seaMonsterContainer, .5, {x: LEFT_2}, 'transition12')
-                .add(function () {
-                    yetiContainer2.removeTimeline();
-                });
-
-            var sharkObjs = getSharkTimeline(LEFT_3, TOP_2);
-            var sharkContainer = sharkObjs[1];
-            var sharkObjs2 = getSharkTimeline(LEFT_1, TOP_2);
-            var sharkContainer2 = sharkObjs2[1];
-
-            var transitionTimeline13 = new TimelineMax();
-            transitionTimeline13
-                .add('transition13')
-                .set([sharkContainer, sharkContainer2], {scaleX: 0, scaleY: 0})
-                .to(seaMonsterContainer, 1.2, {x: LEFT_4}, 'transition13')
-                .to(seaMonsterContainer2, 1.2, {x: LEFT_2}, 'transition13+=0.6')
-                .to(sharkContainer, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=.9')
-                .to(sharkContainer2, .2, {scaleX: 1, scaleY: 1, ease: Circ.easeIn}, 'transition13+=1.5')
-                .add(function () {
-                    seaMonsterContainer.removeTimeline();
-                });
-
-            var snakeObjs = getSnakeTimeline(LEFT_4, TOP_2);
-            var snakeTimeline = snakeObjs[0];
-            var snakeContainer = snakeObjs[1];
-
-            var transitionTimeline14 = new TimelineMax();
-            transitionTimeline14
-                .add('transition14')
-                .to(seaMonsterContainer2, .5, {x: LEFT_0, ease: Circ.easeOut}, 'transition14')
-                .to([sharkContainer, sharkContainer2], .01, {alpha: 0}, 'transition14')
-                .to(snakeContainer, .5, {x: LEFT_2, ease: Circ.easeOut}, 'transition14')
-                .add(function () {
-                    seaMonsterContainer2.removeTimeline();
-                    sharkContainer.removeTimeline();
-                    sharkContainer2.removeTimeline();
-                });
-
-            var hugObjs = getHugTimeline(LEFT_2, TOP_1);
-            var hugContainer = hugObjs[1];
-            var hugEyesWrapper = hugObjs[2];
-            var hugNobitaWrapper = hugObjs[3];
-            var hugDeadEyesWrapper = hugObjs[4];
-            hugContainer.scaleX = hugContainer.scaleY = 0;
-
-            var transitionTimeline15 = new TimelineMax();
-            transitionTimeline15
-                .add('transition15')
-                .set(hugContainer, {scaleX: 0, scaleY: 0})
-                .to(hugContainer, 1, {scaleX: 1, scaleY: 1, ease: Back.easeOut.config(2)});
-
-            var cactusObjs3 = getCactusTimeline(LEFT_4, TOP_2);
-            var cactusContainer3 = cactusObjs3[1];
-            var cactusFlowerWrapper3 = cactusObjs3[2];
-            var cactusCactusWrapper3 = cactusObjs3[3];
-
-            var questionObjs = getQuestionTimeline(LEFT_3, TOP_1);
-            var questionTimeline = questionObjs[0];
-            var questionContainer = questionObjs[1];
-            questionContainer.scaleX = questionContainer.scaleY = 0;
-
-            var transitionTimeline16 = new TimelineMax();
-            transitionTimeline16
-                .add('transition16')
-                .to(snakeContainer, .5, {x: LEFT_1}, 'transition16')
-                .to(hugContainer, .5, {x: LEFT_1}, 'transition16')
-                .to(cactusContainer3, .5, {x: LEFT_3}, 'transition16')
-                .to(questionContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut}, '+=1.2');
-
-            var spikeObjs = getSpikeTimeline(LEFT_3, TOP_1);
-            var spikeTimeline = spikeObjs[0];
-            var spikeContainer = spikeObjs[1];
-            var knifeSets = spikeObjs[2];
-            var knifeSet1 = knifeSets[0];
-            var knifeSet2 = knifeSets[1];
-            var knifeSet3 = knifeSets[2];
-            var knifeSet4 = knifeSets[3];
-            var knifeSet5 = knifeSets[4];
-            var knifeSet6 = knifeSets[5];
-            var knifeSet7 = knifeSets[6];
-            spikeContainer.scaleX = spikeContainer.scaleY = 0;
-
-            var transitionTimeline17 = new TimelineMax();
-            transitionTimeline17
-                .add('transition17')
-                .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut})
-                .set(questionContainer, {alpha: 0})
-                .add(spikeTimeline, '+=0.1')
-                .add('knife')
-                .to(knifeSet1, 1, {x: '-=200'}, 'knife')
-                .set(knifeSet1, {alpha: 0})
-                .set(hugEyesWrapper, {alpha: 0})
-                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
-                .set(hugDeadEyesWrapper, {alpha: 1})
-                .to(knifeSet2, 1 / 200 * 212, {x: '-=212'}, 'knife+=.2')
-                .set(knifeSet2, {alpha: 0})
-                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
-                .to(knifeSet3, 1 / 200 * 224, {x: '-=224'}, 'knife+=.4')
-                .set(knifeSet3, {alpha: 0})
-                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
-                .to(knifeSet4, 1 / 200 * 236, {x: '-=236'}, 'knife+=.6')
-                .set(knifeSet4, {alpha: 0})
-                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
-                .to(knifeSet5, 1 / 200 * 248, {x: '-=248'}, 'knife+=.8')
-                .set(knifeSet5, {alpha: 0})
-                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
-                .to(knifeSet6, 1 / 200 * 260, {x: '-=260'}, 'knife+=1')
-                .set(knifeSet6, {alpha: 0})
-                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
-                .to(knifeSet7, 1 / 200 * 272, {x: '-=272'}, 'knife+=1.2')
-                .set(knifeSet7, {alpha: 0})
-                .to(hugContainer, .1, {x: '-=15', ease: Back.easeOut.config(2)})
-                .to(spikeContainer, .5, {scaleX: 0, scaleY: 0, ease: Power1.easeOut})
-            ;
-
-            var flowerEyeContainer = new createjs.Container();
-            var transitionTimeline18 = new TimelineMax();
-            transitionTimeline18
-                .add('transition18')
-                .add(function () {
-                    cactusCactusWrapper3.removeChild(cactusFlowerWrapper3);
-                    cactusFlowerWrapper3.x += LEFT_3;
-                    cactusFlowerWrapper3.y += TOP_2;
-                    flowerEyeContainer.addChild(cactusFlowerWrapper3);
-
-                    hugNobitaWrapper.removeChild(hugEyesWrapper);
-                    hugEyesWrapper.x += LEFT_2 + hugNobitaWrapper.x;
-                    hugEyesWrapper.y += TOP_2 + hugNobitaWrapper.y;
-                    flowerEyeContainer.addChild(hugEyesWrapper);
-                })
-                .to(cactusFlowerWrapper3, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 5, scaleY: 5, ease: Power3.easeIn})
-                .set(hugEyesWrapper, {alpha: 0, scaleX: 3.5, scaleY: 3.5})
-                .to(hugEyesWrapper, 1, {x: LEFT_2 + hugNobitaWrapper.x,
-                    y: TOP_2 + hugNobitaWrapper.y,
-                    alpha: 1,
-                    scaleX: 1.5,
-                    scaleY: 1.5,
-                    ease: Back.easeOut.config(1)}, '+=.4')
-                .to([hugContainer, snakeContainer, spikeContainer, cactusContainer3, questionContainer, hugEyesWrapper, cactusFlowerWrapper3], .5, {
-                    x: '-=' + (3 * (CIRCLE_DIAMETER + SPACING)), ease: Circ.easeOut}, '+=1')
-                .add(function () {
-                    hugContainer.removeTimeline();
-                    snakeContainer.removeTimeline();
-                    spikeContainer.removeTimeline();
-                    cactusContainer3.removeTimeline();
-                });
-
-            animationWrapper.addChild(jackalopeContainer);
-            animationWrapper.addChild(yetiContainer);
-            animationWrapper.addChild(yetiContainer2);
-            animationWrapper.addChild(seaMonsterContainer);
-            animationWrapper.addChild(seaMonsterContainer2);
-            animationWrapper.addChild(sharkContainer);
-            animationWrapper.addChild(sharkContainer2);
-            animationWrapper.addChild(snakeContainer);
-            animationWrapper.addChild(questionContainer);
-            animationWrapper.addChild(spikeContainer);
-            animationWrapper.addChild(hugContainer);
-            animationWrapper.addChild(cactusContainer3);
-            animationWrapper.addChild(flowerEyeContainer);
-
-            iceWorldTimeline
-                .add('iceWorld')
-                .add(transitionTimeline9b)
-                .add(transitionTimeline10, '+=1.5')
-                .add(transitionTimeline11, '+=2')
-                .add(transitionTimeline12, '+=2')
-                .add(seaMonsterTimeline)
-                .add(transitionTimeline13, '+=1.5')
-                .add(transitionTimeline14, '+=1.7')
-                .add(snakeTimeline)
-                .add(transitionTimeline15, '+=.4')
-                .add(transitionTimeline16, '+=1')
-                .add(questionTimeline)
-                .add(transitionTimeline17, '+=1.8')
-                .add(transitionTimeline18, '+=.24')
-            ;
-
+            iceWorldTimeline.add('next', '+=37.16');
             return iceWorldTimeline;
         }
 
@@ -1599,13 +1691,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 autoRemoveChildren: true,
                 paused: true,
                 onStart: function () {
-                    console.log('endingTimeline onStart');
+                    console.log(TweenMax.getAllTweens().length, 'endingTimeline onStart');
                     ga('send', 'event', 'Ending', 'start', 'Ending Start', {
                         nonInteraction: true
                     });
                 },
                 onComplete: function () {
-                    console.log('endingTimeline onComplete');
+                    console.log(TweenMax.getAllTweens().length, 'endingTimeline onComplete');
                 }
             });
 
@@ -1643,7 +1735,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
             theEndContainers.forEach(function (container) {
                 animationWrapper.addChild(container);
-                container.removeTimeline();
+                container.stopKillTimeline();
             });
 
             endingTimeline
@@ -1660,27 +1752,42 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             return endingTimeline;
         }
 
+        // Original implementation is to construct a mainTimeline that contains all the sub timelines.
+        // However, this is not performant on mobile devices.
+        // Instead, we use custom function to create timeline on the fly during the onStart and onComplete event .
+
 //        var openingTimeline = getOpeningTimeline();
 //        var flowerToDesertTimeline = getFlowerToDesertTimeline();
 //        var iceWorldTimeline = getIceWorldTimeline();
 //        var flowerToDesertTimeline2 = getFlowerToDesertTimeline();
 //        var endingTimeline = getEndingTimeline();
 
+//        mainTimeline
+//            .add(openingTimeline)
+//            .add(flowerToDesertTimeline)
+//            .add('flowerToDesertEnd')
+//            .add(iceWorldTimeline, 'flowerToDesertEnd-=.5')
+//            .add(flowerToDesertTimeline2)
+//            .add(endingTimeline);
+
         mainTimeline
+            .to({}, .00000001, {}) // required to trigger onStart function
             .add(function () {
                 var openingTimeline = getOpeningTimeline();
                 openingTimeline.eventCallback('onComplete', function () {
+                    console.log(TweenMax.getAllTweens().length, 'openingTimeline onComplete');
                     var flowerToDesertTimeline = getFlowerToDesertTimeline();
                     flowerToDesertTimeline.add(function () {
                         var iceWorldTimeline = getIceWorldTimeline();
-                        iceWorldTimeline.eventCallback('onComplete', function () {
+                        iceWorldTimeline.add(function () {
                             var flowerToDesertTimeline2 = getFlowerToDesertTimeline();
-                            flowerToDesertTimeline2.eventCallback('onComplete', function () {
+                            flowerToDesertTimeline2.add(function () {
+                                console.log(TweenMax.getAllTweens().length, 'flowerToDesertTimeline2 onComplete');
                                 var endingTimeline = getEndingTimeline();
                                 endingTimeline.play();
-                            });
+                            }, 'next');
                             flowerToDesertTimeline2.play();
-                        });
+                        }, 'next');
                         iceWorldTimeline.play();
                     }, 'next');
 
@@ -1689,14 +1796,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 openingTimeline.play();
             });
 
-//            .add(openingTimeline)
-//            .add(flowerToDesertTimeline)
-//            .add('flowerToDesertEnd')
-//            .add(iceWorldTimeline, 'flowerToDesertEnd-=.5')
-//            .add(flowerToDesertTimeline2)
-//            .add(endingTimeline);
-
-        mainTimeline.play(START_TIME, false);
+        mainTimeline.play(START_TIME);
         if (popCanPlay && pop) {
             pop.play(START_TIME);
         }
@@ -1721,11 +1821,6 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function renderInfo() {
-        var github = document.getElementById('github');
-        github.style.display = 'block';
-        var profilePic = document.getElementById('profile-pic');
-        profilePic.style.display = 'block';
-
         if (!infoWrapper) {
             infoWrapper = new createjs.Container();
             infoWrapper.setBounds(100, 100, CANVAS_WIDTH - 30, CANVAS_HEIGHT - 30);
@@ -1759,7 +1854,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         });
         infoWrapper.addChild(btnCloseWrapper);
 
-        var mainText = new createjs.Text('This is a short animation based on the song Tree Hugger.\nThe song is performed by Kimya Dawson And Antsy Pants and appears on the album Juno (2008).', '16px Happy Monkey', '#000');
+        var mainText = new createjs.Text('This is a short animation for the song Tree Hugger.\nThe song is performed by Kimya Dawson & Antsy Pants and appears on the album Juno (2008).', '16px Happy Monkey', '#000');
         mainText.x = CANVAS_WIDTH / 2;
         mainText.y = 60;
         mainText.lineWidth = CANVAS_WIDTH - 4 * outerSize;
@@ -1767,7 +1862,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         mainText.textAlign = 'center';
         infoWrapper.addChild(mainText);
 
-        var footerText = new createjs.Text('Made with \'\'\nby Wei Seng', '14px Happy Monkey', '#000');
+        var footerText = new createjs.Text('Crafted with \'\'\'\nby Wei Seng', '14px Happy Monkey', '#000');
         footerText.x = CANVAS_WIDTH / 2;
         footerText.y = 239.5;
         footerText.lineWidth = CANVAS_WIDTH - 4 * outerSize;
@@ -1775,8 +1870,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         footerText.textAlign = 'center';
         infoWrapper.addChild(footerText);
 
-        var heart = getHeartContainer(202, 248);
+        var heart = getHeartContainer(209, 248);
         infoWrapper.addChild(heart);
+
+        var github = document.getElementById('github');
+        github.style.display = 'block';
+        var profilePic = document.getElementById('profile-pic');
+        profilePic.style.display = 'block';
     }
 
     function _renderGallery() {
@@ -2028,7 +2128,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
     // Timelines
     function getFlowerTimeline(x, y) {
-        var flowerTimeline = new TimelineMax({autoRemoveChildren: false});
+        var flowerTimeline = new TimelineMax();
 
         var container1 = new createjs.Container();
         container1.x = x;
@@ -2149,7 +2249,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getTreeTimeline(x, y) {
-        var treeTimeline = new TimelineMax({autoRemoveChildren: false});
+        var treeTimeline = new TimelineMax();
 
         var container = getDefaultContainer(x, y);
 
@@ -2249,7 +2349,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSpringTimeline(x, y) {
-        var springTimeline = new TimelineMax({autoRemoveChildren: false});
+        var springTimeline = new TimelineMax();
 
         var springContainer = getSpringContainer(x, y);
 
@@ -2267,7 +2367,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         treeWrapper.addChild(trunk2);
 
         function getFlower() {
-            var flowerRadius = 3;
+            var flowerRadius = 4;
             var flower = new createjs.Shape();
             flower.graphics.beginFill(COLOR_SPRING_FLOWER)
                 .drawCircle(0, -4, flowerRadius)
@@ -2286,207 +2386,58 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         }
 
         var flowerData = [
-            {"x": -11.938537023961544, "y": 2.783802844583988},
-            {"x": -11.927265889942646, "y": 9.444361511617899},
-            {"x": -11.908187756314874, "y": 15.669426031410694},
-            {"x": -11.884445546194911, "y": 15.978291761130095},
-            {"x": -11.828536000102758, "y": 13.775821194052696},
-            {"x": -11.765338394790888, "y": 6.619630008935928},
-            {"x": -11.749858751893044, "y": 4.089133452624083},
-            {"x": -11.706163482740521, "y": 14.17811505869031},
-            {"x": -11.254682337865233, "y": 15.44297207519412},
-            {"x": -11.048927541822195, "y": 12.44661495834589},
-            {"x": -10.967076357454062, "y": 14.772557731717825},
-            {"x": -10.935170805081725, "y": 17.23644670471549},
-            {"x": -10.04281578026712, "y": 8.280355393886566},
-            {"x": -9.944909105077386, "y": 12.697296872735023},
-            {"x": -9.80447056889534, "y": 10.315777283161879},
-            {"x": -9.410871030762792, "y": 5.995434891432524},
-            {"x": -8.831381656229496, "y": 4.081501836888492},
-            {"x": -8.720052799209952, "y": -6.400239520706236},
-            {"x": -8.700306979939342, "y": 15.81250982079655},
-            {"x": -8.417404739186168, "y": 1.3938065562397242},
-            {"x": -8.162943748757243, "y": 3.7646389920264482},
-            {"x": -8.124722801148891, "y": 4.0286423889920115},
-            {"x": -8.076322199776769, "y": 10.677224477753043},
-            {"x": -8.075654190033674, "y": -3.29717038013041},
-            {"x": -7.9981082528829575, "y": -0.33519769087433815},
-            {"x": -7.7350994925946, "y": -10.02721961401403},
-            {"x": -7.673339696601033, "y": 2.1703998493030667},
-            {"x": -7.633951351046562, "y": 16.830576333217323},
-            {"x": -7.571625100448728, "y": 11.628769759088755},
-            {"x": -7.543144399300218, "y": -2.5000903317704797},
-            {"x": -7.497133461758494, "y": 9.167129065841436},
-            {"x": -7.4449379704892635, "y": -8.10189295746386},
-            {"x": -7.328179171308875, "y": 9.763174200430512},
-            {"x": -7.186866642907262, "y": 15.310225867666304},
-            {"x": -7.115949779748917, "y": -5.026154665276408},
-            {"x": -7.071541596204042, "y": 3.097171552479267},
-            {"x": -6.905940307304263, "y": -6.881847242824733},
-            {"x": -6.816854372620583, "y": 9.606753626838326},
-            {"x": -6.80012109875679, "y": 0.8055208120495081},
-            {"x": -6.687659388408065, "y": 16.584031620062888},
-            {"x": -6.671556729823351, "y": 16.111719668842852},
-            {"x": -6.6248501390218735, "y": -9.881953099742532},
-            {"x": -6.581895651295781, "y": 0.28699231520295143},
-            {"x": -6.481142794713378, "y": -9.414711331948638},
-            {"x": -6.122980780899525, "y": -5.583829181268811},
-            {"x": -6.087604930624366, "y": 4.2597304889932275},
-            {"x": -5.894475331529975, "y": 10.266325710341334},
-            {"x": -5.8094714898616076, "y": 10.650253714062274},
-            {"x": -5.717962576076388, "y": -0.5119897006079555},
-            {"x": -5.608048506081104, "y": -8.052447931841016},
-            {"x": -5.594603905454278, "y": -7.433836261741817},
-            {"x": -5.5520655903965235, "y": -10.245244170539081},
-            {"x": -5.414462769404054, "y": -2.88610874209553},
-            {"x": -5.204577958211303, "y": -2.806847557425499},
-            {"x": -4.99387345276773, "y": 1.8513455232605338},
-            {"x": -4.958492746576667, "y": -8.72763638291508},
-            {"x": -4.725881729274988, "y": 13.159698724746704},
-            {"x": -4.704066552221775, "y": -10.42619652301073},
-            {"x": -4.665494855493307, "y": -9.024285785853863},
-            {"x": -4.625839959830046, "y": 10.41821093391627},
-            {"x": -4.624952444806695, "y": 0.3477297844365239},
-            {"x": -4.587925728410482, "y": -7.245869115926325},
-            {"x": -4.583195278421044, "y": 12.863739998079836},
-            {"x": -4.260875953361392, "y": 12.718063996173441},
-            {"x": -4.248768579214811, "y": -6.005207773298025},
-            {"x": -4.148109789937735, "y": 3.2473527593538165},
-            {"x": -4.085978351533413, "y": 3.9081102460622787},
-            {"x": -4.083788434043527, "y": -10.314791295677423},
-            {"x": -3.96896655857563, "y": -1.885686301626265},
-            {"x": -3.908116076141596, "y": -9.43749051913619},
-            {"x": -3.8453271612524986, "y": -6.3129729479551315},
-            {"x": -3.821425510570407, "y": -9.66183101106435},
-            {"x": -3.6662942077964544, "y": 7.02500765863806},
-            {"x": -3.291131492704153, "y": 8.415610247291625},
-            {"x": -3.163777370005846, "y": -9.65953256841749},
-            {"x": -3.157650461420417, "y": 12.183321869932115},
-            {"x": -2.9735082741826773, "y": -7.227646101266146},
-            {"x": -2.93276097625494, "y": 10.65533443260938},
-            {"x": -2.9057688675820827, "y": -7.754606971517205},
-            {"x": -2.7477461490780115, "y": 9.604268107563257},
-            {"x": -2.5140485800802708, "y": -6.163037236779928},
-            {"x": -2.3861692305654287, "y": 6.516406127251685},
-            {"x": -2.3480358738452196, "y": -10.090584076941013},
-            {"x": -2.313767395913601, "y": 4.702176930382848},
-            {"x": -2.3026301320642233, "y": -6.0802751844748855},
-            {"x": -2.2702184077352285, "y": 1.6875996505841613},
-            {"x": -2.2126604709774256, "y": 6.175914362072945},
-            {"x": -2.172017779201269, "y": -5.338620603084564},
-            {"x": -2.00998960621655, "y": -7.23314124904573},
-            {"x": -1.7855555210262537, "y": 9.725313022732735},
-            {"x": -1.7855037208646536, "y": 10.341946495696902},
-            {"x": -1.7056268323212862, "y": 8.456503910012543},
-            {"x": -1.3683628588914871, "y": -7.707965546287596},
-            {"x": -1.0086608659476042, "y": -6.1977123552933335},
-            {"x": -0.9908119942992926, "y": 7.131784128025174},
-            {"x": -0.9856893215328455, "y": 7.030440364964306},
-            {"x": -0.7403128333389759, "y": 13.546117547899485},
-            {"x": -0.6954271495342255, "y": 10.853952018544078},
-            {"x": -0.61479770578444, "y": -3.447875155135989},
-            {"x": -0.19576737843453884, "y": -9.167229103855789},
-            {"x": -0.08181800879538059, "y": 3.249186678789556},
-            {"x": 0.009611360728740692, "y": -0.11179541796445847},
-            {"x": 0.3248777277767658, "y": -8.300048901699483},
-            {"x": 0.5574602130800486, "y": 10.668686890043318},
-            {"x": 0.5700726807117462, "y": -3.10758466552943},
-            {"x": 0.6368931122124195, "y": 7.8742102310061455},
-            {"x": 0.6778758466243744, "y": -1.650522948242724},
-            {"x": 0.8259897697716951, "y": 4.0784147856757045},
-            {"x": 0.8592284973710775, "y": 2.5105429450049996},
-            {"x": 0.9226030390709639, "y": -2.3765144385397434},
-            {"x": 0.9916298445314169, "y": 11.393232206813991},
-            {"x": 1.0336243025958538, "y": 3.3274243660271168},
-            {"x": 1.050721300765872, "y": -1.6412101686000824},
-            {"x": 1.2404909245669842, "y": 13.750081955455244},
-            {"x": 1.3459092378616333, "y": -4.9058005241677165},
-            {"x": 1.3612300660461187, "y": 12.03355395141989},
-            {"x": 1.4509362895041704, "y": -9.61692593805492},
-            {"x": 1.5994287338107824, "y": 3.085909416899085},
-            {"x": 1.9578855391591787, "y": 13.380819394253194},
-            {"x": 2.009372005239129, "y": 4.243940337561071},
-            {"x": 2.30795843526721, "y": 11.593500351533294},
-            {"x": 2.584801884368062, "y": 12.2643703809008},
-            {"x": 2.6859304513782263, "y": 13.964664806611836},
-            {"x": 2.726268583908677, "y": -8.043028894811869},
-            {"x": 2.9043670780956745, "y": 14.511995385400951},
-            {"x": 2.9140095468610525, "y": -5.859877963550389},
-            {"x": 2.9314936213195324, "y": -5.96988342795521},
-            {"x": 3.231443591415882, "y": 1.1568820448592305},
-            {"x": 3.2719071451574564, "y": 16.304655017331243},
-            {"x": 3.3161697909235954, "y": -2.8123370856046677},
-            {"x": 3.3311692848801613, "y": 4.625337943434715},
-            {"x": 3.390936356037855, "y": 3.887844213284552},
-            {"x": 3.408504517748952, "y": 5.714880446903408},
-            {"x": 3.629077412188053, "y": -6.12628002371639},
-            {"x": 3.9522147104144096, "y": -7.495734361000359},
-            {"x": 4.017865106463432, "y": 3.983586127869785},
-            {"x": 4.022190939635038, "y": 13.965698395855725},
-            {"x": 4.1219694670289755, "y": 1.6584833795204759},
-            {"x": 4.458406118676066, "y": 2.9079434387385845},
-            {"x": 4.508841555565596, "y": 1.4088200945407152},
-            {"x": 4.9586143512278795, "y": -4.576432588510215},
-            {"x": 4.965515596792102, "y": 4.19045708142221},
-            {"x": 5.1218240931630135, "y": 4.015358963981271},
-            {"x": 5.176717998459935, "y": 17.28470003698021},
-            {"x": 5.264563104137778, "y": 14.948814064264297},
-            {"x": 5.344563150778413, "y": -4.822842939756811},
-            {"x": 5.384250255301595, "y": 11.393741354346275},
-            {"x": 5.510452045127749, "y": 9.026711145415902},
-            {"x": 5.602826122194529, "y": -4.803198902867734},
-            {"x": 5.720167754217982, "y": -4.268897706642747},
-            {"x": 5.759528607130051, "y": 12.630766932852566},
-            {"x": 5.7696570083498955, "y": 3.152911619283259},
-            {"x": 5.812398919835687, "y": 3.1237152134999633},
-            {"x": 6.294082777574658, "y": 6.962155074812472},
-            {"x": 6.53848790936172, "y": 17.328913742676377},
-            {"x": 6.6075247172266245, "y": 8.611301253549755},
-            {"x": 6.765180196613073, "y": -0.3754949979484081},
-            {"x": 6.771052340045571, "y": 11.889895581640303},
-            {"x": 6.833053948357701, "y": -2.060411537066102},
-            {"x": 7.002806268632412, "y": 17.49914810899645},
-            {"x": 7.067687407135963, "y": 5.81796723138541},
-            {"x": 7.087141105905175, "y": -3.5823393696919084},
-            {"x": 7.254141613841057, "y": 8.239134897477925},
-            {"x": 7.367422129958868, "y": 6.888900890946388},
-            {"x": 7.368472578004003, "y": 3.986550036817789},
-            {"x": 7.457366516813636, "y": 1.8207400841638446},
-            {"x": 7.583921849727631, "y": 2.159849936142564},
-            {"x": 7.780192634090781, "y": -9.281950899399817},
-            {"x": 7.817879615351558, "y": -0.20950893871486187},
-            {"x": 7.835261430591345, "y": -3.564983488060534},
-            {"x": 7.848347816616297, "y": -6.463883855380118},
-            {"x": 8.006936928257346, "y": -6.06930844951421},
-            {"x": 8.58764940686524, "y": 2.9420746229588985},
-            {"x": 9.070556754246354, "y": 4.764065116643906},
-            {"x": 9.103363065049052, "y": 14.920263510197401},
-            {"x": 9.153529677540064, "y": 13.713290397077799},
-            {"x": 9.19834559597075, "y": 5.942743979394436},
-            {"x": 9.28686310350895, "y": 16.48197339475155},
-            {"x": 9.383957343176007, "y": 15.01934888958931},
-            {"x": 9.676848074421287, "y": 13.906043991446495},
-            {"x": 9.753761837258935, "y": 12.416522976011038},
-            {"x": 9.85736159607768, "y": 6.938287679105997},
-            {"x": 9.95800862275064, "y": 2.4495127834379673},
-            {"x": 10.049425391480327, "y": 12.175883870571852},
-            {"x": 10.272305734455585, "y": 2.822897370904684},
-            {"x": 10.328910145908594, "y": 8.16108275949955},
-            {"x": 10.339179849252105, "y": 6.46376434341073},
-            {"x": 10.420267637819052, "y": 8.078886207193136},
-            {"x": 10.429143251851201, "y": 15.65312921628356},
-            {"x": 10.50098299048841, "y": 12.68830168992281},
-            {"x": 10.61393641680479, "y": 15.557414948940277},
-            {"x": 10.639664880931377, "y": 4.903334558010101},
-            {"x": 10.798856567591429, "y": 12.546312481164932},
-            {"x": 11.202103117480874, "y": 13.298689346760511},
-            {"x": 11.350924545899034, "y": 5.644771680235863},
-            {"x": 11.48407144099474, "y": 10.471177469938993},
-            {"x": 11.491743922233582, "y": 5.7699894197285175},
-            {"x": 11.524416318163276, "y": 12.843980517238379},
-            {"x": 11.666951252147555, "y": 14.093434516340494},
-            {"x": 11.936023598536849, "y": 2.2532736137509346}
+            {"x": -11.9, "y": 2.8},
+            {"x": -11.8, "y": 13.8},
+            {"x": -11.3, "y": 15.4},
+            {"x": -10, "y": 8.3},
+            {"x": -8.8, "y": 4.1},
+            {"x": -8.2, "y": 3.8},
+            {"x": -8, "y": -0.3},
+            {"x": -7.6, "y": 11.6},
+            {"x": -7.3, "y": 9.8},
+            {"x": -6.9, "y": -6.9},
+            {"x": -6.7, "y": 16.1},
+            {"x": -6.1, "y": -5.6},
+            {"x": -5.7, "y": -0.5},
+            {"x": -5.4, "y": -2.9},
+            {"x": -4.7, "y": 13.2},
+            {"x": -4.6, "y": 0.3},
+            {"x": -4.2, "y": -6},
+            {"x": -4, "y": -1.9},
+            {"x": -3.7, "y": 7},
+            {"x": -3, "y": -7.2},
+            {"x": -2.5, "y": -6.2},
+            {"x": -2.3, "y": -6.1},
+            {"x": -2, "y": -7.2},
+            {"x": -1.4, "y": -7.7},
+            {"x": -0.7, "y": 13.5},
+            {"x": -0.1, "y": 3.2},
+            {"x": 0.6, "y": -3.1},
+            {"x": 0.9, "y": 2.5},
+            {"x": 1.1, "y": -1.6},
+            {"x": 1.5, "y": -9.6},
+            {"x": 2.3, "y": 11.6},
+            {"x": 2.9, "y": 14.5},
+            {"x": 3.3, "y": 16.3},
+            {"x": 3.4, "y": 5.7},
+            {"x": 4, "y": 14},
+            {"x": 5, "y": -4.6},
+            {"x": 5.3, "y": 14.9},
+            {"x": 5.6, "y": -4.8},
+            {"x": 5.8, "y": 3.1},
+            {"x": 6.8, "y": -0.4},
+            {"x": 7.1, "y": 5.8},
+            {"x": 7.4, "y": 4},
+            {"x": 7.8, "y": -0.2},
+            {"x": 8.6, "y": 2.9},
+            {"x": 9.2, "y": 5.9},
+            {"x": 9.8, "y": 12.4},
+            {"x": 10.3, "y": 2.8},
+            {"x": 10.4, "y": 15.7},
+            {"x": 10.8, "y": 12.5},
+            {"x": 11.5, "y": 5.8}
         ];
+
         for (var i = 0; i < flowerData.length; i++) {
             var flower = getFlower();
             flower.x = flowerData[i].x;
@@ -2523,7 +2474,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getSummerTimeline(x, y) {
-        var summerTimeline = new TimelineMax({autoRemoveChildren: false});
+        var summerTimeline = new TimelineMax();
 
         var summerContainer = getSummerContainer(x, y);
 
@@ -2587,26 +2538,25 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         var rotation = 6;
         var leavesTimeline = new TimelineMax({repeat: -1, autoRemoveChildren: false});
+        leavesTimeline
+            .add('leaves')
+            .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
+            .to(rightLeaves, 1, {rotation: '+=' + rotation}, 'leaves')
+            .add('leavesEnd')
+            .to(leftLeaves, 1, {rotation: '+=' + rotation}, 'leavesEnd')
+            .to(rightLeaves, 1, {rotation: '-=' + rotation}, 'leavesEnd')
+        ;
 
-        summerTimeline.eventCallback('onStart', function () {
-            leavesTimeline
-                .add('leaves')
-                .to(leftLeaves, 1, {rotation: '-=' + rotation}, 'leaves')
-                .to(rightLeaves, 1, {rotation: '+=' + rotation}, 'leaves')
-                .add('leavesEnd')
-                .to(leftLeaves, 1, {rotation: '+=' + rotation}, 'leavesEnd')
-                .to(rightLeaves, 1, {rotation: '-=' + rotation}, 'leavesEnd')
-            ;
-        });
-        summerTimeline.eventCallback('onComplete', function () {
-            leavesTimeline.remove();
-        });
+        summerContainer.stopKillTimeline = function () {
+            console.log('summerContainer stopKillTimeline')
+            leavesTimeline.stop().kill();
+        };
 
         return [summerTimeline, summerContainer];
     }
 
     function getAutumnTimeline(x, y) {
-        var autumnTimeline = new TimelineMax({autoRemoveChildren: false});
+        var autumnTimeline = new TimelineMax();
 
         var autumnContainer = getAutumnContainer(x, y);
 
@@ -2626,310 +2576,289 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         treeWrapper.addChild(trunk2);
 
         var leaves = [
-            {"x": -7.5, "y": -8.5, "rotation": 281, "alpha": "0.60"},
-            {"x": -7.5, "y": -5.5, "rotation": 306, "alpha": "0.38"},
-            {"x": -7.5, "y": -4.5, "rotation": 263, "alpha": "0.67"},
-            {"x": -7.5, "y": -3.5, "rotation": 341, "alpha": "0.68"},
-            {"x": -7.5, "y": 1.5, "rotation": 283, "alpha": "0.69"},
-            {"x": -7.5, "y": 1.5, "rotation": 299, "alpha": "0.68"},
-            {"x": -7.5, "y": 4.5, "rotation": 178, "alpha": "0.65"},
-            {"x": -7.5, "y": 5.5, "rotation": 53, "alpha": "0.36"},
-            {"x": -7.5, "y": 8.5, "rotation": 7, "alpha": "0.47"},
-            {"x": -7.5, "y": 8.5, "rotation": 209, "alpha": "0.45"},
-            {"x": -7.5, "y": 9.5, "rotation": 18, "alpha": "0.51"},
-            {"x": -7.5, "y": 17.5, "rotation": 336, "alpha": "0.56"},
-            {"x": -6.5, "y": -10.5, "rotation": 2, "alpha": "0.68"},
-            {"x": -6.5, "y": -8.5, "rotation": 89, "alpha": "0.41"},
-            {"x": -6.5, "y": -3.5, "rotation": 105, "alpha": "0.58"},
-            {"x": -6.5, "y": -3.5, "rotation": 328, "alpha": "0.68"},
-            {"x": -6.5, "y": 1.5, "rotation": 328, "alpha": "0.57"},
-            {"x": -6.5, "y": 3.5, "rotation": 61, "alpha": "0.56"},
-            {"x": -6.5, "y": 3.5, "rotation": 150, "alpha": "0.53"},
-            {"x": -6.5, "y": 3.5, "rotation": 197, "alpha": "0.48"},
-            {"x": -6.5, "y": 3.5, "rotation": 268, "alpha": "0.53"},
-            {"x": -6.5, "y": 5.5, "rotation": 9, "alpha": "0.64"},
-            {"x": -5.5, "y": -8.5, "rotation": 337, "alpha": "0.45"},
-            {"x": -5.5, "y": -4.5, "rotation": 76, "alpha": "0.62"},
-            {"x": -5.5, "y": -4.5, "rotation": 133, "alpha": "0.68"},
-            {"x": -5.5, "y": -2.5, "rotation": 305, "alpha": "0.59"},
-            {"x": -5.5, "y": -1.5, "rotation": 76, "alpha": "0.51"},
-            {"x": -5.5, "y": -1.5, "rotation": 222, "alpha": "0.65"},
-            {"x": -5.5, "y": 2.5, "rotation": 354, "alpha": "0.37"},
-            {"x": -5.5, "y": 3.5, "rotation": 212, "alpha": "0.31"},
-            {"x": -5.5, "y": 8.5, "rotation": 34, "alpha": "0.46"},
-            {"x": -5.5, "y": 12.5, "rotation": 130, "alpha": "0.65"},
-            {"x": -5.5, "y": 15.5, "rotation": 68, "alpha": "0.57"},
-            {"x": -5.5, "y": 17.5, "rotation": 117, "alpha": "0.51"},
-            {"x": -4.5, "y": -11.5, "rotation": 326, "alpha": "0.43"},
-            {"x": -4.5, "y": -9.5, "rotation": 275, "alpha": "0.32"},
-            {"x": -4.5, "y": -7.5, "rotation": 295, "alpha": "0.67"},
-            {"x": -4.5, "y": -7.5, "rotation": 335, "alpha": "0.40"},
-            {"x": -4.5, "y": -6.5, "rotation": 130, "alpha": "0.38"},
-            {"x": -4.5, "y": -3.5, "rotation": 148, "alpha": "0.58"},
-            {"x": -4.5, "y": -2.5, "rotation": 202, "alpha": "0.61"},
-            {"x": -4.5, "y": 0.5, "rotation": 99, "alpha": "0.41"},
-            {"x": -4.5, "y": 3.5, "rotation": 241, "alpha": "0.39"},
-            {"x": -4.5, "y": 3.5, "rotation": 317, "alpha": "0.43"},
-            {"x": -4.5, "y": 4.5, "rotation": 100, "alpha": "0.56"},
-            {"x": -4.5, "y": 5.5, "rotation": 341, "alpha": "0.53"},
-            {"x": -4.5, "y": 6.5, "rotation": 277, "alpha": "0.55"},
-            {"x": -4.5, "y": 9.5, "rotation": 138, "alpha": "0.52"},
-            {"x": -4.5, "y": 9.5, "rotation": 148, "alpha": "0.51"},
-            {"x": -4.5, "y": 10.5, "rotation": 304, "alpha": "0.32"},
-            {"x": -4.5, "y": 15.5, "rotation": 177, "alpha": "0.47"},
-            {"x": -4.5, "y": 16.5, "rotation": 258, "alpha": "0.55"},
-            {"x": -3.5, "y": -11.5, "rotation": 167, "alpha": "0.38"},
-            {"x": -3.5, "y": -9.5, "rotation": 233, "alpha": "0.33"},
-            {"x": -3.5, "y": -7.5, "rotation": 211, "alpha": "0.45"},
-            {"x": -3.5, "y": -7.5, "rotation": 253, "alpha": "0.35"},
-            {"x": -3.5, "y": -5.5, "rotation": 214, "alpha": "0.40"},
-            {"x": -3.5, "y": -3.5, "rotation": 17, "alpha": "0.57"},
-            {"x": -3.5, "y": 1.5, "rotation": 271, "alpha": "0.38"},
-            {"x": -3.5, "y": 1.5, "rotation": 326, "alpha": "0.31"},
-            {"x": -3.5, "y": 2.5, "rotation": 352, "alpha": "0.39"},
-            {"x": -3.5, "y": 3.5, "rotation": 278, "alpha": "0.49"},
-            {"x": -3.5, "y": 10.5, "rotation": 170, "alpha": "0.42"},
-            {"x": -3.5, "y": 10.5, "rotation": 284, "alpha": "0.51"},
-            {"x": -3.5, "y": 12.5, "rotation": 42, "alpha": "0.69"},
-            {"x": -3.5, "y": 15.5, "rotation": 81, "alpha": "0.47"},
-            {"x": -3.5, "y": 15.5, "rotation": 308, "alpha": "0.65"},
-            {"x": -3.5, "y": 16.5, "rotation": 211, "alpha": "0.32"},
-            {"x": -2.5, "y": -12.5, "rotation": 242, "alpha": "0.50"},
-            {"x": -2.5, "y": -10.5, "rotation": 44, "alpha": "0.67"},
-            {"x": -2.5, "y": -10.5, "rotation": 160, "alpha": "0.31"},
-            {"x": -2.5, "y": -6.5, "rotation": 82, "alpha": "0.56"},
-            {"x": -2.5, "y": -5.5, "rotation": 100, "alpha": "0.46"},
-            {"x": -2.5, "y": -4.5, "rotation": 51, "alpha": "0.51"},
-            {"x": -2.5, "y": -4.5, "rotation": 155, "alpha": "0.58"},
-            {"x": -2.5, "y": -3.5, "rotation": 306, "alpha": "0.52"},
-            {"x": -2.5, "y": -2.5, "rotation": 217, "alpha": "0.34"},
-            {"x": -2.5, "y": 3.5, "rotation": 173, "alpha": "0.49"},
-            {"x": -2.5, "y": 3.5, "rotation": 209, "alpha": "0.67"},
-            {"x": -2.5, "y": 8.5, "rotation": 218, "alpha": "0.63"},
-            {"x": -2.5, "y": 8.5, "rotation": 282, "alpha": "0.64"},
-            {"x": -2.5, "y": 11.5, "rotation": 244, "alpha": "0.57"},
-            {"x": -2.5, "y": 13.5, "rotation": 150, "alpha": "0.56"},
-            {"x": -1.5, "y": -7.5, "rotation": 192, "alpha": "0.39"},
-            {"x": -1.5, "y": -7.5, "rotation": 199, "alpha": "0.70"},
-            {"x": -1.5, "y": -6.5, "rotation": 153, "alpha": "0.57"},
-            {"x": -1.5, "y": -4.5, "rotation": 155, "alpha": "0.55"},
-            {"x": -1.5, "y": -4.5, "rotation": 265, "alpha": "0.69"},
-            {"x": -1.5, "y": -3.5, "rotation": 59, "alpha": "0.69"},
-            {"x": -1.5, "y": -3.5, "rotation": 256, "alpha": "0.43"},
-            {"x": -1.5, "y": -0.5, "rotation": 117, "alpha": "0.49"},
-            {"x": -1.5, "y": 0.5, "rotation": 115, "alpha": "0.34"},
-            {"x": -1.5, "y": 0.5, "rotation": 302, "alpha": "0.54"},
-            {"x": -1.5, "y": 2.5, "rotation": 81, "alpha": "0.55"},
-            {"x": -1.5, "y": 7.5, "rotation": 243, "alpha": "0.39"},
-            {"x": -1.5, "y": 8.5, "rotation": 340, "alpha": "0.39"},
-            {"x": -1.5, "y": 10.5, "rotation": 268, "alpha": "0.51"},
-            {"x": -1.5, "y": 13.5, "rotation": 97, "alpha": "0.47"},
-            {"x": -1.5, "y": 14.5, "rotation": 315, "alpha": "0.67"},
-            {"x": -1.5, "y": 15.5, "rotation": 234, "alpha": "0.42"},
-            {"x": -1.5, "y": 16.5, "rotation": 354, "alpha": "0.46"},
-            {"x": -0.5, "y": -12.5, "rotation": 247, "alpha": "0.49"},
-            {"x": -0.5, "y": -9.5, "rotation": 173, "alpha": "0.40"},
-            {"x": -0.5, "y": -9.5, "rotation": 222, "alpha": "0.69"},
-            {"x": -0.5, "y": -5.5, "rotation": 2, "alpha": "0.33"},
-            {"x": -0.5, "y": -5.5, "rotation": 152, "alpha": "0.52"},
-            {"x": -0.5, "y": -5.5, "rotation": 295, "alpha": "0.51"},
-            {"x": -0.5, "y": 3.5, "rotation": 174, "alpha": "0.59"},
-            {"x": -0.5, "y": 3.5, "rotation": 188, "alpha": "0.65"},
-            {"x": -0.5, "y": 5.5, "rotation": 242, "alpha": "0.63"},
-            {"x": -0.5, "y": 5.5, "rotation": 286, "alpha": "0.55"},
-            {"x": -0.5, "y": 9.5, "rotation": 243, "alpha": "0.32"},
-            {"x": -0.5, "y": 13.5, "rotation": 262, "alpha": "0.62"},
-            {"x": -0.5, "y": 13.5, "rotation": 348, "alpha": "0.42"},
-            {"x": -0.5, "y": 14.5, "rotation": 32, "alpha": "0.39"},
-            {"x": -0.5, "y": 14.5, "rotation": 199, "alpha": "0.61"},
-            {"x": -0.5, "y": 14.5, "rotation": 290, "alpha": "0.42"},
-            {"x": -0.5, "y": 14.5, "rotation": 299, "alpha": "0.41"},
-            {"x": -0.5, "y": 17.5, "rotation": 68, "alpha": "0.35"},
-            {"x": 0.5, "y": -9.5, "rotation": 294, "alpha": "0.49"},
-            {"x": 0.5, "y": -9.5, "rotation": 343, "alpha": "0.43"},
-            {"x": 0.5, "y": -5.5, "rotation": 284, "alpha": "0.32"},
-            {"x": 0.5, "y": -4.5, "rotation": 169, "alpha": "0.52"},
-            {"x": 0.5, "y": -3.5, "rotation": 303, "alpha": "0.46"},
-            {"x": 0.5, "y": -0.5, "rotation": 44, "alpha": "0.42"},
-            {"x": 0.5, "y": -0.5, "rotation": 350, "alpha": "0.51"},
-            {"x": 0.5, "y": 0.5, "rotation": 360, "alpha": "0.61"},
-            {"x": 0.5, "y": 5.5, "rotation": 192, "alpha": "0.55"},
-            {"x": 0.5, "y": 7.5, "rotation": 215, "alpha": "0.61"},
-            {"x": 0.5, "y": 8.5, "rotation": 210, "alpha": "0.47"},
-            {"x": 0.5, "y": 11.5, "rotation": 8, "alpha": "0.51"},
-            {"x": 0.5, "y": 11.5, "rotation": 26, "alpha": "0.43"},
-            {"x": 0.5, "y": 13.5, "rotation": 24, "alpha": "0.67"},
-            {"x": 0.5, "y": 13.5, "rotation": 72, "alpha": "0.52"},
-            {"x": 0.5, "y": 17.5, "rotation": 117, "alpha": "0.44"},
-            {"x": 1.5, "y": -10.5, "rotation": 7, "alpha": "0.44"},
-            {"x": 1.5, "y": -0.5, "rotation": 200, "alpha": "0.53"},
-            {"x": 1.5, "y": 1.5, "rotation": 87, "alpha": "0.50"},
-            {"x": 1.5, "y": 4.5, "rotation": 3, "alpha": "0.31"},
-            {"x": 1.5, "y": 5.5, "rotation": 267, "alpha": "0.70"},
-            {"x": 1.5, "y": 13.5, "rotation": 299, "alpha": "0.64"},
-            {"x": 1.5, "y": 15.5, "rotation": 308, "alpha": "0.44"},
-            {"x": 1.5, "y": 16.5, "rotation": 350, "alpha": "0.66"},
-            {"x": 2.5, "y": -12.5, "rotation": 332, "alpha": "0.30"},
-            {"x": 2.5, "y": -10.5, "rotation": 295, "alpha": "0.59"},
-            {"x": 2.5, "y": -8.5, "rotation": 102, "alpha": "0.50"},
-            {"x": 2.5, "y": -6.5, "rotation": 10, "alpha": "0.50"},
-            {"x": 2.5, "y": -5.5, "rotation": 0, "alpha": "0.39"},
-            {"x": 2.5, "y": -4.5, "rotation": 326, "alpha": "0.33"},
-            {"x": 2.5, "y": 3.5, "rotation": 154, "alpha": "0.61"},
-            {"x": 2.5, "y": 4.5, "rotation": 246, "alpha": "0.46"},
-            {"x": 2.5, "y": 8.5, "rotation": 355, "alpha": "0.69"},
-            {"x": 3.5, "y": -12.5, "rotation": 283, "alpha": "0.45"},
-            {"x": 3.5, "y": -10.5, "rotation": 96, "alpha": "0.41"},
-            {"x": 3.5, "y": -9.5, "rotation": 175, "alpha": "0.51"},
-            {"x": 3.5, "y": -7.5, "rotation": 158, "alpha": "0.39"},
-            {"x": 3.5, "y": -7.5, "rotation": 202, "alpha": "0.48"},
-            {"x": 3.5, "y": -4.5, "rotation": 243, "alpha": "0.39"},
-            {"x": 3.5, "y": -4.5, "rotation": 301, "alpha": "0.65"},
-            {"x": 3.5, "y": -3.5, "rotation": 58, "alpha": "0.52"},
-            {"x": 3.5, "y": -1.5, "rotation": 62, "alpha": "0.61"},
-            {"x": 3.5, "y": 0.5, "rotation": 129, "alpha": "0.40"},
-            {"x": 3.5, "y": 0.5, "rotation": 204, "alpha": "0.43"},
-            {"x": 3.5, "y": 4.5, "rotation": 52, "alpha": "0.61"},
-            {"x": 3.5, "y": 9.5, "rotation": 292, "alpha": "0.59"},
-            {"x": 3.5, "y": 12.5, "rotation": 268, "alpha": "0.45"},
-            {"x": 3.5, "y": 13.5, "rotation": 119, "alpha": "0.46"},
-            {"x": 3.5, "y": 14.5, "rotation": 92, "alpha": "0.51"},
-            {"x": 3.5, "y": 16.5, "rotation": 147, "alpha": "0.39"},
-            {"x": 4.5, "y": -11.5, "rotation": 82, "alpha": "0.46"},
-            {"x": 4.5, "y": -8.5, "rotation": 40, "alpha": "0.39"},
-            {"x": 4.5, "y": -7.5, "rotation": 3, "alpha": "0.31"},
-            {"x": 4.5, "y": -7.5, "rotation": 243, "alpha": "0.36"},
-            {"x": 4.5, "y": -5.5, "rotation": 351, "alpha": "0.64"},
-            {"x": 4.5, "y": -0.5, "rotation": 73, "alpha": "0.48"},
-            {"x": 4.5, "y": -0.5, "rotation": 149, "alpha": "0.54"},
-            {"x": 4.5, "y": 2.5, "rotation": 239, "alpha": "0.51"},
-            {"x": 4.5, "y": 5.5, "rotation": 52, "alpha": "0.50"},
-            {"x": 4.5, "y": 9.5, "rotation": 182, "alpha": "0.70"},
-            {"x": 4.5, "y": 11.5, "rotation": 90, "alpha": "0.48"},
-            {"x": 4.5, "y": 13.5, "rotation": 191, "alpha": "0.56"},
-            {"x": 4.5, "y": 13.5, "rotation": 249, "alpha": "0.49"},
-            {"x": 4.5, "y": 14.5, "rotation": 72, "alpha": "0.41"},
-            {"x": 5.5, "y": -11.5, "rotation": 349, "alpha": "0.50"},
-            {"x": 5.5, "y": -10.5, "rotation": 86, "alpha": "0.65"},
-            {"x": 5.5, "y": -7.5, "rotation": 337, "alpha": "0.32"},
-            {"x": 5.5, "y": -4.5, "rotation": 204, "alpha": "0.57"},
-            {"x": 5.5, "y": -4.5, "rotation": 313, "alpha": "0.33"},
-            {"x": 5.5, "y": -1.5, "rotation": 15, "alpha": "0.59"},
-            {"x": 5.5, "y": -1.5, "rotation": 300, "alpha": "0.61"},
-            {"x": 5.5, "y": 1.5, "rotation": 286, "alpha": "0.40"},
-            {"x": 5.5, "y": 3.5, "rotation": 145, "alpha": "0.61"},
-            {"x": 5.5, "y": 4.5, "rotation": 212, "alpha": "0.43"},
-            {"x": 5.5, "y": 4.5, "rotation": 283, "alpha": "0.48"},
-            {"x": 5.5, "y": 5.5, "rotation": 294, "alpha": "0.66"},
-            {"x": 5.5, "y": 8.5, "rotation": 246, "alpha": "0.38"},
-            {"x": 5.5, "y": 15.5, "rotation": 347, "alpha": "0.53"},
-            {"x": 5.5, "y": 16.5, "rotation": 280, "alpha": "0.45"},
-            {"x": 6.5, "y": -11.5, "rotation": 99, "alpha": "0.58"},
-            {"x": 6.5, "y": -6.5, "rotation": 39, "alpha": "0.62"},
-            {"x": 6.5, "y": -2.5, "rotation": 283, "alpha": "0.42"},
-            {"x": 6.5, "y": 1.5, "rotation": 19, "alpha": "0.70"},
-            {"x": 6.5, "y": 2.5, "rotation": 114, "alpha": "0.44"},
-            {"x": 6.5, "y": 2.5, "rotation": 152, "alpha": "0.32"},
-            {"x": 6.5, "y": 2.5, "rotation": 249, "alpha": "0.65"},
-            {"x": 6.5, "y": 4.5, "rotation": 16, "alpha": "0.58"},
-            {"x": 6.5, "y": 6.5, "rotation": 70, "alpha": "0.30"},
-            {"x": 6.5, "y": 6.5, "rotation": 297, "alpha": "0.38"},
-            {"x": 6.5, "y": 14.5, "rotation": 244, "alpha": "0.38"},
-            {"x": 6.5, "y": 17.5, "rotation": 94, "alpha": "0.31"},
-            {"x": 7.5, "y": -11.5, "rotation": 152, "alpha": "0.31"},
-            {"x": 7.5, "y": -10.5, "rotation": 335, "alpha": "0.56"},
-            {"x": 7.5, "y": -9.5, "rotation": 85, "alpha": "0.49"},
-            {"x": 7.5, "y": -8.5, "rotation": 132, "alpha": "0.54"},
-            {"x": 7.5, "y": -5.5, "rotation": 14, "alpha": "0.44"},
-            {"x": 7.5, "y": -1.5, "rotation": 299, "alpha": "0.63"},
-            {"x": 7.5, "y": -1.5, "rotation": 332, "alpha": "0.63"},
-            {"x": 7.5, "y": 2.5, "rotation": 100, "alpha": "0.53"},
-            {"x": 7.5, "y": 3.5, "rotation": 282, "alpha": "0.34"},
-            {"x": 7.5, "y": 5.5, "rotation": 102, "alpha": "0.59"},
-            {"x": 7.5, "y": 8.5, "rotation": 301, "alpha": "0.44"},
-            {"x": 7.5, "y": 11.5, "rotation": 269, "alpha": "0.32"},
-            {"x": 7.5, "y": 13.5, "rotation": 303, "alpha": "0.59"},
-            {"x": 7.5, "y": 15.5, "rotation": 180, "alpha": "0.57"},
-            {"x": 7.5, "y": 17.5, "rotation": 277, "alpha": "0.42"},
-            {"x": 8.5, "y": -12.5, "rotation": 23, "alpha": "0.55"},
-            {"x": 8.5, "y": -8.5, "rotation": 39, "alpha": "0.61"},
-            {"x": 8.5, "y": -7.5, "rotation": 250, "alpha": "0.59"},
-            {"x": 8.5, "y": -7.5, "rotation": 312, "alpha": "0.43"},
-            {"x": 8.5, "y": -6.5, "rotation": 167, "alpha": "0.60"},
-            {"x": 8.5, "y": -4.5, "rotation": 14, "alpha": "0.32"},
-            {"x": 8.5, "y": -3.5, "rotation": 192, "alpha": "0.65"},
-            {"x": 8.5, "y": -2.5, "rotation": 268, "alpha": "0.40"},
-            {"x": 8.5, "y": 1.5, "rotation": 106, "alpha": "0.65"},
-            {"x": 8.5, "y": 1.5, "rotation": 161, "alpha": "0.30"},
-            {"x": 8.5, "y": 2.5, "rotation": 61, "alpha": "0.43"},
-            {"x": 8.5, "y": 8.5, "rotation": 0, "alpha": "0.31"},
-            {"x": 8.5, "y": 8.5, "rotation": 21, "alpha": "0.64"},
-            {"x": 8.5, "y": 8.5, "rotation": 218, "alpha": "0.54"},
-            {"x": 8.5, "y": 9.5, "rotation": 60, "alpha": "0.68"},
-            {"x": 8.5, "y": 10.5, "rotation": 12, "alpha": "0.61"},
-            {"x": 8.5, "y": 10.5, "rotation": 302, "alpha": "0.31"},
-            {"x": 9.5, "y": -12.5, "rotation": 82, "alpha": "0.44"},
-            {"x": 9.5, "y": -12.5, "rotation": 181, "alpha": "0.41"},
-            {"x": 9.5, "y": -11.5, "rotation": 206, "alpha": "0.39"},
-            {"x": 9.5, "y": -8.5, "rotation": 21, "alpha": "0.64"},
-            {"x": 9.5, "y": -7.5, "rotation": 82, "alpha": "0.65"},
-            {"x": 9.5, "y": -4.5, "rotation": 179, "alpha": "0.35"},
-            {"x": 9.5, "y": -4.5, "rotation": 293, "alpha": "0.56"},
-            {"x": 9.5, "y": -0.5, "rotation": 3, "alpha": "0.67"},
-            {"x": 9.5, "y": 2.5, "rotation": 323, "alpha": "0.52"},
-            {"x": 9.5, "y": 4.5, "rotation": 215, "alpha": "0.62"},
-            {"x": 9.5, "y": 6.5, "rotation": 147, "alpha": "0.32"},
-            {"x": 9.5, "y": 11.5, "rotation": 16, "alpha": "0.35"},
-            {"x": 9.5, "y": 13.5, "rotation": 256, "alpha": "0.51"},
-            {"x": 9.5, "y": 14.5, "rotation": 322, "alpha": "0.33"},
-            {"x": 9.5, "y": 16.5, "rotation": 299, "alpha": "0.56"},
-            {"x": 10.5, "y": -11.5, "rotation": 77, "alpha": "0.45"},
-            {"x": 10.5, "y": -10.5, "rotation": 314, "alpha": "0.38"},
-            {"x": 10.5, "y": -10.5, "rotation": 347, "alpha": "0.45"},
-            {"x": 10.5, "y": -9.5, "rotation": 66, "alpha": "0.59"},
-            {"x": 10.5, "y": -6.5, "rotation": 14, "alpha": "0.51"},
-            {"x": 10.5, "y": -4.5, "rotation": 7, "alpha": "0.69"},
-            {"x": 10.5, "y": -4.5, "rotation": 115, "alpha": "0.65"},
-            {"x": 10.5, "y": 3.5, "rotation": 39, "alpha": "0.59"},
-            {"x": 10.5, "y": 9.5, "rotation": 250, "alpha": "0.45"},
-            {"x": 10.5, "y": 12.5, "rotation": 115, "alpha": "0.35"},
-            {"x": 10.5, "y": 16.5, "rotation": 121, "alpha": "0.50"},
-            {"x": 10.5, "y": 16.5, "rotation": 234, "alpha": "0.31"},
-            {"x": 10.5, "y": 16.5, "rotation": 347, "alpha": "0.52"},
-            {"x": 10.5, "y": 17.5, "rotation": 244, "alpha": "0.64"},
-            {"x": 11.5, "y": -12.5, "rotation": 358, "alpha": "0.48"},
-            {"x": 11.5, "y": -11.5, "rotation": 192, "alpha": "0.49"},
-            {"x": 11.5, "y": -9.5, "rotation": 104, "alpha": "0.33"},
-            {"x": 11.5, "y": -9.5, "rotation": 274, "alpha": "0.55"},
-            {"x": 11.5, "y": -8.5, "rotation": 184, "alpha": "0.42"},
-            {"x": 11.5, "y": -5.5, "rotation": 109, "alpha": "0.67"},
-            {"x": 11.5, "y": -2.5, "rotation": 26, "alpha": "0.37"},
-            {"x": 11.5, "y": 0.5, "rotation": 298, "alpha": "0.68"},
-            {"x": 11.5, "y": 1.5, "rotation": 137, "alpha": "0.70"},
-            {"x": 11.5, "y": 3.5, "rotation": 206, "alpha": "0.67"},
-            {"x": 11.5, "y": 4.5, "rotation": 93, "alpha": "0.43"},
-            {"x": 11.5, "y": 14.5, "rotation": 130, "alpha": "0.62"},
-            {"x": 12.5, "y": -12.5, "rotation": 55, "alpha": "0.58"},
-            {"x": 12.5, "y": -12.5, "rotation": 339, "alpha": "0.61"},
-            {"x": 12.5, "y": -10.5, "rotation": 131, "alpha": "0.52"},
-            {"x": 12.5, "y": -8.5, "rotation": 337, "alpha": "0.61"},
-            {"x": 12.5, "y": -7.5, "rotation": 199, "alpha": "0.64"},
-            {"x": 12.5, "y": -7.5, "rotation": 275, "alpha": "0.61"},
-            {"x": 12.5, "y": -5.5, "rotation": 43, "alpha": "0.68"},
-            {"x": 12.5, "y": -5.5, "rotation": 233, "alpha": "0.36"},
-            {"x": 12.5, "y": -3.5, "rotation": 65, "alpha": "0.64"},
-            {"x": 12.5, "y": -0.5, "rotation": 182, "alpha": "0.47"},
-            {"x": 12.5, "y": 2.5, "rotation": 61, "alpha": "0.61"},
-            {"x": 12.5, "y": 4.5, "rotation": 48, "alpha": "0.59"},
-            {"x": 12.5, "y": 7.5, "rotation": 40, "alpha": "0.58"},
-            {"x": 12.5, "y": 10.5, "rotation": 62, "alpha": "0.56"},
-            {"x": 12.5, "y": 13.5, "rotation": 256, "alpha": "0.68"},
-            {"x": 12.5, "y": 14.5, "rotation": 153, "alpha": "0.65"},
-            {"x": 12.5, "y": 17.5, "rotation": 329, "alpha": "0.61"}
+            {"x": -16.5, "y": -0.2, "rotation": 20, "alpha": 0.5},
+            {"x": -13.5, "y": -13.2, "rotation": 20, "alpha": 0.5},
+            {"x": -12.5, "y": -10.2, "rotation": 10, "alpha": 0.62},
+            {"x": -12.5, "y": -5.2, "rotation": 20, "alpha": 0.5},
+            {"x": -12.5, "y": -0.2, "rotation": 10, "alpha": 0.5},
+            {"x": -10.5, "y": -12.2, "rotation": 10, "alpha": 0.6},
+            {"x": -10.5, "y": -9.2, "rotation": 10, "alpha": 0.54},
+            {"x": -7.5, "y": -8.5, "rotation": 281, "alpha": 0.6},
+            {"x": -7.5, "y": -5.5, "rotation": 306, "alpha": 0.38},
+            {"x": -7.5, "y": -4.5, "rotation": 263, "alpha": 0.67},
+            {"x": -7.5, "y": -3.5, "rotation": 341, "alpha": 0.68},
+            {"x": -7.5, "y": 1.5, "rotation": 283, "alpha": 0.69},
+            {"x": -7.5, "y": 1.5, "rotation": 299, "alpha": 0.68},
+            {"x": -7.5, "y": 8.5, "rotation": 209, "alpha": 0.45},
+            {"x": -7.5, "y": 9.5, "rotation": 18, "alpha": 0.51},
+            {"x": -7.5, "y": 17.5, "rotation": 336, "alpha": 0.56},
+            {"x": -6.5, "y": -10.5, "rotation": 2, "alpha": 0.68},
+            {"x": -6.5, "y": -8.5, "rotation": 89, "alpha": 0.41},
+            {"x": -6.5, "y": -3.5, "rotation": 105, "alpha": 0.58},
+            {"x": -6.5, "y": -3.5, "rotation": 328, "alpha": 0.68},
+            {"x": -6.5, "y": 1.5, "rotation": 328, "alpha": 0.57},
+            {"x": -6.5, "y": 3.5, "rotation": 61, "alpha": 0.56},
+            {"x": -6.5, "y": 3.5, "rotation": 150, "alpha": 0.53},
+            {"x": -6.5, "y": 3.5, "rotation": 197, "alpha": 0.48},
+            {"x": -6.5, "y": 3.5, "rotation": 268, "alpha": 0.53},
+            {"x": -6.5, "y": 5.5, "rotation": 9, "alpha": 0.64},
+            {"x": -5.5, "y": -8.5, "rotation": 337, "alpha": 0.45},
+            {"x": -5.5, "y": -4.5, "rotation": 76, "alpha": 0.62},
+            {"x": -5.5, "y": -4.5, "rotation": 133, "alpha": 0.68},
+            {"x": -5.5, "y": -2.5, "rotation": 305, "alpha": 0.59},
+            {"x": -5.5, "y": -1.5, "rotation": 76, "alpha": 0.51},
+            {"x": -5.5, "y": -1.5, "rotation": 222, "alpha": 0.65},
+            {"x": -5.5, "y": 2.5, "rotation": 354, "alpha": 0.37},
+            {"x": -5.5, "y": 3.5, "rotation": 212, "alpha": 0.31},
+            {"x": -5.5, "y": 8.5, "rotation": 34, "alpha": 0.46},
+            {"x": -5.5, "y": 12.5, "rotation": 130, "alpha": 0.65},
+            {"x": -5.5, "y": 15.5, "rotation": 68, "alpha": 0.57},
+            {"x": -5.5, "y": 17.5, "rotation": 117, "alpha": 0.51},
+            {"x": -4.5, "y": -11.5, "rotation": 326, "alpha": 0.43},
+            {"x": -4.5, "y": -9.5, "rotation": 275, "alpha": 0.32},
+            {"x": -4.5, "y": -7.5, "rotation": 295, "alpha": 0.67},
+            {"x": -4.5, "y": -7.5, "rotation": 335, "alpha": 0.4},
+            {"x": -4.5, "y": -6.5, "rotation": 130, "alpha": 0.38},
+            {"x": -4.5, "y": -3.5, "rotation": 148, "alpha": 0.58},
+            {"x": -4.5, "y": -2.5, "rotation": 202, "alpha": 0.61},
+            {"x": -4.5, "y": 4.5, "rotation": 100, "alpha": 0.56},
+            {"x": -4.5, "y": 5.5, "rotation": 341, "alpha": 0.53},
+            {"x": -4.5, "y": 6.5, "rotation": 277, "alpha": 0.55},
+            {"x": -4.5, "y": 9.5, "rotation": 138, "alpha": 0.52},
+            {"x": -4.5, "y": 9.5, "rotation": 148, "alpha": 0.51},
+            {"x": -4.5, "y": 10.5, "rotation": 304, "alpha": 0.32},
+            {"x": -4.5, "y": 15.5, "rotation": 177, "alpha": 0.47},
+            {"x": -4.5, "y": 16.5, "rotation": 258, "alpha": 0.55},
+            {"x": -3.5, "y": -11.5, "rotation": 167, "alpha": 0.38},
+            {"x": -3.5, "y": -9.5, "rotation": 233, "alpha": 0.33},
+            {"x": -3.5, "y": -7.5, "rotation": 211, "alpha": 0.45},
+            {"x": -3.5, "y": -7.5, "rotation": 253, "alpha": 0.35},
+            {"x": -3.5, "y": -5.5, "rotation": 214, "alpha": 0.4},
+            {"x": -3.5, "y": -3.5, "rotation": 17, "alpha": 0.57},
+            {"x": -3.5, "y": 1.5, "rotation": 271, "alpha": 0.38},
+            {"x": -3.5, "y": 1.5, "rotation": 326, "alpha": 0.31},
+            {"x": -3.5, "y": 2.5, "rotation": 352, "alpha": 0.39},
+            {"x": -3.5, "y": 3.5, "rotation": 278, "alpha": 0.49},
+            {"x": -3.5, "y": 10.5, "rotation": 170, "alpha": 0.42},
+            {"x": -3.5, "y": 10.5, "rotation": 284, "alpha": 0.51},
+            {"x": -3.5, "y": 12.5, "rotation": 42, "alpha": 0.69},
+            {"x": -2.5, "y": -12.5, "rotation": 242, "alpha": 0.5},
+            {"x": -2.5, "y": -10.5, "rotation": 44, "alpha": 0.67},
+            {"x": -2.5, "y": -10.5, "rotation": 160, "alpha": 0.31},
+            {"x": -2.5, "y": -6.5, "rotation": 82, "alpha": 0.56},
+            {"x": -2.5, "y": -5.5, "rotation": 100, "alpha": 0.46},
+            {"x": -2.5, "y": -4.5, "rotation": 51, "alpha": 0.51},
+            {"x": -2.5, "y": -4.5, "rotation": 155, "alpha": 0.58},
+            {"x": -2.5, "y": -3.5, "rotation": 306, "alpha": 0.52},
+            {"x": -2.5, "y": -2.5, "rotation": 217, "alpha": 0.34},
+            {"x": -2.5, "y": 8.5, "rotation": 282, "alpha": 0.64},
+            {"x": -2.5, "y": 11.5, "rotation": 244, "alpha": 0.57},
+            {"x": -2.5, "y": 13.5, "rotation": 150, "alpha": 0.56},
+            {"x": -1.5, "y": -7.5, "rotation": 192, "alpha": 0.39},
+            {"x": -1.5, "y": -7.5, "rotation": 199, "alpha": 0.7},
+            {"x": -1.5, "y": -6.5, "rotation": 153, "alpha": 0.57},
+            {"x": -1.5, "y": -4.5, "rotation": 155, "alpha": 0.55},
+            {"x": -1.5, "y": -4.5, "rotation": 265, "alpha": 0.69},
+            {"x": -1.5, "y": -3.5, "rotation": 59, "alpha": 0.69},
+            {"x": -1.5, "y": -3.5, "rotation": 256, "alpha": 0.43},
+            {"x": -1.5, "y": -0.5, "rotation": 117, "alpha": 0.49},
+            {"x": -1.5, "y": 0.5, "rotation": 115, "alpha": 0.34},
+            {"x": -1.5, "y": 0.5, "rotation": 302, "alpha": 0.54},
+            {"x": -1.5, "y": 2.5, "rotation": 81, "alpha": 0.55},
+            {"x": -1.5, "y": 13.5, "rotation": 97, "alpha": 0.47},
+            {"x": -1.5, "y": 14.5, "rotation": 315, "alpha": 0.67},
+            {"x": -1.5, "y": 15.5, "rotation": 234, "alpha": 0.42},
+            {"x": -1.5, "y": 16.5, "rotation": 354, "alpha": 0.46},
+            {"x": -0.5, "y": -12.5, "rotation": 247, "alpha": 0.49},
+            {"x": -0.5, "y": -9.5, "rotation": 173, "alpha": 0.4},
+            {"x": -0.5, "y": -9.5, "rotation": 222, "alpha": 0.69},
+            {"x": -0.5, "y": -5.5, "rotation": 2, "alpha": 0.33},
+            {"x": -0.5, "y": -5.5, "rotation": 152, "alpha": 0.52},
+            {"x": -0.5, "y": -5.5, "rotation": 295, "alpha": 0.51},
+            {"x": -0.5, "y": 3.5, "rotation": 174, "alpha": 0.59},
+            {"x": -0.5, "y": 3.5, "rotation": 188, "alpha": 0.65},
+            {"x": -0.5, "y": 5.5, "rotation": 242, "alpha": 0.63},
+            {"x": -0.5, "y": 5.5, "rotation": 286, "alpha": 0.55},
+            {"x": -0.5, "y": 14.5, "rotation": 32, "alpha": 0.39},
+            {"x": -0.5, "y": 14.5, "rotation": 199, "alpha": 0.61},
+            {"x": -0.5, "y": 14.5, "rotation": 290, "alpha": 0.42},
+            {"x": -0.5, "y": 14.5, "rotation": 299, "alpha": 0.41},
+            {"x": -0.5, "y": 17.5, "rotation": 68, "alpha": 0.35},
+            {"x": 0.5, "y": -9.5, "rotation": 294, "alpha": 0.49},
+            {"x": 0.5, "y": -9.5, "rotation": 343, "alpha": 0.43},
+            {"x": 0.5, "y": -5.5, "rotation": 284, "alpha": 0.32},
+            {"x": 0.5, "y": -4.5, "rotation": 169, "alpha": 0.52},
+            {"x": 0.5, "y": -3.5, "rotation": 303, "alpha": 0.46},
+            {"x": 0.5, "y": -0.5, "rotation": 44, "alpha": 0.42},
+            {"x": 0.5, "y": -0.5, "rotation": 350, "alpha": 0.51},
+            {"x": 0.5, "y": 0.5, "rotation": 360, "alpha": 0.61},
+            {"x": 0.5, "y": 11.5, "rotation": 8, "alpha": 0.51},
+            {"x": 0.5, "y": 11.5, "rotation": 26, "alpha": 0.43},
+            {"x": 0.5, "y": 13.5, "rotation": 24, "alpha": 0.67},
+            {"x": 0.5, "y": 13.5, "rotation": 72, "alpha": 0.52},
+            {"x": 0.5, "y": 17.5, "rotation": 117, "alpha": 0.44},
+            {"x": 1.5, "y": -10.5, "rotation": 7, "alpha": 0.44},
+            {"x": 1.5, "y": -0.5, "rotation": 200, "alpha": 0.53},
+            {"x": 1.5, "y": 1.5, "rotation": 87, "alpha": 0.5},
+            {"x": 1.5, "y": 4.5, "rotation": 3, "alpha": 0.31},
+            {"x": 1.5, "y": 5.5, "rotation": 267, "alpha": 0.7},
+            {"x": 1.5, "y": 13.5, "rotation": 299, "alpha": 0.64},
+            {"x": 1.5, "y": 15.5, "rotation": 308, "alpha": 0.44},
+            {"x": 2.5, "y": -8.5, "rotation": 102, "alpha": 0.5},
+            {"x": 2.5, "y": -6.5, "rotation": 10, "alpha": 0.5},
+            {"x": 2.5, "y": -5.5, "rotation": 0, "alpha": 0.39},
+            {"x": 2.5, "y": -4.5, "rotation": 326, "alpha": 0.33},
+            {"x": 2.5, "y": 3.5, "rotation": 154, "alpha": 0.61},
+            {"x": 2.5, "y": 4.5, "rotation": 246, "alpha": 0.46},
+            {"x": 2.5, "y": 8.5, "rotation": 355, "alpha": 0.69},
+            {"x": 3.5, "y": -12.5, "rotation": 283, "alpha": 0.45},
+            {"x": 3.5, "y": -10.5, "rotation": 96, "alpha": 0.41},
+            {"x": 3.5, "y": -9.5, "rotation": 175, "alpha": 0.51},
+            {"x": 3.5, "y": -7.5, "rotation": 158, "alpha": 0.39},
+            {"x": 3.5, "y": -7.5, "rotation": 202, "alpha": 0.48},
+            {"x": 3.5, "y": -4.5, "rotation": 243, "alpha": 0.39},
+            {"x": 3.5, "y": -4.5, "rotation": 301, "alpha": 0.65},
+            {"x": 3.5, "y": -3.5, "rotation": 58, "alpha": 0.52},
+            {"x": 3.5, "y": -1.5, "rotation": 62, "alpha": 0.61},
+            {"x": 3.5, "y": 0.5, "rotation": 129, "alpha": 0.4},
+            {"x": 3.5, "y": 0.5, "rotation": 204, "alpha": 0.43},
+            {"x": 3.5, "y": 4.5, "rotation": 52, "alpha": 0.61},
+            {"x": 3.5, "y": 9.5, "rotation": 292, "alpha": 0.59},
+            {"x": 3.5, "y": 12.5, "rotation": 268, "alpha": 0.45},
+            {"x": 3.5, "y": 13.5, "rotation": 119, "alpha": 0.46},
+            {"x": 3.5, "y": 14.5, "rotation": 92, "alpha": 0.51},
+            {"x": 3.5, "y": 16.5, "rotation": 147, "alpha": 0.39},
+            {"x": 4.5, "y": -11.5, "rotation": 82, "alpha": 0.46},
+            {"x": 4.5, "y": -8.5, "rotation": 40, "alpha": 0.39},
+            {"x": 4.5, "y": -7.5, "rotation": 3, "alpha": 0.31},
+            {"x": 4.5, "y": -7.5, "rotation": 243, "alpha": 0.36},
+            {"x": 4.5, "y": -5.5, "rotation": 351, "alpha": 0.64},
+            {"x": 4.5, "y": -0.5, "rotation": 73, "alpha": 0.48},
+            {"x": 4.5, "y": -0.5, "rotation": 149, "alpha": 0.54},
+            {"x": 4.5, "y": 2.5, "rotation": 239, "alpha": 0.51},
+            {"x": 4.5, "y": 5.5, "rotation": 52, "alpha": 0.5},
+            {"x": 4.5, "y": 9.5, "rotation": 182, "alpha": 0.7},
+            {"x": 4.5, "y": 11.5, "rotation": 90, "alpha": 0.48},
+            {"x": 4.5, "y": 13.5, "rotation": 191, "alpha": 0.56},
+            {"x": 4.5, "y": 13.5, "rotation": 249, "alpha": 0.49},
+            {"x": 4.5, "y": 14.5, "rotation": 72, "alpha": 0.41},
+            {"x": 5.5, "y": -11.5, "rotation": 349, "alpha": 0.5},
+            {"x": 5.5, "y": -10.5, "rotation": 86, "alpha": 0.65},
+            {"x": 5.5, "y": -7.5, "rotation": 337, "alpha": 0.32},
+            {"x": 5.5, "y": -4.5, "rotation": 204, "alpha": 0.57},
+            {"x": 5.5, "y": -4.5, "rotation": 313, "alpha": 0.33},
+            {"x": 5.5, "y": -1.5, "rotation": 15, "alpha": 0.59},
+            {"x": 5.5, "y": -1.5, "rotation": 300, "alpha": 0.61},
+            {"x": 5.5, "y": 1.5, "rotation": 286, "alpha": 0.4},
+            {"x": 5.5, "y": 3.5, "rotation": 145, "alpha": 0.61},
+            {"x": 5.5, "y": 4.5, "rotation": 212, "alpha": 0.43},
+            {"x": 5.5, "y": 4.5, "rotation": 283, "alpha": 0.48},
+            {"x": 5.5, "y": 5.5, "rotation": 294, "alpha": 0.66},
+            {"x": 5.5, "y": 8.5, "rotation": 246, "alpha": 0.38},
+            {"x": 5.5, "y": 15.5, "rotation": 347, "alpha": 0.53},
+            {"x": 5.5, "y": 16.5, "rotation": 280, "alpha": 0.45},
+            {"x": 6.5, "y": -2.5, "rotation": 283, "alpha": 0.42},
+            {"x": 6.5, "y": 1.5, "rotation": 19, "alpha": 0.7},
+            {"x": 6.5, "y": 2.5, "rotation": 114, "alpha": 0.44},
+            {"x": 6.5, "y": 2.5, "rotation": 152, "alpha": 0.32},
+            {"x": 6.5, "y": 2.5, "rotation": 249, "alpha": 0.65},
+            {"x": 6.5, "y": 4.5, "rotation": 16, "alpha": 0.58},
+            {"x": 6.5, "y": 6.5, "rotation": 70, "alpha": 0.3},
+            {"x": 6.5, "y": 6.5, "rotation": 297, "alpha": 0.38},
+            {"x": 6.5, "y": 14.5, "rotation": 244, "alpha": 0.38},
+            {"x": 6.5, "y": 17.5, "rotation": 94, "alpha": 0.31},
+            {"x": 7.5, "y": -11.5, "rotation": 152, "alpha": 0.31},
+            {"x": 7.5, "y": -10.5, "rotation": 335, "alpha": 0.56},
+            {"x": 7.5, "y": -9.5, "rotation": 85, "alpha": 0.49},
+            {"x": 7.5, "y": -8.5, "rotation": 132, "alpha": 0.54},
+            {"x": 7.5, "y": -5.5, "rotation": 14, "alpha": 0.44},
+            {"x": 7.5, "y": -1.5, "rotation": 299, "alpha": 0.63},
+            {"x": 7.5, "y": -1.5, "rotation": 332, "alpha": 0.63},
+            {"x": 7.5, "y": 2.5, "rotation": 100, "alpha": 0.53},
+            {"x": 7.5, "y": 3.5, "rotation": 282, "alpha": 0.34},
+            {"x": 7.5, "y": 5.5, "rotation": 102, "alpha": 0.59},
+            {"x": 7.5, "y": 8.5, "rotation": 301, "alpha": 0.44},
+            {"x": 7.5, "y": 11.5, "rotation": 269, "alpha": 0.32},
+            {"x": 7.5, "y": 13.5, "rotation": 303, "alpha": 0.59},
+            {"x": 7.5, "y": 15.5, "rotation": 180, "alpha": 0.57},
+            {"x": 7.5, "y": 17.5, "rotation": 277, "alpha": 0.42},
+            {"x": 8.5, "y": -12.5, "rotation": 23, "alpha": 0.55},
+            {"x": 8.5, "y": -8.5, "rotation": 39, "alpha": 0.61},
+            {"x": 8.5, "y": -7.5, "rotation": 250, "alpha": 0.59},
+            {"x": 8.5, "y": -7.5, "rotation": 312, "alpha": 0.43},
+            {"x": 8.5, "y": -6.5, "rotation": 167, "alpha": 0.6},
+            {"x": 8.5, "y": -4.5, "rotation": 14, "alpha": 0.32},
+            {"x": 8.5, "y": -3.5, "rotation": 192, "alpha": 0.65},
+            {"x": 8.5, "y": -2.5, "rotation": 268, "alpha": 0.4},
+            {"x": 8.5, "y": 1.5, "rotation": 106, "alpha": 0.65},
+            {"x": 8.5, "y": 1.5, "rotation": 161, "alpha": 0.3},
+            {"x": 8.5, "y": 2.5, "rotation": 61, "alpha": 0.43},
+            {"x": 8.5, "y": 8.5, "rotation": 0, "alpha": 0.31},
+            {"x": 8.5, "y": 8.5, "rotation": 21, "alpha": 0.64},
+            {"x": 8.5, "y": 8.5, "rotation": 218, "alpha": 0.54},
+            {"x": 8.5, "y": 9.5, "rotation": 60, "alpha": 0.68},
+            {"x": 8.5, "y": 10.5, "rotation": 12, "alpha": 0.61},
+            {"x": 8.5, "y": 10.5, "rotation": 302, "alpha": 0.31},
+            {"x": 9.5, "y": -12.5, "rotation": 82, "alpha": 0.44},
+            {"x": 9.5, "y": -12.5, "rotation": 181, "alpha": 0.41},
+            {"x": 9.5, "y": -11.5, "rotation": 206, "alpha": 0.39},
+            {"x": 9.5, "y": -8.5, "rotation": 21, "alpha": 0.64},
+            {"x": 9.5, "y": -7.5, "rotation": 82, "alpha": 0.65},
+            {"x": 9.5, "y": -4.5, "rotation": 179, "alpha": 0.35},
+            {"x": 9.5, "y": -4.5, "rotation": 293, "alpha": 0.56},
+            {"x": 9.5, "y": -0.5, "rotation": 3, "alpha": 0.67},
+            {"x": 9.5, "y": 2.5, "rotation": 323, "alpha": 0.52},
+            {"x": 9.5, "y": 4.5, "rotation": 215, "alpha": 0.62},
+            {"x": 9.5, "y": 6.5, "rotation": 147, "alpha": 0.32},
+            {"x": 9.5, "y": 11.5, "rotation": 16, "alpha": 0.35},
+            {"x": 9.5, "y": 13.5, "rotation": 256, "alpha": 0.51},
+            {"x": 9.5, "y": 14.5, "rotation": 322, "alpha": 0.33},
+            {"x": 9.5, "y": 16.5, "rotation": 299, "alpha": 0.56},
+            {"x": 10.5, "y": -11.5, "rotation": 77, "alpha": 0.45},
+            {"x": 10.5, "y": -10.5, "rotation": 314, "alpha": 0.38},
+            {"x": 10.5, "y": -10.5, "rotation": 347, "alpha": 0.45},
+            {"x": 10.5, "y": -9.5, "rotation": 66, "alpha": 0.59},
+            {"x": 10.5, "y": -6.5, "rotation": 14, "alpha": 0.51},
+            {"x": 10.5, "y": -4.5, "rotation": 7, "alpha": 0.69},
+            {"x": 10.5, "y": -4.5, "rotation": 115, "alpha": 0.65},
+            {"x": 10.5, "y": 3.5, "rotation": 39, "alpha": 0.59},
+            {"x": 10.5, "y": 9.5, "rotation": 250, "alpha": 0.45},
+            {"x": 10.5, "y": 12.5, "rotation": 115, "alpha": 0.35},
+            {"x": 10.5, "y": 16.5, "rotation": 121, "alpha": 0.5},
+            {"x": 10.5, "y": 16.5, "rotation": 234, "alpha": 0.31},
+            {"x": 10.5, "y": 16.5, "rotation": 347, "alpha": 0.52},
+            {"x": 10.5, "y": 17.5, "rotation": 244, "alpha": 0.64},
+            {"x": 11.5, "y": -12.5, "rotation": 358, "alpha": 0.48},
+            {"x": 11.5, "y": -11.5, "rotation": 192, "alpha": 0.49},
+            {"x": 11.5, "y": -9.5, "rotation": 104, "alpha": 0.33},
+            {"x": 11.5, "y": -9.5, "rotation": 274, "alpha": 0.55},
+            {"x": 11.5, "y": -8.5, "rotation": 184, "alpha": 0.42},
+            {"x": 11.5, "y": -5.5, "rotation": 109, "alpha": 0.67},
+            {"x": 11.5, "y": -2.5, "rotation": 26, "alpha": 0.37},
+            {"x": 11.5, "y": 0.5, "rotation": 298, "alpha": 0.68},
+            {"x": 11.5, "y": 1.5, "rotation": 137, "alpha": 0.7},
+            {"x": 11.5, "y": 3.5, "rotation": 206, "alpha": 0.67},
+            {"x": 11.5, "y": 4.5, "rotation": 93, "alpha": 0.43},
+            {"x": 11.5, "y": 14.5, "rotation": 130, "alpha": 0.62},
+            {"x": 12.5, "y": -12.5, "rotation": 55, "alpha": 0.58},
+            {"x": 12.5, "y": -12.5, "rotation": 339, "alpha": 0.61},
+            {"x": 12.5, "y": -10.5, "rotation": 131, "alpha": 0.52},
+            {"x": 12.5, "y": -8.5, "rotation": 337, "alpha": 0.61},
+            {"x": 12.5, "y": -7.5, "rotation": 199, "alpha": 0.64},
+            {"x": 12.5, "y": -7.5, "rotation": 275, "alpha": 0.61},
+            {"x": 12.5, "y": -5.5, "rotation": 43, "alpha": 0.68},
+            {"x": 12.5, "y": -5.5, "rotation": 233, "alpha": 0.36},
+            {"x": 12.5, "y": -3.5, "rotation": 65, "alpha": 0.64},
+            {"x": 12.5, "y": -0.5, "rotation": 182, "alpha": 0.47},
+            {"x": 12.5, "y": 2.5, "rotation": 61, "alpha": 0.61},
+            {"x": 12.5, "y": 4.5, "rotation": 48, "alpha": 0.59},
+            {"x": 12.5, "y": 7.5, "rotation": 40, "alpha": 0.58},
+            {"x": 12.5, "y": 10.5, "rotation": 62, "alpha": 0.56},
+            {"x": 12.5, "y": 13.5, "rotation": 256, "alpha": 0.68},
+            {"x": 12.5, "y": 14.5, "rotation": 153, "alpha": 0.65},
+            {"x": 12.5, "y": 17.5, "rotation": 329, "alpha": 0.61}
         ];
-        for (var i = 0;
-//         i < 10 &&
-             i < leaves.length; i++) {
+        for (var i = 0; i < leaves.length; i++) {
             var leafData = leaves[i];
             var leaf = new createjs.Shape();
 
@@ -2940,13 +2869,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             if (leafData.rotation > 30 && leaf.rotation < 210) {
                 leaf.graphics.beginFill(COLOR_AUTUMN_LEAF);
             }
-//        else if (leafData.x == -7.5) {
-//            leaf.graphics.beginFill('green');
-//        }
             else {
                 leaf.graphics.beginFill(COLOR_AUTUMN_LEAF_2);
             }
-//        leaf.graphics.beginFill('#FF4500');
+
             leaf.graphics
                 .moveTo(0, 0)
                 .lineTo(5, 0)
@@ -2972,7 +2898,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getWinterTimeline(x, y) {
-        var snowTreeTimeline = new TimelineMax({autoRemoveChildren: false});
+        var snowTreeTimeline = new TimelineMax();
         snowTreeTimeline.add('snow');
 
         var snowTreeContainer = getWinterContainer(x, y);
@@ -3067,7 +2993,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getCatTimeline(x, y) {
-        var catTimeline = new TimelineMax({autoRemoveChildren: false});
+        var catTimeline = new TimelineMax();
 
         var catContainer = getDefaultContainer(x, y);
 
@@ -3163,7 +3089,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
     }
 
     function getTurtleTimeline(x, y) {
-        var turtleTimeline = new TimelineMax({autoRemoveChildren: false});
+        var turtleTimeline = new TimelineMax();
 
         var turtleContainer = getDefaultContainer(x, y);
 
@@ -3286,9 +3212,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(hand1Wrapper, .44, {rotation: "-=10", startAt: {rotation: "+=8"}, repeat: -1, yoyo: true}, 'hands')
             .to(hand2Wrapper, .44, {rotation: "+=10", startAt: {rotation: "-=8"}, repeat: -1, yoyo: true}, 'hands');
 
-        turtleContainer.removeTimeline = function () {
-            turtleEyesTimeline.remove();
-            flyTimeline.remove();
+        turtleContainer.stopKillTimeline = function () {
+            turtleEyesTimeline.stop().kill();
+            flyTimeline.stop().kill();
         };
 
         return [turtleTimeline, turtleContainer, turtleWrapper, balloonWrapper];
@@ -3355,8 +3281,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .add(movingCloudTimeline, 0)
             .add(eyesTimeline, 0);
 
-        cloudContainer.removeTimeline = function () {
-            eyesTimeline.remove();
+        cloudContainer.stopKillTimeline = function () {
+            movingCloudTimeline.stop().kill();
+            eyesTimeline.stop().kill();
         };
 
         return [cloudTimeline, cloudContainer];
@@ -3432,8 +3359,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 repeat: -1
             }, 2.6);
 
-        roofTopContainer.removeTimeline = function () {
-            smokeTimeline.remove();
+        roofTopContainer.stopKillTimeline = function () {
+            smokeTimeline.stop().kill();
         };
 
         return [roofTopTimeline, roofTopContainer];
@@ -3565,8 +3492,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             }, 3.1)
         ;
 
-        seaContainer.removeTimeline = function () {
-            bubbleTimeline.remove();
+        seaContainer.stopKillTimeline = function () {
+            bubbleTimeline.stop().kill();
         };
 
         return [seaTimeline, seaContainer, grassWrapper];
@@ -3672,9 +3599,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(tailCmd, 1, {y: -6, repeat: -1, yoyo: true}, 'fish')
             .to(tailCmd2, 1, {y: 6, repeat: -1, yoyo: true}, 'fish');
 
-        fishContainer.removeTimeline = function () {
-            fishMoveTimeline.remove();
-            bubbleTimeline.remove();
+        fishContainer.stopKillTimeline = function () {
+            fishMoveTimeline.stop().kill();
+            bubbleTimeline.stop().kill();
         };
 
         return [null, fishContainer];
@@ -3847,8 +3774,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(flowerWrapper, .6, { scaleX: 1, scaleY: 1, ease: Back.easeOut.config(4) }, 'eyeComplete')
         ;
 
-        cactusContainer.removeTimeline = function () {
-            cactusEyesTimeline.remove();
+        cactusContainer.stopKillTimeline = function () {
+            cactusEyesTimeline.stop().kill();
         };
 
         return [cactusTimeline, cactusContainer, flowerWrapper, cactusWrapper];
@@ -3956,8 +3883,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(pink, 1.0, {alpha: 1}, 'happyFace')
         ;
 
-        desertFaceContainer.removeTimeline = function () {
-            desertFaceEyesTimeline.remove();
+        desertFaceContainer.stopKillTimeline = function () {
+            desertFaceEyesTimeline.stop().kill();
         };
 
         return [desertFaceTimeline, desertFaceContainer];
@@ -4013,11 +3940,11 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 , 'drop+=0.5')
         ;
 
-        desertGroundContainer.removeTimeline = function () {
-            desertGroundTimeline.remove();
-            creatureWrapper1.removeTimeline();
-            creatureWrapper2.removeTimeline();
-            creatureWrapper3.removeTimeline();
+        desertGroundContainer.stopKillTimeline = function () {
+            desertGroundTimeline.stop().kill();
+            creatureWrapper1.stopKillTimeline();
+            creatureWrapper2.stopKillTimeline();
+            creatureWrapper3.stopKillTimeline();
         };
 
         return [desertGroundTimeline, desertGroundContainer];
@@ -4106,9 +4033,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(ear, .2, {rotation: 40}, 's4')
             .to(ear2, .2, {rotation: -40}, 's4');
 
-        jackalopeContainer.removeTimeline = function () {
-            eyesTimeline.remove();
-            earTimeline.remove();
+        jackalopeContainer.stopKillTimeline = function () {
+            eyesTimeline.stop().kill();
+            earTimeline.stop().kill();
         };
 
         return [jackalopeTimeline, jackalopeContainer];
@@ -4273,10 +4200,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to([upperWrapper, rightFoot], .5, {rotation: '+=' + degreeRotation}, 'rightend2')
         ;
 
-        yetiContainer.removeTimeline = function () {
-            eyesTimeline.remove();
-            leftHandTimeline.remove();
-            rightHandTimeline.remove();
+        yetiContainer.stopKillTimeline = function () {
+            eyesTimeline.stop().kill();
+            leftHandTimeline.stop().kill();
+            rightHandTimeline.stop().kill();
         };
 
         return [yetiTimeline, yetiContainer, leftHandTimeline, rightHandTimeline, leftHand, rightHand];
@@ -4336,8 +4263,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(seaMonsterCmd, .5, {y: 25}, 'seaMonster')
         ;
 
-        seaMonsterContainer.removeTimeline = function () {
-            eyeTimeline.remove();
+        seaMonsterContainer.stopKillTimeline = function () {
+            eyeTimeline.stop().kill();
         };
 
         return [seaMonsterTimeline, seaMonsterContainer];
@@ -4364,8 +4291,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to(shark, 2, {x: 17})
             .to(shark, .1, {x: 36, scaleX: 1});
 
-        sharkContainer.removeTimeline = function () {
-            sharkTimeline.remove();
+        sharkContainer.stopKillTimeline = function () {
+            sharkTimeline.stop().kill();
         };
 
         return [sharkTimeline, sharkContainer];
@@ -4484,8 +4411,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             .to([handsCmd6, handsCmd7, handsCmd8], .2, {radius: 2})
         ;
 
-        snakeContainer.removeTimeline = function () {
-            snakeEyesTimeline.remove();
+        snakeContainer.stopKillTimeline = function () {
+            snakeEyesTimeline.stop().kill();
         };
 
         return [snakeTimeline, snakeContainer];
@@ -4600,8 +4527,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         nobitaWrapper.y -= 10;
         hugContainer.addChild(nobitaWrapper);
 
-        hugContainer.removeTimeline = function () {
-            eyesTimeline.remove();
+        hugContainer.stopKillTimeline = function () {
+            eyesTimeline.stop().kill();
         };
 
         return [hugTimeline, hugContainer, eyesWrapper, nobitaWrapper, deadEyesWrapper];
@@ -4770,8 +4697,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         cactusWrapper.addChildAt(knifeSet6, 0);
         cactusWrapper.addChildAt(knifeSet7, 0);
 
-        spikeContainer.removeTimeline = function () {
-            spikeTimeline.remove();
+        spikeContainer.stopKillTimeline = function () {
+            spikeTimeline.stop().kill();
         };
 
         return [spikeTimeline, spikeContainer, [knifeSet1, knifeSet2, knifeSet3, knifeSet4, knifeSet5, knifeSet6, knifeSet7]];
@@ -5378,11 +5305,10 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         eyesTimeline
             .to(eyes, .1, {scaleY: 0})
             .to(eyes, .1, {scaleY: 1});
-        creatureWrapper.timeline = eyesTimeline;
         eyesTimeline.name = 'eyesTimeline1';
 
-        creatureWrapper.removeTimeline = function () {
-            eyesTimeline.remove();
+        creatureWrapper.stopKillTimeline = function () {
+            eyesTimeline.stop().kill();
         };
         return creatureWrapper;
     }
@@ -5446,12 +5372,12 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         container.addChild(creature4);
         container.addChild(creature5);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
         };
 
         return container;
@@ -5490,14 +5416,14 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         container.addChild(creature6);
         container.addChild(creature7);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
-            creature6.removeTimeline();
-            creature7.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
+            creature6.stopKillTimeline();
+            creature7.stopKillTimeline();
         };
 
         return container;
@@ -5540,15 +5466,15 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         container.addChild(creature7);
         container.addChild(creature8);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
-            creature6.removeTimeline();
-            creature7.removeTimeline();
-            creature8.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
+            creature6.stopKillTimeline();
+            creature7.stopKillTimeline();
+            creature8.stopKillTimeline();
         };
 
         return container;
@@ -5585,13 +5511,13 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         container.addChild(creature5);
         container.addChild(creature6);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
-            creature6.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
+            creature6.stopKillTimeline();
         };
 
         return container;
@@ -5629,16 +5555,44 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         container.addChild(creature5);
         container.addChild(creature6);
 
-        container.removeTimeline = function () {
-            creature1.removeTimeline();
-            creature2.removeTimeline();
-            creature3.removeTimeline();
-            creature4.removeTimeline();
-            creature5.removeTimeline();
-            creature6.removeTimeline();
+        container.stopKillTimeline = function () {
+            creature1.stopKillTimeline();
+            creature2.stopKillTimeline();
+            creature3.stopKillTimeline();
+            creature4.stopKillTimeline();
+            creature5.stopKillTimeline();
+            creature6.stopKillTimeline();
         };
 
         return container;
+    }
+
+    function getCustomHeartContainer(x, y) {
+        var segmentDesert = new createjs.Shape();
+        segmentDesert.graphics.beginFill(COLOR_DESERT)
+            .arc(0, 0, CIRCLE_RADIUS, 30 * Math.PI / 180, 150 * Math.PI / 180);
+
+        var segmentSky = new createjs.Shape();
+        segmentSky.graphics.beginFill(COLOR_DESERT_SKY)
+            .arc(0, 0, CIRCLE_RADIUS, 150 * Math.PI / 180, 30 * Math.PI / 180);
+
+        var container = _constructContainer(x, y, [segmentDesert, segmentSky]);
+
+        var heartContainer1 = getHeartContainer(-20, 0);
+        var heartContainer2 = getHeartContainer(0, 15);
+        var heartContainer3 = getHeartContainer(20, 0);
+        var heartContainer4 = getHeartContainer(15, -20);
+        var heartContainer5 = getHeartContainer(-15, -20);
+        var heartContainer6 = getHeartContainer(0, -5);
+
+        container.addChild(heartContainer1);
+        container.addChild(heartContainer2);
+        container.addChild(heartContainer3);
+        container.addChild(heartContainer4);
+        container.addChild(heartContainer5);
+        container.addChild(heartContainer6);
+
+        return [null, container];
     }
 
     // Utilities
