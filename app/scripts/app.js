@@ -390,7 +390,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", stage);
         createjs.Ticker.addEventListener('tick', function () {
-//            //console.log(TweenMax.getAllTweens().length);
+            //console.log(TweenMax.getAllTweens().length);
         });
 
         // Defaults
@@ -602,20 +602,20 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         }
         loadingWrapper.removeAllChildren();
 
-        var loadingText = new createjs.Text('Loading ...', '18px Happy Monkey', '#000');
+        var loadingText = new createjs.Text('Loading', '18px Happy Monkey', '#000');
         loadingText.x = CANVAS_WIDTH / 2;
         loadingText.y = 80;
         loadingText.lineWidth = CANVAS_WIDTH - 30;
         loadingText.textAlign = 'center';
         loadingWrapper.addChild(loadingText);
 
-//        var waitingText = new createjs.Text('This might take a while.', '16px Happy Monkey', '#000');
-//        waitingText.x = CANVAS_WIDTH / 2;
-//        waitingText.y = 220;
-//        waitingText.lineWidth = CANVAS_WIDTH - 80;
-//        waitingText.lineHeight = 20;
-//        waitingText.textAlign = 'center';
-//        loadingWrapper.addChild(waitingText);
+        var waitingText = new createjs.Text('This might take a while...', '16px Happy Monkey', '#000');
+        waitingText.x = CANVAS_WIDTH / 2;
+        waitingText.y = 220;
+        waitingText.lineWidth = CANVAS_WIDTH - 80;
+        waitingText.lineHeight = 20;
+        waitingText.textAlign = 'center';
+        loadingWrapper.addChild(waitingText);
 
         var loadingIconWrapper = new createjs.Container();
         loadingIconWrapper.x = LEFT_2;
@@ -661,7 +661,6 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         loadingTimeline = new TimelineMax({
             repeat: -1,
             repeatDelay: .3,
-            autoRemoveChildren: true,
             onRepeat: function () {
                 if (isLoadingFinished) {
                     loadingTimeline.stop().kill();
@@ -930,8 +929,9 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         creature.stopKillTimeline();
                     });
                 })
-                // delay .5 sec
-                .to({}, .5, {});
+                // delay .2 sec
+                .to({}, .2, {});
+            //console.log(openingTimeline.duration(), 'openingTimeline.duration()');
             //console.log(openingTimeline.duration(), 'openingTimeline.duration()');
             return openingTimeline;
         }
@@ -945,7 +945,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
             });
 
             flowerToDesertTimeline
-                .add('next', '+=56.505');
+                .add('next', '+=56.515');
 
             flowerToDesertTimeline.eventCallback('onStart', function () {
                 var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
@@ -1069,6 +1069,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                     autoRemoveChild: true,
                     paused: true,
                     onStart: function () {
+                        //console.log('tlPart1.onStart', (new Date()).toISOString());
                         //console.log(TweenMax.getAllTweens().length, 'tlPart1 onStart');
                     },
                     onComplete: function () {
@@ -1270,6 +1271,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                                 //console.log(TweenMax.getAllTweens().length, 'tlPart4 onStart');
                                             },
                                             onComplete: function () {
+                                                //console.log('tlPart4.onComplete', (new Date()).toISOString());
                                                 //console.log(TweenMax.getAllTweens().length, 'tlPart4 onComplete');
                                             }
                                         });
@@ -1425,6 +1427,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 autoRemoveChild: true,
                 paused: true,
                 onStart: function () {
+                    //console.log('iceWorld.onStart', (new Date()).toISOString());
                     var jackalopeObjs = getJackalopeTimeline(LEFT_4, TOP_2);
                     var jackalopeContainer = jackalopeObjs[1];
 
@@ -1506,6 +1509,8 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                         autoRemoveChildren: true,
                         paused: true,
                         onStart: function () {
+                            //console.log('iceWorld.tlPart1.onStart', (new Date()).toISOString());
+
                             //console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onStart');
                         },
                         onComplete: function () {
@@ -1577,7 +1582,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                 .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut})
                                 .set(questionContainer, {alpha: 0})
                                 .add(spikeTimeline, '+=0.1')
-                                .add('knife')
+                                .add('knife', '+=.4')
                                 .to(knifeSet1, 1, {x: '-=200'}, 'knife')
                                 .set(knifeSet1, {alpha: 0})
                                 .set(hugEyesWrapper, {alpha: 0})
@@ -1619,7 +1624,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                     hugEyesWrapper.y += TOP_2 + hugNobitaWrapper.y;
                                     flowerEyeContainer.addChild(hugEyesWrapper);
                                 })
-                                .to(cactusFlowerWrapper3, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 5, scaleY: 5, ease: Power3.easeIn})
+                                .to(cactusFlowerWrapper3, 1, {x: LEFT_2, y: TOP_2, scaleX: 5, scaleY: 5, ease: Power3.easeIn}, '+=.4')
                                 .set(hugEyesWrapper, {alpha: 0, scaleX: 3.5, scaleY: 3.5})
                                 .to(hugEyesWrapper, 1, {x: LEFT_2 + hugNobitaWrapper.x,
                                     y: TOP_2 + hugNobitaWrapper.y,
@@ -1647,15 +1652,17 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                                 autoRemoveChildren: true,
                                 paused: true,
                                 onStart: function () {
+                                    //console.log('iceWorld.tlPart2.onStart', (new Date()).toISOString());
                                     //console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onStart');
                                 },
                                 onComplete: function () {
+                                    //console.log('iceWorld.tlPart2.onComplete', (new Date()).toISOString());
                                     //console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onComplete');
                                 }
                             });
 
                             tlPart2
-                                .add(transitionTimeline14, '+=1.7')
+                                .add(transitionTimeline14, '+=1.9')
                                 .add(snakeTimeline)
                                 .add(transitionTimeline15, '+=.4')
                                 .add(transitionTimeline16, '+=1')
@@ -1682,7 +1689,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
                 }
             });
 
-            iceWorldTimeline.add('next', '+=37.16');
+            iceWorldTimeline.add('next', '+=37.96');
             return iceWorldTimeline;
         }
 
