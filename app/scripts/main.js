@@ -143,7 +143,7 @@
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", stage);
         createjs.Ticker.addEventListener('tick', function () {
-//            //console.log(TweenMax.getAllTweens().length);
+            //console.log(TweenMax.getAllTweens().length);
         });
 
         // Defaults
@@ -682,8 +682,9 @@
                         creature.stopKillTimeline();
                     });
                 })
-                // delay .5 sec
-                .to({}, .5, {});
+                // delay .2 sec
+                .to({}, .2, {});
+            //console.log(openingTimeline.duration(), 'openingTimeline.duration()');
             //console.log(openingTimeline.duration(), 'openingTimeline.duration()');
             return openingTimeline;
         }
@@ -697,7 +698,7 @@
             });
 
             flowerToDesertTimeline
-                .add('next', '+=56.505');
+                .add('next', '+=56.515');
 
             flowerToDesertTimeline.eventCallback('onStart', function () {
                 var flowerObjs = getFlowerTimeline(LEFT_2, TOP_2);
@@ -821,6 +822,7 @@
                     autoRemoveChild: true,
                     paused: true,
                     onStart: function () {
+                        //console.log('tlPart1.onStart', (new Date()).toISOString());
                         //console.log(TweenMax.getAllTweens().length, 'tlPart1 onStart');
                     },
                     onComplete: function () {
@@ -1022,6 +1024,7 @@
                                                 //console.log(TweenMax.getAllTweens().length, 'tlPart4 onStart');
                                             },
                                             onComplete: function () {
+                                                //console.log('tlPart4.onComplete', (new Date()).toISOString());
                                                 //console.log(TweenMax.getAllTweens().length, 'tlPart4 onComplete');
                                             }
                                         });
@@ -1177,6 +1180,7 @@
                 autoRemoveChild: true,
                 paused: true,
                 onStart: function () {
+                    //console.log('iceWorld.onStart', (new Date()).toISOString());
                     var jackalopeObjs = getJackalopeTimeline(LEFT_4, TOP_2);
                     var jackalopeContainer = jackalopeObjs[1];
 
@@ -1258,6 +1262,8 @@
                         autoRemoveChildren: true,
                         paused: true,
                         onStart: function () {
+                            //console.log('iceWorld.tlPart1.onStart', (new Date()).toISOString());
+
                             //console.log(TweenMax.getAllTweens().length, 'iceWorldTimeline onStart');
                         },
                         onComplete: function () {
@@ -1329,7 +1335,7 @@
                                 .to(spikeContainer, .5, {scaleX: 1, scaleY: 1, ease: Power1.easeOut})
                                 .set(questionContainer, {alpha: 0})
                                 .add(spikeTimeline, '+=0.1')
-                                .add('knife')
+                                .add('knife', '+=.4')
                                 .to(knifeSet1, 1, {x: '-=200'}, 'knife')
                                 .set(knifeSet1, {alpha: 0})
                                 .set(hugEyesWrapper, {alpha: 0})
@@ -1371,7 +1377,7 @@
                                     hugEyesWrapper.y += TOP_2 + hugNobitaWrapper.y;
                                     flowerEyeContainer.addChild(hugEyesWrapper);
                                 })
-                                .to(cactusFlowerWrapper3, 1.2, {x: LEFT_2, y: TOP_2, scaleX: 5, scaleY: 5, ease: Power3.easeIn})
+                                .to(cactusFlowerWrapper3, 1, {x: LEFT_2, y: TOP_2, scaleX: 5, scaleY: 5, ease: Power3.easeIn}, '+=.4')
                                 .set(hugEyesWrapper, {alpha: 0, scaleX: 3.5, scaleY: 3.5})
                                 .to(hugEyesWrapper, 1, {x: LEFT_2 + hugNobitaWrapper.x,
                                     y: TOP_2 + hugNobitaWrapper.y,
@@ -1399,15 +1405,17 @@
                                 autoRemoveChildren: true,
                                 paused: true,
                                 onStart: function () {
+                                    //console.log('iceWorld.tlPart2.onStart', (new Date()).toISOString());
                                     //console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onStart');
                                 },
                                 onComplete: function () {
+                                    //console.log('iceWorld.tlPart2.onComplete', (new Date()).toISOString());
                                     //console.log(TweenMax.getAllTweens().length, 'iceWorld tlPart2 onComplete');
                                 }
                             });
 
                             tlPart2
-                                .add(transitionTimeline14, '+=1.7')
+                                .add(transitionTimeline14, '+=1.9')
                                 .add(snakeTimeline)
                                 .add(transitionTimeline15, '+=.4')
                                 .add(transitionTimeline16, '+=1')
@@ -1434,7 +1442,7 @@
                 }
             });
 
-            iceWorldTimeline.add('next', '+=37.16');
+            iceWorldTimeline.add('next', '+=37.96');
             return iceWorldTimeline;
         }
 
