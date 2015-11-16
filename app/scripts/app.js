@@ -431,7 +431,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
         pop = Popcorn("#audio");
 
         var requestMp3 = new XMLHttpRequest();
-        requestMp3.open('GET', 'audio/Antsy_Pants_-_Tree_Hugger.mp3', true);
+        requestMp3.open('GET', 'audio/Antsy_Pants_-_Tree_Hugger_64.mp3', true);
         requestMp3.responseType = 'blob';
         requestMp3.onload = function (e) {
             if (this.status == 200) {
