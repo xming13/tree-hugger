@@ -452,7 +452,7 @@ return"file:"!=location.protocol||a||this._isFileXHRSupported()?(c._generateCapa
 
         var lyrics = [
             "[ti:Tree Hugger]",
-            "[ar:Kumya Dawson]",
+            "[ar:Kimya Dawson]",
             "[al:JUNO OST]",
             "[00:05.00]Song: Tree Hugger",
             "[00:11.50]Artist: Antsy Pants & Kimya Dawson",
